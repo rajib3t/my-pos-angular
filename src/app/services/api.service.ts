@@ -71,12 +71,14 @@ export class ApiService {
 
   // Headers creation methods
   private createHeaders(isProtected: boolean = false): HttpHeaders {
-  // Deprecated: header logic moved to AuthInterceptor
-  let headers = new HttpHeaders()
-  if (isProtected) {
-    headers = headers.set('X-Is-Protected', 'true');
-  }
-  return headers;
+    // Let the interceptor handle all headers including Content-Type, Accept, etc.
+    let headers = new HttpHeaders();
+    
+    if (isProtected) {
+      headers = headers.set('X-Is-Protected', 'true');
+    }
+    
+    return headers;
   }
 // Unified API methods
   public get<T>(endpoint: string, options?: any): Observable<ApiResponse<T>> {
@@ -123,11 +125,12 @@ export class ApiService {
    * Calls the refresh token endpoint and returns the new tokens.
    * @returns Observable<ApiResponse<{ accessToken: string; refreshToken: string }>>
    */
-  public refreshToken(): Observable<ApiResponse<{ accessToken: string; refreshToken: string }>> {
+  public refreshToken(): Observable<ApiResponse<{ data:{accessToken: string; refreshToken: {token:string, expiresIn:string}} }>> {
     const refreshToken = localStorage.getItem('refreshToken');
-    return this.post<{ accessToken: string; refreshToken: string }>(
+    return this.post<{ data:{accessToken: string; refreshToken: {token:string, expiresIn:string}} }>(
       'auth/refresh',
       { refreshToken }
+
     );
   }
 
@@ -225,8 +228,8 @@ export class ApiService {
         this.refreshToken().subscribe({
           next: (response) => {
             console.log('Token refresh successful');
-            this.setAuthToken(response.data.accessToken);
-            this.setRefreshToken(response.data.refreshToken);
+            this.setAuthToken(response.data.data.accessToken);
+            this.setRefreshToken(response.data.data.refreshToken.token);
             observer.next(true);
             observer.complete();
           },
