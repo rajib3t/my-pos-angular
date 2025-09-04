@@ -1,0 +1,50 @@
+<app-auth>
+   <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="Enter your email"
+        />
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+             class="text-red-500 text-sm mt-1">
+          Please enter a valid email.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="Enter your password"
+        />
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+             class="text-red-500 text-sm mt-1">
+          Password must be at least 6 characters.
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="isSubmitting || loginForm.invalid"
+        class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition"
+      >
+        <span *ngIf="!isSubmitting">Login</span>
+        <span *ngIf="isSubmitting">Logging in...</span>
+      </button>
+    </form>
+</app-auth>

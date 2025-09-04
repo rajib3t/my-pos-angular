@@ -1,0 +1,14 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <!-- Top Navigation Bar -->
+    <app-header></app-header>
+
+  <div class="flex">
+    <!-- Mobile menu overlay -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 lg:ml-0">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

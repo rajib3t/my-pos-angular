@@ -1,0 +1,51 @@
+/* User Menu Styles */
+.user-menu-dropdown {
+  animation: slideDown 0.2s ease-out;
+  transform-origin: top right;
+  /* Ensure visibility */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Ensure proper z-index for dropdown */
+.user-menu-dropdown {
+  z-index: 1000 !important;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 0.5rem !important;
+}
+
+/* Improve button hover states */
+.user-menu-button:hover {
+  background-color: rgba(243, 244, 246, 0.8);
+}
+
+/* Smooth transitions for menu items */
+.user-menu-dropdown a {
+  transition: all 0.15s ease-in-out;
+}
+
+.user-menu-dropdown a:hover {
+  background-color: rgba(249, 250, 251, 0.8);
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  .user-menu-dropdown {
+    right: -1rem;
+    width: 280px;
+  }
+}
