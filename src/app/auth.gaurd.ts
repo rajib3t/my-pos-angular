@@ -14,26 +14,25 @@ export class AuthGuard implements CanActivate {
     ) {}
 
     canActivate(): boolean | Observable<boolean> {
-        console.log('AuthGuard: Checking authentication...');
+       
         
         try {
             // First check if we have a token and it's valid
             const hasValidToken = this.apiService.isAuthenticated();
             
             if (hasValidToken) {
-                console.log('AuthGuard: User has valid token, allowing access');
+               
                 return true;
             }
 
-            // If no valid token, try to initialize auth (refresh if possible)
-            console.log('AuthGuard: No valid token, attempting to refresh...');
+           
             return this.apiService.initializeAuth().pipe(
                 map(isAuthenticated => {
                     if (isAuthenticated) {
-                        console.log('AuthGuard: Authentication successful after refresh');
+                       
                         return true;
                     } else {
-                        console.log('AuthGuard: Authentication failed, redirecting to login');
+                        
                         this.router.navigate(['/login']);
                         return false;
                     }

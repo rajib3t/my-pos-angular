@@ -2,20 +2,38 @@ import { inject } from '@angular/core';
 import {
   HttpInterceptorFn,
   HttpRequest,
-  HttpHandlerFn
+  HttpHandlerFn,
+  HttpClient
 } from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { ApiService } from './api.service';
 import { catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 const jwtHelper = new JwtHelperService();
 
+// Helper function to get appropriate error message
+const getErrorMessage = (error: any): string => {
+  if (error.status === 0) {
+    return 'Network error. Please check your connection.';
+  } else if (error.status >= 500) {
+    return 'Server error. Please try again later.';
+  } else if (error.status === 404) {
+    return 'Resource not found.';
+  } else if (error.status === 403) {
+    return 'Access denied.';
+  } else if (error.status === 400) {
+    return error.error?.message || 'Bad request.';
+  } else {
+    return error.error?.message || 'An error occurred. Please try again.';
+  }
+};
+
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
-  console.log('AuthInterceptor: Processing request to:', req.url);
   
-  // Inject ApiService at the top level of the interceptor function
-  const apiService = inject(ApiService);
+  
+  // Inject HttpClient directly to avoid circular dependency with ApiService
+  const http = inject(HttpClient);
   
   // Don't modify headers for authentication endpoints
   if (req.url.includes('auth/login') || req.url.includes('auth/refresh')) {
@@ -37,7 +55,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
 
   if (isProtected) {
     const token = localStorage.getItem('authToken');
-    console.log("AuthInterceptor: Processing protected request with token:", token ? 'present' : 'missing');
+    
     
     if (token) {
       try {
@@ -69,17 +87,62 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
       if (error.status === 401 && isProtected) {
         console.log("AuthInterceptor: 401 error on protected request, attempting token refresh");
         
-        return apiService.refreshToken().pipe(
-          switchMap((response) => {
-            console.log("AuthInterceptor: Token refresh successful", response)
-            const newAccessToken = response.data.data.accessToken;
-            const newRefreshToken = response.data.data.refreshToken;
-            
-            if (newAccessToken) {
-              localStorage.setItem('authToken', newAccessToken);
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+          console.log("AuthInterceptor: No refresh token available");
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('refreshToken');
+          const standardizedError = {
+            status: 401,
+            error: {
+              success: false,
+              message: 'Authentication failed. Please login again.',
+              data: null,
+              error: 'No refresh token available'
             }
+          };
+          return throwError(() => standardizedError);
+        }
+        
+        // Make direct HTTP call to refresh endpoint to avoid circular dependency
+        const refreshUrl = `${environment.apiUrl}/auth/refresh`;
+       
+        const refreshHeaders = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        };
+
+        const refreshOptions = {
+          headers: refreshHeaders,
+          withCredentials: true
+        };
+        return http.post<any>(refreshUrl, { refreshToken }, refreshOptions).pipe(
+          switchMap((response) => {
+            console.log("AuthInterceptor: Token refresh successful", response);
+            
+            // Access the response data correctly based on your API structure
+            const newAccessToken = response.data?.accessToken;
+            const newRefreshToken = response.data?.refreshToken?.token;
+            
+            if (!newAccessToken) {
+              console.error("AuthInterceptor: No access token in refresh response");
+              localStorage.removeItem('authToken');
+              localStorage.removeItem('refreshToken');
+              const standardizedError = {
+                status: 401,
+                error: {
+                  success: false,
+                  message: 'Authentication failed. Please login again.',
+                  data: null,
+                  error: 'Invalid refresh response'
+                }
+              };
+              return throwError(() => standardizedError);
+            }
+            
+            localStorage.setItem('authToken', newAccessToken);
             if (newRefreshToken) {
-              localStorage.setItem('refreshToken', newRefreshToken.token);
+              localStorage.setItem('refreshToken', newRefreshToken);
             }
             
             // Retry original request with new token
@@ -92,12 +155,34 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
             // Clear invalid tokens and redirect to login
             localStorage.removeItem('authToken');
             localStorage.removeItem('refreshToken');
-            // You might want to inject Router and navigate to login here
-            return throwError(() => refreshError);
+            // Return standardized error response
+            const standardizedError = {
+              status: refreshError.status || 401,
+              error: {
+                success: false,
+                message: 'Authentication failed. Please login again.',
+                data: null,
+                error: refreshError.error || 'Token refresh failed'
+              }
+            };
+            return throwError(() => standardizedError);
           })
         );
       }
-      return throwError(() => error);
+      
+      // Handle other types of errors (network, timeout, etc.)
+      const standardizedError = {
+        status: error.status || 0,
+        error: {
+          success: false,
+          message: getErrorMessage(error),
+          data: null,
+          error: error.error || error.message || 'An unexpected error occurred'
+        }
+      };
+      
+      console.error("AuthInterceptor: Standardized error response:", standardizedError);
+      return throwError(() => standardizedError);
     })
   );
 };

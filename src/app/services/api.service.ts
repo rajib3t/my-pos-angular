@@ -57,16 +57,40 @@ export class ApiService {
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'An unknown error occurred!';
-    if (error.error instanceof ErrorEvent) {
-      // Client-side or network error
-      errorMessage = `Client-side error: ${error.error.message}`;
-    } else {
-      // Server-side error
-      errorMessage = `Server-side error: ${error.status} - ${error.message}`;
+  private handleError(error: any) {
+    // If the error is already standardized by the auth interceptor, pass it through
+    if (error && error.error && typeof error.error === 'object' && 'success' in error.error) {
+      console.log('ApiService: Passing through standardized error from interceptor:', error);
+      return throwError(() => error);
     }
-    return throwError(() => new Error(errorMessage));
+    
+    // Handle raw HttpErrorResponse (fallback for non-intercepted errors)
+    if (error instanceof HttpErrorResponse) {
+      const standardizedError = {
+        status: error.status || 0,
+        error: {
+          success: false,
+          message: error.error?.message || error.message || 'An unknown error occurred!',
+          data: null,
+          error: error.error || error.message || 'HTTP Error'
+        }
+      };
+      console.log('ApiService: Standardizing raw HttpErrorResponse:', standardizedError);
+      return throwError(() => standardizedError);
+    }
+    
+    // Handle other error types
+    const standardizedError = {
+      status: 0,
+      error: {
+        success: false,
+        message: error?.message || 'An unknown error occurred!',
+        data: null,
+        error: error || 'Unknown Error'
+      }
+    };
+    console.log('ApiService: Standardizing unknown error type:', standardizedError);
+    return throwError(() => standardizedError);
   }
 
   // Headers creation methods
@@ -123,14 +147,16 @@ export class ApiService {
 
   /**
    * Calls the refresh token endpoint and returns the new tokens.
+   * This method bypasses the auth interceptor by not setting the protected header
    * @returns Observable<ApiResponse<{ accessToken: string; refreshToken: string }>>
    */
   public refreshToken(): Observable<ApiResponse<{ data:{accessToken: string; refreshToken: {token:string, expiresIn:string}} }>> {
     const refreshToken = localStorage.getItem('refreshToken');
+    
+    // Use the basic post method without protection to avoid interceptor issues
     return this.post<{ data:{accessToken: string; refreshToken: {token:string, expiresIn:string}} }>(
       'auth/refresh',
       { refreshToken }
-
     );
   }
 
@@ -162,10 +188,28 @@ export class ApiService {
   public isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     
-    if (token) {
-      return true
+    if (!token) {
+      return false;
     }
-    return false;
+
+    try {
+      const decodedToken = this.decodeJWT(token);
+      if (!decodedToken) {
+        return false;
+      }
+
+      // Check if token is expired
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error validating token:', error);
+      return false;
+    }
   }
 
 
@@ -186,9 +230,12 @@ export class ApiService {
    * Clear all authentication data (logout)
    */
   public clearAuthData(): void {
-    console.log('Clearing authentication data...');
+    
     localStorage.removeItem('authToken');
     localStorage.removeItem('refreshToken');
+    this.setCookie("accessToken", "", ["expires=Thu, 01 Jan 1970 00:00:00 GMT", "path=/"]);
+    this.setCookie("refreshToken", "", ["expires=Thu, 01 Jan 1970 00:00:00 GMT", "path=/"]);
+  
     this.authToken$.next(null);
     this.refreshToken$.next(null);
   }
@@ -216,7 +263,7 @@ export class ApiService {
 
       // Check if current token is valid
       if (this.isAuthenticated()) {
-        console.log('Current token is valid');
+       
         observer.next(true);
         observer.complete();
         return;

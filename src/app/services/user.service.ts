@@ -8,6 +8,16 @@ export interface User {
   // Add other user properties as needed
 }
 
+export interface ProfileData extends User {
+  mobile?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,17 +58,23 @@ export class UserService {
   }
 
 
-
-  get authUser(): Observable<User | null> {
+  get getAuthUser():  Observable<ProfileData | null>{
+    //return this.authUserData.pipe()
+    return this.authUserData.asObservable();
+  }
+  get authUser(): Observable<ProfileData | null> {
     return this.authUserData.asObservable();
   }
 
   public fetchProfileData(): void {
-    console.log('Fetching profile data...');
-    this.apiService.protectedGet <{ data: User }>('profile').subscribe({
+    
+    this.apiService.protectedGet <{ data: ProfileData }>('profile').subscribe({
       next: (response) => {
-        console.log('Profile data response:', response);
-        this.profileData.next(response.data.data);
+        
+        const userData = response.data.data;
+        this.profileData.next(userData);
+        // Also update the auth user data with fresh profile data
+        this.setAuthUser(userData);
       },
       error: (error) => {
         console.error('Error fetching profile data:', error);
@@ -70,7 +86,7 @@ export class UserService {
     });
   }
 
-  get profileUserData(): Observable<User | null> {
+  get profileUserData(): Observable<ProfileData | null> {
     return this.profileData.asObservable();
   }
 
@@ -83,4 +99,7 @@ export class UserService {
     this.authUserData.next(null);
     this.profileData.next(null);
   }
+
+
+  
 }

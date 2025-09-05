@@ -1,13 +1,43 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from './services/api.service';
+import { UserService } from './services/user.service';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, CommonModule, HttpClientModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('my-pos');
+
+  constructor(
+    private apiService: ApiService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit() {
+    // Initialize authentication and fetch user data on app startup
+    this.initializeApp();
+  }
+
+  private initializeApp() {
+    
+    
+    this.apiService.initializeAuth().subscribe({
+      next: (isAuthenticated) => {
+       
+        if (isAuthenticated) {
+          // If authenticated, fetch fresh user profile data
+          this.userService.fetchProfileData();
+        }
+      },
+      error: (error) => {
+        console.error('App: Authentication initialization failed:', error);
+      }
+    });
+  }
 }

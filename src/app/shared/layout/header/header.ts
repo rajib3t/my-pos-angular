@@ -2,6 +2,7 @@ import { Component, HostListener, ElementRef, ViewChild, OnInit, OnDestroy } fro
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../../services/ui.service';
 import { User , UserService} from '../../../services/user.service';
+import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 
@@ -18,17 +19,20 @@ export class Header implements OnInit, OnDestroy {
   @ViewChild('userMenuDropdown', { static: false }) userMenuDropdown!: ElementRef;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
-  constructor(private uiService: UiService, private userService: UserService) { }
+  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService) { }
 
 
   ngOnInit() {
-     this.userSubscription = this.userService.authUser.subscribe(data => {
-    this.authUser = data || null;
-  });
+    this.userSubscription = this.userService.getAuthUser.subscribe(data => {
+     
+      this.authUser = data;
+    });
   }
 
   ngOnDestroy() {
-    this.userSubscription.unsubscribe();
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
@@ -73,6 +77,9 @@ export class Header implements OnInit, OnDestroy {
 
   logout() {
     // Clear user data first
-    
+    this.userService.clearUserData();
+    this.apiService.clearAuthData();
+    // Navigate to login page
+    window.location.href = '/login';
   }
 }
