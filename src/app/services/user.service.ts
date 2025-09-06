@@ -18,6 +18,10 @@ export interface ProfileData extends User {
   };
 }
 
+export interface Password {
+  [key: string]: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -101,5 +105,38 @@ export class UserService {
   }
 
 
-  
+
+  public updateProfileData(updatedData: Partial<ProfileData>): Observable<ProfileData> {
+    return new Observable<ProfileData>((observer) => {
+      this.apiService.protectedPatch<{ data: ProfileData }>('profile', updatedData).subscribe({
+        next: (response) => {
+          const updatedUser = response.data.data;
+          // Update both profile and auth user data
+          this.profileData.next(updatedUser);
+          this.setAuthUser(updatedUser);
+          observer.next(updatedUser);
+          observer.complete();
+        },
+        error: (error) => {
+          console.error('Error updating profile data:', error);
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public updatePassword(currentPassword: string, newPassword: string): Observable<Password> {
+    return new Observable<Password>((observer) => {
+      this.apiService.protectedPatch<{ message: string }>('profile/password', { currentPassword, newPassword }).subscribe({
+        next: (response) => {
+          observer.next({ message: 'Password updated successfully' });
+          observer.complete();
+        },
+        error: (error) => {
+          console.error('Error updating password:', error);
+          observer.error(error);
+        }
+      });
+    });
+  }
 }

@@ -5,21 +5,27 @@ import { User , UserService} from '../../../services/user.service';
 import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound} from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
-export class Header implements OnInit, OnDestroy {
+  export class Header implements OnInit, OnDestroy {
+    readonly UserIcon = UserIcon;
+    readonly Menu = Menu;
+    readonly LogOut = LogOut;
+    readonly KeyRound = KeyRound;
   authUser: User | null = null;
    private userSubscription!: Subscription;
   @ViewChild('userMenuButton', { static: false }) userMenuButton!: ElementRef;
   @ViewChild('userMenuDropdown', { static: false }) userMenuDropdown!: ElementRef;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
-  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService) { }
+  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService, private router: Router  ) { }
 
 
   ngOnInit() {
@@ -79,7 +85,15 @@ export class Header implements OnInit, OnDestroy {
     // Clear user data first
     this.userService.clearUserData();
     this.apiService.clearAuthData();
-    // Navigate to login page
-    window.location.href = '/login';
+    this.apiService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Logout error:', err);
+        // Even if logout API fails, still navigate to login
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

@@ -2,8 +2,8 @@
       <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-2xl font-bold text-gray-900">Profile</h2>
-            <p class="text-sm text-gray-600 mt-1 hidden sm:block">To update your profile information, please fill out the form below.</p>
+            <h2 class="text-2xl font-bold text-primary-500">Profile</h2>
+            <p class="text-sm text-primary-700 mt-1 hidden sm:block">To update your profile information, please fill out the form below.</p>
           </div>
           <div class="flex items-center space-x-3">
           
@@ -14,157 +14,185 @@
       <!-- Content Area -->
       <main class="p-6">
         <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-            <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg transition-opacity duration-50" 
-              [@fadeInOut]>
-              {{ errorMessage }}
-            </div>
-
-            <div *ngIf="successMessage" class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg transition-opacity duration-50"
-              [@fadeInOut]>
-              {{ successMessage }}
-            </div>
+          <!-- Error Message -->
+           @if(errorMessage) {
+                 <div class="mb-4 p-3 bg-warning-100 border border-warning-400 text-warning-700 rounded-lg">
+                      {{ errorMessage }}
+                  </div>
+           }
+          @if (successMessage) {
+            <!-- Success Message -->
+               <div  class="mb-4 p-3 bg-success-100 border border-success-400 text-success-900 rounded-lg">
+                {{ successMessage }}
+              </div>
+          }
           <form class="space-y-6"  [formGroup]="profileForm" (ngSubmit)="onSubmit()"  >
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900">Personal Information</h3>
-              <hr class="mt-2" />
-            </div>
+            <!-- Two Column Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              <!-- Personal Information Column -->
+              <div class="space-y-6">
+                <div>
+                  <h3 class="text-lg font-semibold text-primary-700">Personal Information</h3>
+                  <hr class="mt-2" />
+                </div>
 
-            <div>
-              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
-              <input
-                value="{{ user?.name }}"
-                type="text"
-                id="name"
-                name="name"
-                formControlName="name"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your name"
-              >
-              <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Name is required.
+                <div>
+                  <label for="name" class="block text-sm font-medium text-primary-700 mb-2">Name</label>
+                  <input
+                    value="{{ user?.name }}"
+                    type="text"
+                    id="name"
+                    name="name"
+                    formControlName="name"
+                    class="w-full px-3 py-2 border text-primary-700 border-primary-300 rounded-md shadow-sm focus:outline-none focus:ring-0.5 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Enter your name"
+                  >
+                  @if(profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
+                    <div class="text-red-500 text-sm mt-1">
+                      Name is required.
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label for="mobile" class="block text-sm font-medium text-primary-700 mb-2">Mobile Number</label>
+                  <input
+                   
+                    type="tel"
+                    id="mobile"
+                    value="{{ user?.mobile }}"
+                    name="mobile"
+                    formControlName="mobile"
+                    class="w-full px-3 py-2 border border-primary-300 text-primary-700  rounded-md shadow-sm focus:outline-none focus:ring-0.5 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Enter your mobile number"
+                  >
+                  @if(profileForm.get('mobile')?.invalid && profileForm.get('mobile')?.touched) {
+                    <div class="text-red-500 text-sm mt-1">
+                      Please enter a valid mobile number.
+                    </div>
+                  }
+                
+                </div>
+
+                <div>
+                  <label for="email" class="block text-sm font-medium text-primary-700 mb-2">Email</label>
+                  <input
+                    value="{{ user?.email }}"
+                    type="email"
+                    id="email"
+                    name="email"
+                    formControlName="email"
+                    class="w-full px-3 py-2 border border-primary-300 text-primary-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Enter your email"
+                  >
+                  @if(profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+
+                      <div 
+                          class="text-red-500 text-sm mt-1">
+                            Please enter a valid email.
+                      </div>
+                  }
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label for="mobile" class="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
-              <input
-               
-                type="tel"
-                id="mobile"
-                value="{{ user?.mobile }}"
-                name="mobile"
-                formControlName="mobile"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your mobile number"
-              >
-              <div *ngIf="profileForm.get('mobile')?.invalid && profileForm.get('mobile')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Please enter a valid mobile number.
+              <!-- Address Information Column -->
+              <div class="space-y-6">
+                <div>
+                  <h3 class="text-lg font-semibold text-primary-700">Address Details</h3>
+                  <hr class="mt-2" />
+                </div>
+
+                <div>
+                  <label for="address" class="block text-sm font-medium text-primary-700 mb-2">Address</label>
+                  <input
+                   
+                    type="text"
+                    id="address"
+                    value="{{ user?.address?.street }}"
+                    formControlName="address"
+                    name="address"
+                    class="w-full px-3 py-2 border  text-primary-700   border-primary-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Enter your address"
+                  >
+                  @if(profileForm.get('address')?.invalid && profileForm.get('address')?.touched) {
+                    <div 
+                      class="text-red-500 text-sm mt-1">
+                        Please enter a valid address.
+                  </div>
+                  }
+                  
+                </div>
+
+                <div>
+                  <label for="city" class="block text-sm font-medium text-primary-700 mb-2">City</label>
+                  <input
+                   
+                    type="text"
+                    id="city"
+                    formControlName="city"
+                    name="city"
+                    class="w-full px-3 py-2 border border-primary-300 text-primary-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Enter your city"
+                  >
+
+                  @if(profileForm.get('city')?.invalid && profileForm.get('city')?.touched) {
+                    <div class="text-red-500 text-sm mt-1">
+                      Please enter a valid city.
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label for="state" class="block text-sm font-medium text-primary-700 mb-2">State</label>
+                  <input
+                    value="{{ user?.address?.state }}"
+                    type="text"
+                    id="state"
+                    name="state"
+                    formControlName="state"
+                    class="w-full px-3 py-2 border border-primary-300 text-primary-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="State"
+                  >
+                  @if(profileForm.get('state')?.invalid && profileForm.get('state')?.touched) {
+                    <div class="text-red-500 text-sm mt-1">
+                      Please enter a valid state.
+                    </div>
+                  }
+                </div>
+
+                <div>
+                  <label for="postalCode" class="block text-sm font-medium text-primary-700 mb-2">Postal Code</label>
+                  <input
+                    value="{{ user?.address?.zip }}"
+                    type="text"
+                    id="postalCode"
+                    name="postalCode"
+                    formControlName="postalCode"
+                    class="w-full px-3 py-2 border border-primary-300 text-primary-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-700 focus:border-primary-700"
+                    placeholder="Postal Code"
+                  >
+                  @if(profileForm.get('postalCode')?.invalid && profileForm.get('postalCode')?.touched) {
+                    <div class="text-red-500 text-sm mt-1">
+                       Please enter a valid postal code.
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
-
-            <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <input
-                value="{{ user?.email }}"
-                type="email"
-                id="email"
-                name="email"
-                formControlName="email"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              >
-              <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Please enter a valid email.
-              </div>
-            </div>
-
-            <div class="pt-2">
-              <h3 class="text-lg font-semibold text-gray-900">Address Detail</h3>
-              <hr class="mt-2" />
-            </div>
-
-            <div>
-              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-              <input
-               
-                type="text"
-                id="address"
-                value="{{ user?.address?.street }}"
-                formControlName="address"
-                name="address"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your address"
-              >
-              <div *ngIf="profileForm.get('address')?.invalid && profileForm.get('address')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Please enter a valid address.
-              </div>
-            </div>
-
-            <div>
-              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
-              <input
-               
-                type="text"
-                id="city"
-                formControlName="city"
-                name="city"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your city"
-              >
-              <div *ngIf="profileForm.get('city')?.invalid && profileForm.get('city')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Please enter a valid city.
-              </div>
-            </div>
-
-            
-
-            <div>
-              <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
-              <input
-                value="{{ user?.address?.state }}"
-                type="text"
-                id="state"
-                name="state"
-                formControlName="state"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="State"
-              >
-              <div *ngIf="profileForm.get('state')?.invalid && profileForm.get('state')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                    Please enter a valid state.
-              </div>
-            </div>
-
-            <div>
-              <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
-              <input
-                value="{{ user?.address?.zip }}"
-                type="text"
-                id="postalCode"
-                name="postalCode"
-                formControlName="postalCode"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Postal Code"
-              >
-              <div *ngIf="profileForm.get('postalCode')?.invalid && profileForm.get('postalCode')?.touched"
-                  class="text-red-500 text-sm mt-1">
-                   Please enter a valid postal code.
-              </div>
+              
             </div>
 
             <div class="flex justify-start">
               <button
                 type="submit"
-                class="px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                class="px-6 py-2 bg-pos-card text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               >
-                <span *ngIf="!isSubmitting">✓ Update</span>
-                <span *ngIf="isSubmitting">Updating...</span>
-                
+                @if(!isSubmitting) {
+                 <span class=" text-white">✓ Update</span>
+                }
+                @if(isSubmitting) {
+                  <span class="text-gray-600">Updating...</span>
+                }
               </button>
             </div>
           </form>

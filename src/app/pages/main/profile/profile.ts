@@ -1,44 +1,26 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileData, UserService } from '../../../services/user.service';
-import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
-import { HttpClientModule } from '@angular/common/http';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+
+
+import { timer } from 'rxjs';
 @Component({
   selector: 'app-profile',
   standalone: true,                 // required when using `imports` on a component
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+
   ],
   templateUrl: './profile.html',
-  styleUrls: ['./profile.css'],      // fixed property name (was styleUrl)
-  animations: [
-    trigger('fadeInOut', [
-      state('in', style({ opacity: 1 })),
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate(300, style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate(300, style({ opacity: 0 }))
-      ])
-    ]),
-    trigger('fadeOut', [
-      state('visible', style({ opacity: 1 })),
-      state('hidden', style({ opacity: 0 })),
-      transition('visible => hidden', [
-        animate(300, style({ opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrl: './profile.css',
+  
 })
-export class Profile implements OnInit, OnDestroy {
+export class Profile implements OnInit {
   profileForm: FormGroup;
-  private userSubscription?: Subscription;
   user: ProfileData | null = null;
   isSubmitting = false;
   errorMessage = '';
@@ -46,6 +28,7 @@ export class Profile implements OnInit, OnDestroy {
 
   // Store original values to compare against
   private originalValues: Record<string, any> = {};
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private userService: UserService,
@@ -64,7 +47,9 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSubscription = this.userService.profileUserData.subscribe({
+    this.userService.profileUserData.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (user) => {
         this.user = user;
         if (user) {
@@ -94,13 +79,6 @@ export class Profile implements OnInit, OnDestroy {
     this.userService.fetchProfileData();
   }
 
-  ngOnDestroy(): void {
-    // Guard unsubscribe
-    if (this.userSubscription) {
-      this.userSubscription.unsubscribe();
-    }
-  }
-
   private normalizeValue(value: any): string {
     return value === null || value === undefined ? '' : String(value).trim();
   }
@@ -124,7 +102,7 @@ export class Profile implements OnInit, OnDestroy {
       const currentValue = this.normalizeValue(currentValues[key]);
       const originalValue = this.normalizeValue(this.originalValues[key]);
 
-      console.log(`Comparing ${key}: "${originalValue}" vs "${currentValue}"`);
+      
 
       if (currentValue !== originalValue) {
         changedFields[key] = currentValues[key];
@@ -149,32 +127,34 @@ export class Profile implements OnInit, OnDestroy {
      
       return;
     }
-
-    this.apiService.protectedPatch<any>('profile', changedFields)
-      .subscribe({
-        next: (response) => {
-          if (response && response.data) {
-            
-
-            // Update originalValues with the new values after successful update
-            this.originalValues = { ...this.originalValues, ...changedFields };
-
-            // Optionally re-patch the form so it's in sync
-            this.profileForm.patchValue(this.originalValues);
-            this.successMessage = response.data.message || 'Profile updated successfully.';
-          } else {
-            this.errorMessage = 'Profile Update failed. Please try again.';
-          }
-          this.isSubmitting = false;
+    this.userService.updateProfileData(changedFields).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (updatedProfile) => {
+        // Update local user data and original values
+        this.user = updatedProfile;
+        this.originalValues = { ...this.originalValues, ...changedFields };
+        this.profileForm.patchValue(this.originalValues);
+        this.successMessage = updatedProfile ? 'Profile updated successfully.' : 'No changes were made.';
+        this.isSubmitting = false;
+        timer(3000).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => {
+          this.successMessage = '';
+        });
+      },
+      error: (error) => {
+        console.error('Error updating profile:', error);
+        this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
+        this.isSubmitting = false;
+        timer(3000).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => {
           this.errorMessage = '';
-        },
-        error: (error) => {
-          console.log('Profile update error:', error);
-          
-          this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
-          this.isSubmitting = false;
-        }
-      });
+        });
+      }
+    });
+   
   }
 
 

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse, HttpEventType, HttpEvent } from '@angular/common/http';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, throwError, BehaviorSubject , tap} from 'rxjs';
 import { catchError, map, filter } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { ApiResponse, ParsedCookie, AuthToken } from './api-response.model';
 import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -240,11 +241,16 @@ export class ApiService {
     this.refreshToken$.next(null);
   }
 
-  private setCookie(name: string, value: string, options: string[]): void {
+  public setCookie(name: string, value: string, options: string[]): void {
     // Implementation for setting cookies
     document.cookie = `${name}=${value}; ${options.join('; ')}`;
   }
 
+  public getCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+  }
+  
   /**
    * Initialize authentication on app startup
    * This method should be called when the app starts to check and refresh tokens if needed
@@ -297,7 +303,25 @@ export class ApiService {
       }
     });
   }
+
+   public logout(): Observable<ApiResponse<any>> {
+    console.log('Logout called - clearing tokens');
+    return this.protectedPost('auth/logout', {}).pipe(
+      tap(() => {
+        console.log('Logout API call successful');
+        this.clearAuthData();
+      }),
+      catchError((error) => {
+        console.error('Logout API call failed:', error);
+        // Clear tokens even if logout fails
+        this.clearAuthData();
+        return throwError(() => error);
+      })
+    );
+  }
 }
   
+
+
 
 
