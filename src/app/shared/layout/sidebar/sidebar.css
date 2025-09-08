@@ -30,35 +30,28 @@
 
 /* Enhanced active menu item styling */
 .menu-item.router-link-active {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  color: #1d4ed8;
-  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0369a1;
+  /* //border-radius: 8px; */
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+  position: relative;
+  border-left: 4px solid #3b82f6;
+  margin-left: -4px;
+  padding-left: 11px;
 }
 
 .menu-item.router-link-active .lucide,
-.menu-item.router-link-active svg {
-  color: #1d4ed8 !important;
+.menu-item.router-link-active svg,
+.menu-item.router-link-active lucide-angular {
+  color: #0369a1 !important;
 }
 
 .menu-item.router-link-active:hover {
-  background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+  background: #bae6fd;
   transform: translateX(2px);
 }
 
-/* Submenu container with max-height animation */
-.submenu-container {
-  overflow: hidden;
-  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  max-height: 0;
-  opacity: 0;
-}
-
-.submenu-container.open {
-  max-height: 200px;
-  opacity: 1;
-}
+/* Submenu animations are now handled by Tailwind CSS classes */
 
 /* Submenu items */
 .submenu-item {
@@ -73,28 +66,24 @@
 
 /* Enhanced submenu active item styling */
 .submenu-item.router-link-active {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #e0f2fe;
   color: #0369a1;
   font-weight: 500;
   border-radius: 6px;
   position: relative;
+  border-left: 3px solid #3b82f6;
+  margin-left: -3px;
+  padding-left: 8px;
 }
 
-.submenu-item.router-link-active::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: #0369a1;
-  border-radius: 50%;
-  animation: pulse-dot 2s ease-in-out infinite;
+.submenu-item.router-link-active .lucide,
+.submenu-item.router-link-active svg,
+.submenu-item.router-link-active lucide-angular {
+  color: #0369a1 !important;
 }
 
 .submenu-item.router-link-active:hover {
-  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  background: #bae6fd;
   transform: translateX(2px);
 }
 
@@ -107,11 +96,19 @@
   transform: rotate(180deg);
 }
 
-/* Staggered animation for submenu items */
-.submenu-item-1 { animation: fadeInSlide 0.3s ease-out 0.1s both; }
-.submenu-item-2 { animation: fadeInSlide 0.3s ease-out 0.15s both; }
-.submenu-item-3 { animation: fadeInSlide 0.3s ease-out 0.2s both; }
-.submenu-item-4 { animation: fadeInSlide 0.3s ease-out 0.25s both; }
+/* Staggered animation for submenu items using Tailwind classes */
+.submenu-item-1 { 
+  animation: fadeInSlide 0.3s ease-out 0.1s both; 
+}
+.submenu-item-2 { 
+  animation: fadeInSlide 0.3s ease-out 0.15s both; 
+}
+.submenu-item-3 { 
+  animation: fadeInSlide 0.3s ease-out 0.2s both; 
+}
+.submenu-item-4 { 
+  animation: fadeInSlide 0.3s ease-out 0.25s both; 
+}
 
 @keyframes fadeInSlide {
   from {
@@ -151,12 +148,16 @@
 
 /* Parent menu active when child is active */
 .menu-item.has-active-child {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #f1f5f9;
   color: #334155;
   border-radius: 8px;
+  border-left: 2px solid #cbd5e1;
+  margin-left: -2px;
+  padding-left: 9px;
 }
 
 .menu-item.has-active-child .lucide,
-.menu-item.has-active-child svg {
+.menu-item.has-active-child svg,
+.menu-item.has-active-child lucide-angular {
   color: #475569 !important;
 }

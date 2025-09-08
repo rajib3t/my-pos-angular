@@ -39,27 +39,110 @@
         <nav class="space-y-2">
           <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Main Menu</h3>
 
-          <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active"   (click)="closeMobileMenu()" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors group">
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z"></path>
-            </svg>
+          <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active" (click)="closeMobileMenu()" class="menu-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors group">
+            <lucide-angular [img]="DashboardIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                  
             <span>Dashboard</span>
           </a>
 
-          <a href="#" (click)="closeMobileMenu()" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors group">
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-            </svg>
-            <span>Tenants</span>
-          </a>
+          <!-- Tenants Menu with Submenu -->
+          <div class="space-y-1">
+            <button 
+              (click)="toggleSubmenu('tenants'); closeMobileMenu()" 
+              [class]="getParentMenuClasses('tenants')"
+              type="button">
+              <div class="flex items-center space-x-3">
+                <lucide-angular [img]="TenantIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>Tenants</span>
+              </div>
+              <lucide-angular [class.chevron-rotated]="isSubmenuOpen('tenants')" [img]="ChevronDown" [strokeWidth]="1" class="w-4 h-4 my-icon mr-1 transition-transform duration-200 "></lucide-angular>
+            
+            </button>
+            
+            <!-- Tenants Submenu -->
+            <div 
+              class="ml-6 space-y-1 overflow-hidden transition-all duration-300 ease-in-out"
+              [class.max-h-0]="!isSubmenuOpen('tenants')"
+              [class.max-h-48]="isSubmenuOpen('tenants')"
+              [class.opacity-0]="!isSubmenuOpen('tenants')"
+              [class.opacity-100]="isSubmenuOpen('tenants')">
+              <a 
+                [routerLink]="['/tenants']" 
+                [class.router-link-active]="isRouteActive('/tenants')"
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-1 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <lucide-angular [img]="ListIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>List Tenants</span>
+              </a>
+              <a 
+                [routerLink]="['/tenants/create']" 
+                [class.router-link-active]="isRouteActive('/tenants/create')"
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-2 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <lucide-angular [img]="PlusIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>Create Tenant</span>
+              </a>
+            </div>
+          </div>
 
-          <a href="#" (click)="closeMobileMenu()" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors group">
-            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-            </svg>
-            <span>Orders</span>
-          </a>
+          <!-- Orders Menu with Submenu -->
+          <div class="space-y-1">
+            <button 
+              (click)="toggleSubmenu('orders'); closeMobileMenu()" 
+              [class]="getParentMenuClasses('orders')"
+              type="button">
+              <div class="flex items-center space-x-3">
+                <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <span>Orders</span>
+              </div>
+              <svg 
+                class="w-4 h-4 text-gray-400 transition-transform duration-200 chevron-icon"
+                [class.chevron-rotated]="isSubmenuOpen('orders')"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            <!-- Orders Submenu -->
+            <div 
+              class="ml-6 space-y-1 overflow-hidden transition-all duration-300 ease-in-out"
+              [class.max-h-0]="!isSubmenuOpen('orders')"
+              [class.max-h-48]="isSubmenuOpen('orders')"
+              [class.opacity-0]="!isSubmenuOpen('orders')"
+              [class.opacity-100]="isSubmenuOpen('orders')">
+              <a 
+                href="#" 
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-1 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <span>All Orders</span>
+              </a>
+              <a 
+                href="#" 
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-2 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Pending Orders</span>
+              </a>
+              <a 
+                href="#" 
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-3 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Completed Orders</span>
+              </a>
+            </div>
+          </div>
 
           <a href="#" (click)="closeMobileMenu()" class="flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors group">
             <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

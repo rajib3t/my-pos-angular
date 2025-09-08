@@ -4,7 +4,7 @@ import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
 import { Root } from 'postcss';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { LucideAngularModule, Album, Network} from 'lucide-angular';
+import { LucideAngularModule, Album, Network , ChevronDown, Plus, List} from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-sidebar',
@@ -15,12 +15,20 @@ import { filter } from 'rxjs/operators';
 export class Sidebar implements OnInit, OnDestroy {
   readonly DashboardIcon = Album;
   readonly TenantIcon = Network;
+  readonly ChevronDown =ChevronDown;
+  readonly PlusIcon = Plus;
+  readonly ListIcon = List;
   private uiSubscription!: Subscription;
   private routerSubscription!: Subscription;
 
   isMobileMenuOpen = false;
-  isTenantsSubmenuOpen = false;
-  isOrdersSubmenuOpen = false;
+  submenuStates: { [key: string]: boolean } = {
+    tenants: false,
+    orders: false,
+    customers: false,
+    reports: false,
+    settings: false
+  };
   currentRoute = '';
 
     constructor(private uiService: UiService, private router: Router) { }
@@ -57,54 +65,59 @@ export class Sidebar implements OnInit, OnDestroy {
       this.isMobileMenuOpen = false;
     }
 
-    toggleTenantsSubmenu() {
-      this.isTenantsSubmenuOpen = !this.isTenantsSubmenuOpen;
-      // Close other submenus when opening this one
-      if (this.isTenantsSubmenuOpen) {
-        this.isOrdersSubmenuOpen = false;
-      }
+    toggleSubmenu(menuKey: string) {
+      // Close all other submenus first
+      Object.keys(this.submenuStates).forEach(key => {
+        if (key !== menuKey) {
+          this.submenuStates[key] = false;
+        }
+      });
+      
+      // Toggle the selected submenu
+      this.submenuStates[menuKey] = !this.submenuStates[menuKey];
     }
 
-    toggleOrdersSubmenu() {
-      this.isOrdersSubmenuOpen = !this.isOrdersSubmenuOpen;
-      // Close other submenus when opening this one
-      if (this.isOrdersSubmenuOpen) {
-        this.isTenantsSubmenuOpen = false;
-      }
+    isSubmenuOpen(menuKey: string): boolean {
+      return this.submenuStates[menuKey] || false;
     }
 
-    // Animation state getters
-    getSubmenuState(isOpen: boolean): string {
-        return isOpen ? 'open' : 'closed';
-    }
 
     // Update submenu state based on current route
     updateSubmenuState() {
-        // Auto-open tenants submenu if on tenants route
+        // Close all submenus first
+        Object.keys(this.submenuStates).forEach(key => {
+            this.submenuStates[key] = false;
+        });
+
+        // Auto-open appropriate submenu based on route
         if (this.currentRoute.includes('/tenants')) {
-            this.isTenantsSubmenuOpen = true;
-            this.isOrdersSubmenuOpen = false;
-        } 
-        // Auto-open orders submenu if on orders route
-        else if (this.currentRoute.includes('/orders')) {
-            this.isOrdersSubmenuOpen = true;
-            this.isTenantsSubmenuOpen = false;
-        }
-        // Close all submenus for other routes
-        else {
-            this.isTenantsSubmenuOpen = false;
-            this.isOrdersSubmenuOpen = false;
+            this.submenuStates['tenants'] = true;
+        } else if (this.currentRoute.includes('/orders')) {
+            this.submenuStates['orders'] = true;
+        } else if (this.currentRoute.includes('/customers')) {
+            this.submenuStates['customers'] = true;
+        } else if (this.currentRoute.includes('/reports')) {
+            this.submenuStates['reports'] = true;
+        } else if (this.currentRoute.includes('/settings')) {
+            this.submenuStates['settings'] = true;
         }
     }
 
-    // Check if tenants menu should be highlighted (parent active state)
-    isTenantsParentActive(): boolean {
-        return this.currentRoute.includes('/tenants');
+    // Check if a specific route is active (for submenu items)
+    isRouteActive(route: string): boolean {
+        return this.currentRoute === route;
     }
 
-    // Check if orders menu should be highlighted (parent active state)
-    isOrdersParentActive(): boolean {
-        return this.currentRoute.includes('/orders');
+    // Check if a parent menu should be highlighted (parent active state)
+    isParentActive(menuKey: string): boolean {
+        const routeMap: { [key: string]: string } = {
+            tenants: '/tenants',
+            orders: '/orders',
+            customers: '/customers',
+            reports: '/reports',
+            settings: '/settings'
+        };
+        return this.currentRoute.includes(routeMap[menuKey] || '');
     }
 
     // Get CSS classes for parent menu items
@@ -112,9 +125,7 @@ export class Sidebar implements OnInit, OnDestroy {
         const baseClasses = 'menu-item flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group w-full';
         
         let activeClass = '';
-        if (menuType === 'tenants' && this.isTenantsParentActive()) {
-            activeClass = ' has-active-child';
-        } else if (menuType === 'orders' && this.isOrdersParentActive()) {
+        if (this.isParentActive(menuType)) {
             activeClass = ' has-active-child';
         }
         
