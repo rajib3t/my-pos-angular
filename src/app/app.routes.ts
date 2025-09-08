@@ -6,6 +6,8 @@ import { LoginGuard } from './login.guard';
 import { Dashboard } from './pages/main/dashboard/dashboard';
 import { Profile } from './pages/main/profile/profile';
 import { Password } from './pages/main/profile/password/password';
+import { TenantList } from './pages/main/tenant/list/list';
+import { CreateTenant } from './pages/main/tenant/create/create'
 export const routes: Routes = [
 
     {
@@ -29,6 +31,14 @@ export const routes: Routes = [
             {
                 path: 'password',
                 component: Password
+            },
+            {
+                path: 'tenants',
+                component: TenantList
+            },
+            {
+                path: 'tenants/create',
+                component: CreateTenant
             }
         ]
     },

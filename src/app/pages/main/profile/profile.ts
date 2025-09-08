@@ -25,6 +25,8 @@ export class Profile implements OnInit {
   isSubmitting = false;
   errorMessage = '';
   successMessage = '';
+  isChangingInfo = false;
+  isLoading = true;
 
   // Store original values to compare against
   private originalValues: Record<string, any> = {};
@@ -67,11 +69,16 @@ export class Profile implements OnInit {
 
           // Populate form with user data when available
           this.profileForm.patchValue(this.originalValues);
+          
+          // Setup form change detection after initial values are set
+          this.setupFormChangeDetection();
         }
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching user profile:', error);
         this.errorMessage = 'Error loading profile data.';
+        this.isLoading = false;
       }
     });
 
@@ -82,6 +89,39 @@ export class Profile implements OnInit {
   private normalizeValue(value: any): string {
     return value === null || value === undefined ? '' : String(value).trim();
   }
+
+  private setupFormChangeDetection(): void {
+    // Listen to form value changes
+    this.profileForm.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.checkForChanges();
+    });
+  }
+
+  private checkForChanges(): void {
+    if (!this.originalValues || Object.keys(this.originalValues).length === 0) {
+      this.isChangingInfo = false;
+      return;
+    }
+
+    const currentValues = this.profileForm.value;
+    let hasChanges = false;
+
+    // Compare current values with original values using normalized strings
+    Object.keys(currentValues).forEach(key => {
+      const currentValue = this.normalizeValue(currentValues[key]);
+      const originalValue = this.normalizeValue(this.originalValues[key]);
+
+      if (currentValue !== originalValue) {
+        hasChanges = true;
+      }
+    });
+
+    this.isChangingInfo = hasChanges;
+  }
+
+  
 
   onSubmit(): void {
     this.isSubmitting = true;
@@ -105,6 +145,7 @@ export class Profile implements OnInit {
       
 
       if (currentValue !== originalValue) {
+        
         changedFields[key] = currentValues[key];
       }
     });
@@ -137,6 +178,7 @@ export class Profile implements OnInit {
         this.profileForm.patchValue(this.originalValues);
         this.successMessage = updatedProfile ? 'Profile updated successfully.' : 'No changes were made.';
         this.isSubmitting = false;
+        this.isChangingInfo = false; // Reset the change flag after successful update
         timer(3000).pipe(
           takeUntilDestroyed(this.destroyRef)
         ).subscribe(() => {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
 export interface User {
-  id: string;
+  id?: string;
   email: string;
   name: string;
   // Add other user properties as needed

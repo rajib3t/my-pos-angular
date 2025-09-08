@@ -72,7 +72,21 @@ export class Password implements OnInit {
         },
         error: (error) => {
           this.isSubmitting = false;
-          this.errorMessage = 'An error occurred while changing the password.';
+          console.log('Password change error:', error);
+          
+          // Extract the actual error message from the nested error structure
+          let errorMessage = 'An error occurred while changing the password.';
+          
+          // Try different possible error message locations
+          if (error?.error?.error?.message) {
+            errorMessage = error.error.error.message;
+          } else if (error?.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error?.message) {
+            errorMessage = error.message;
+          }
+          
+          this.errorMessage = errorMessage;
 
          
           timer(3000).pipe(

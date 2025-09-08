@@ -22,7 +22,8 @@ const getErrorMessage = (error: any): string => {
     return 'Resource not found.';
   } else if (error.status === 403) {
     return 'Access denied.';
-  } else if (error.status === 400) {
+  } else if (error.status === 400 || error.status === 406) {
+    // For client errors, preserve the server message
     return error.error?.message || 'Bad request.';
   } else {
     return error.error?.message || 'An error occurred. Please try again.';
@@ -84,6 +85,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     catchError(error => {
       console.log("AuthInterceptor: Request failed with status:", error.status);
       
+      // Only handle 401 errors for token refresh, let other errors pass through
       if (error.status === 401 && isProtected) {
         console.log("AuthInterceptor: 401 error on protected request, attempting token refresh");
         
@@ -170,7 +172,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
         );
       }
       
-      // Handle other types of errors (network, timeout, etc.)
+      // For non-401 errors, preserve the original error structure and message
       const standardizedError = {
         status: error.status || 0,
         error: {

@@ -14,6 +14,13 @@
       <!-- Content Area -->
       <main class="p-6">
         <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+          <!-- Loading Indicator -->
+          @if(isLoading) {
+            <div class="flex justify-center items-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+              <span class="ml-3 text-primary-600">Loading profile data...</span>
+            </div>
+          } @else {
           <!-- Error Message -->
            @if(errorMessage) {
                  <div class="mb-4 p-3 bg-warning-100 border border-warning-400 text-warning-700 rounded-lg">
@@ -26,7 +33,7 @@
                 {{ successMessage }}
               </div>
           }
-          <form class="space-y-6"  [formGroup]="profileForm" (ngSubmit)="onSubmit()"  >
+          <form class="space-y-6" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
             <!-- Two Column Grid Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
@@ -184,17 +191,20 @@
 
             <div class="flex justify-start">
               <button
+                [disabled]="isLoading || !isChangingInfo || isSubmitting"
                 type="submit"
-                class="px-6 py-2 bg-pos-card text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                class="px-6 py-2 bg-pos-card text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                @if(!isSubmitting) {
-                 <span class=" text-white">✓ Update</span>
-                }
-                @if(isSubmitting) {
+                @if(isLoading) {
+                  <span class="text-gray-300">Loading...</span>
+                } @else if(isSubmitting) {
                   <span class="text-gray-600">Updating...</span>
+                } @else {
+                  <span class="text-white">✓ Update</span>
                 }
               </button>
             </div>
           </form>
+          }
         </div>
       </main>
