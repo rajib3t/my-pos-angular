@@ -8,6 +8,7 @@ import { Profile } from './pages/main/profile/profile';
 import { Password } from './pages/main/profile/password/password';
 import { TenantList } from './pages/main/tenant/list/list';
 import { CreateTenant } from './pages/main/tenant/create/create'
+import { TenantSetting } from './pages/main/tenants/setting/setting';
 export const routes: Routes = [
 
     {
@@ -39,6 +40,10 @@ export const routes: Routes = [
             {
                 path: 'tenants/create',
                 component: CreateTenant
+            },
+            {
+                path: 'tenants/settings',
+                component: TenantSetting
             }
         ]
     },

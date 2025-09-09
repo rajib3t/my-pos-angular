@@ -92,6 +92,14 @@
                   Password Settings
                 </a>
 
+                @if(isSubdomain){
+                  <a [routerLink]="['/tenants/settings']" routerLinkActive="router-link-active" (click)="closeUserMenu()" 
+                     class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                     <lucide-angular [img]="SettingsIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                    Tenant Settings
+                  </a>
+                }
+
                 
               </div>
 

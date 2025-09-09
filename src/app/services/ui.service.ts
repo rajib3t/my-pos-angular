@@ -25,4 +25,25 @@ export class UiService {
     // Logic to get the current state of mobile menu
     return this.isMobileMenuOpen.value || false;
   }
+
+
+  getDomain() : string {
+    return 'lead.mypos.test';
+    return window.location.hostname;
+  }
+
+  getSubDomain() : string {
+    const hostParts = this.getDomain().split('.');
+    if (hostParts.length > 2) {
+      return hostParts[0]; // Return the subdomain part
+    }
+    return ''; // No subdomain
+  }
+
+  isSubDomain() : boolean {
+    const hostParts = this.getDomain().split('.');
+    return hostParts.length > 2;
+  }
+
+  
 }

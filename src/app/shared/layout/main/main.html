@@ -4,7 +4,12 @@
 
   <div class="flex">
     <!-- Mobile menu overlay -->
-    <app-sidebar></app-sidebar>
+     @if(isTenantMode){
+      <app-tenant-sidebar></app-tenant-sidebar>
+     }@else{
+      <app-sidebar></app-sidebar>
+     }
+    
 
     <!-- Main Content Area -->
     <div class="flex-1 lg:ml-0">

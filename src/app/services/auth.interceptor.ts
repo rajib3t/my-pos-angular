@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-
+import { UiService } from './ui.service';
 const jwtHelper = new JwtHelperService();
 
 // Helper function to get appropriate error message
@@ -35,19 +35,35 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   
   // Inject HttpClient directly to avoid circular dependency with ApiService
   const http = inject(HttpClient);
-  
+  const uiService = inject(UiService);
   // Don't modify headers for authentication endpoints
   if (req.url.includes('auth/login') || req.url.includes('auth/refresh')) {
     console.log('AuthInterceptor: Skipping auth endpoints');
-    return next(req);
+    let headers = req.headers
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .set('X-Client-URL', uiService.getDomain());
+    
+
+    if (uiService.isSubDomain()) {
+      headers = headers.set('X-tenant-subdomain', uiService.getSubDomain());
+    }
+    const modifiedReq = req.clone({ headers });
+    return next(modifiedReq);
   }
+
+  
 
   // Always set basic headers for all requests
   let headers = req.headers
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
-    .set('X-Client-URL', window.location.origin);
+    .set('X-Client-URL', uiService.getDomain());
+    
 
+    if (uiService.isSubDomain()) {
+      headers = headers.set('X-tenant-subdomain', uiService.getSubDomain());
+    }
   // Determine if this is a protected request
   const isProtected = req.headers.has('X-Is-Protected') || 
                      req.url.includes('/protected') || 
@@ -108,11 +124,18 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
         
         // Make direct HTTP call to refresh endpoint to avoid circular dependency
         const refreshUrl = `${environment.apiUrl}/auth/refresh`;
-       
-        const refreshHeaders = {
+
+        let refreshHeaders: { [key: string]: string } = {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         };
+       if( uiService.isSubDomain()) {
+        refreshHeaders = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-tenant-subdomain': uiService.getSubDomain() as string,
+        };
+       }
 
         const refreshOptions = {
           headers: refreshHeaders,

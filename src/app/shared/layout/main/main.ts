@@ -1,13 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { RouterOutlet } from '@angular/router';
+import { UiService } from '../../../services/ui.service';
+import { Subscription } from 'rxjs';
+import { TenantSidebar } from '../tenant-sidebar/tenant-sidebar';
 @Component({
   selector: 'app-main',
-  imports: [Header, Sidebar, RouterOutlet],
+  imports: [Header, Sidebar, RouterOutlet, TenantSidebar],
   templateUrl: './main.html',
   styleUrl: './main.css'
 })
-export class MainLayout {
+export class MainLayout  implements OnInit {
+  public isTenantMode = false;
+  private uiSubscription!: Subscription;
+  constructor(
+    private uiService: UiService
+  ) {
+    // Initialization logic can go here
+  }
+
+  ngOnInit() {
+    this.isTenantMode = this.uiService.isSubDomain();
+   
+  }
+
 
 }

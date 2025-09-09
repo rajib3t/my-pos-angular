@@ -6,7 +6,7 @@ import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound} from 'lucide-angular';
+import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound , Settings} from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +19,8 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound} from 'luc
     readonly Menu = Menu;
     readonly LogOut = LogOut;
     readonly KeyRound = KeyRound;
+    readonly SettingsIcon = Settings;
+    isSubdomain = false;
   authUser: User | null = null;
    private userSubscription!: Subscription;
   @ViewChild('userMenuButton', { static: false }) userMenuButton!: ElementRef;
@@ -33,6 +35,7 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound} from 'luc
      
       this.authUser = data;
     });
+    this.isSubdomain = this.uiService.isSubDomain();
   }
 
   ngOnDestroy() {
