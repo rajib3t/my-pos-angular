@@ -4,7 +4,7 @@ import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
 import { Root } from 'postcss';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { LucideAngularModule, Album, Network , ChevronDown, Plus, List} from 'lucide-angular';
+import { LucideAngularModule, Album, Network , ChevronDown, Plus, List, ShoppingBasket, LayoutGrid} from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -19,13 +19,15 @@ export class TenantSidebar {
   readonly ChevronDown =ChevronDown;
   readonly PlusIcon = Plus;
   readonly ListIcon = List;
+  readonly CategoryIcon = LayoutGrid;
+  readonly ShoppingBasketIcon = ShoppingBasket;
   private uiSubscription!: Subscription;
   private routerSubscription!: Subscription;
 
   isMobileMenuOpen = false;
   submenuStates: { [key: string]: boolean } = {
-    orders: false,
-    customers: false,
+    "material-item": false,
+    "material-category": false,
   };
   currentRoute = '';
 
@@ -88,10 +90,10 @@ export class TenantSidebar {
         });
 
         // Auto-open appropriate submenu based on route
-        if (this.currentRoute.includes('/tenants')) {
-            this.submenuStates['tenants'] = true;
-        } else if (this.currentRoute.includes('/orders')) {
-            this.submenuStates['orders'] = true;
+        if (this.currentRoute.includes('/material-category-create')) {
+            this.submenuStates['material-category'] = true;
+        } else if (this.currentRoute.includes('/material-categories')) {
+            this.submenuStates['material-category'] = true;
         } else if (this.currentRoute.includes('/customers')) {
             this.submenuStates['customers'] = true;
         } else if (this.currentRoute.includes('/reports')) {

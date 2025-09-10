@@ -48,6 +48,64 @@
          
 
         </nav>
+         <!-- Navigation -->
+        <nav class="space-y-2">
+          <h3 class="text-xs mt-2 font-semibold text-gray-500 uppercase tracking-wider mb-4">Materials</h3>
+
+          <div class="space-y-1">
+          <button 
+              (click)="toggleSubmenu('material-category'); closeMobileMenu()" 
+              [class]="getParentMenuClasses('material-category')"
+              type="button">
+              <div class="flex items-center space-x-3">
+                <lucide-angular [img]="CategoryIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>Categories</span>
+              </div>
+              <lucide-angular [class.chevron-rotated]="isSubmenuOpen('material-category')" [img]="ChevronDown" [strokeWidth]="1" class="w-4 h-4 my-icon mr-1 transition-transform duration-200 "></lucide-angular>
+            
+            </button>
+            <div 
+              class="ml-6 space-y-1 overflow-hidden transition-all duration-300 ease-in-out"
+              [class.max-h-0]="!isSubmenuOpen('material-category')"
+              [class.max-h-48]="isSubmenuOpen('material-category')"
+              [class.opacity-0]="!isSubmenuOpen('material-category')"
+              [class.opacity-100]="isSubmenuOpen('material-category')">
+              <a 
+                [routerLink]="['/material-categories']" 
+                [class.router-link-active]="isRouteActive('/material-categories')"
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-1 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <lucide-angular [img]="ListIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>List</span>
+              </a>
+              <a 
+                [routerLink]="['/material-category-create']" 
+                [class.router-link-active]="isRouteActive('/material-category-create')"
+                (click)="closeMobileMenu()" 
+                class="submenu-item submenu-item-2 flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <lucide-angular [img]="PlusIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>Create</span>
+              </a>
+            </div>
+         </div>
+
+         <div class="space-y-1">
+          <button 
+              (click)="toggleSubmenu('material-item'); closeMobileMenu()" 
+              [class]="getParentMenuClasses('material-item')"
+              type="button">
+              <div class="flex items-center space-x-3">
+                <lucide-angular [img]="ShoppingBasketIcon" [strokeWidth]="1" class="my-icon mr-1"></lucide-angular>
+                <span>Items</span>
+              </div>
+              <lucide-angular [class.chevron-rotated]="isSubmenuOpen('material-item')" [img]="ChevronDown" [strokeWidth]="1" class="w-4 h-4 my-icon mr-1 transition-transform duration-200 "></lucide-angular>
+            
+            </button>
+         </div>
+
+         
+
+        </nav>
 
         <!-- Quick Actions -->
         <div class="mt-8 pt-6 border-t border-gray-200">
