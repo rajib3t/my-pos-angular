@@ -51,18 +51,7 @@
   transform: scaleY(0);
 }
 
-.menu-item.router-link-active::after {
-  content: '';
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  border-radius: 50%;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
+/* Removed white dot from active menu items */
 
 .menu-item.router-link-active .lucide,
 .menu-item.router-link-active svg,
@@ -106,18 +95,7 @@
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3), 0 1px 3px rgba(99, 102, 241, 0.2);
 }
 
-.submenu-item.router-link-active::after {
-  content: '';
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background: #ffffff;
-  border-radius: 50%;
-  opacity: 0.8;
-}
+/* Removed white dot from active submenu items */
 
 .submenu-item.router-link-active .lucide,
 .submenu-item.router-link-active svg,
@@ -203,18 +181,7 @@
   backdrop-filter: blur(4px);
 }
 
-.menu-item.has-active-child::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 3px;
-  background: #3b82f6;
-  border-radius: 50%;
-  animation: pulse-dot 2s ease-in-out infinite alternate;
-}
+/* Removed blue dot from parent menu items with active children */
 
 .menu-item.has-active-child .lucide,
 .menu-item.has-active-child svg,
