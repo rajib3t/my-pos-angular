@@ -3,7 +3,7 @@ import { TenantSettingResponse, TenantService } from '../../../../services/tenan
 import { UiService } from '../../../../services/ui.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { uppercaseValidator } from  '../../../../validators/uppercase.validator'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
 @Component({
@@ -32,6 +32,7 @@ export class TenantSetting implements OnInit {
   ) {
     this.settingForm = this.fb.group({
     shopName: ['', Validators.required],
+    code: ["", [Validators.required, uppercaseValidator()] ],
     address: [''],
     address2: [''],
     city: [''],
@@ -60,6 +61,7 @@ export class TenantSetting implements OnInit {
           this.tenant = tenant;
           this.settingForm.patchValue({
             shopName: tenant.shopName || '',
+            code: tenant?.code || "",
             address: tenant.address1 || '',
             address2: tenant.address2 || '',
             city: tenant.city || '',
@@ -92,6 +94,12 @@ export class TenantSetting implements OnInit {
   }
 
   onSubmit(): void {
+
+    if(this.settingForm.invalid) {
+      console.error('Validation error');
+      this.isSubmitting = false;
+      return;
+    }
     const subdomain = this.uiService.getSubDomain();
     if (!subdomain) {
       console.error('No subdomain found in the URL.');

@@ -10,6 +10,7 @@ export interface TenantSettingResponse {
   id?: string;
   name: string;
   shopName?: string;
+  code?: string
   address1?: string;
   address2?: string;
   city?: string;

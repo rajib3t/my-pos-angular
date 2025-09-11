@@ -124,6 +124,16 @@ export class Profile implements OnInit {
   
 
   onSubmit(): void {
+
+    if(this.profileForm.invalid){
+      this.errorMessage = 'Validation error';
+      timer(3000).pipe(
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe(() => {
+        this.errorMessage = '';
+      });
+      return;
+    }
     this.isSubmitting = true;
     this.errorMessage = '';
 
