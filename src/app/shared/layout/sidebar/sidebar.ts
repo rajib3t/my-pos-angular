@@ -122,15 +122,13 @@ export class Sidebar implements OnInit, OnDestroy {
 
     // Get CSS classes for parent menu items
     getParentMenuClasses(menuType: string): string {
-        const baseClasses = 'menu-item flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group w-full';
+        const baseClasses = 'modern-menu-item modern-parent-menu w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 group';
         
         let activeClass = '';
         if (this.isParentActive(menuType)) {
             activeClass = ' has-active-child';
         }
         
-        const hoverClasses = ' text-gray-700 hover:bg-blue-50 hover:text-blue-700';
-        
-        return baseClasses + activeClass + hoverClasses;
+        return baseClasses + activeClass;
     }
 }
