@@ -6,7 +6,7 @@ import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound , Settings} from 'lucide-angular';
+import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings, Bell, Plus, BarChart3, ChevronRight} from 'lucide-angular';
 
 @Component({
   selector: 'app-header',
@@ -20,6 +20,10 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut,KeyRound , Settings
     readonly LogOut = LogOut;
     readonly KeyRound = KeyRound;
     readonly SettingsIcon = Settings;
+    readonly BellIcon = Bell;
+    readonly PlusIcon = Plus;
+    readonly BarChartIcon = BarChart3;
+    readonly ChevronRightIcon = ChevronRight;
     isSubdomain = false;
   authUser: User | null = null;
    private userSubscription!: Subscription;
