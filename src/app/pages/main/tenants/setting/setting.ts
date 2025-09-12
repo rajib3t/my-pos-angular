@@ -32,7 +32,7 @@ export class TenantSetting implements OnInit {
   ) {
     this.settingForm = this.fb.group({
     shopName: ['', Validators.required],
-    code: ["", [Validators.required], uppercaseValidator()] ,
+    code: ["", [Validators.required, uppercaseValidator()]] ,
     address: [''],
     address2: [''],
     city: [''],
