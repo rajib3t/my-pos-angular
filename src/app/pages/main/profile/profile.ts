@@ -40,11 +40,11 @@ export class Profile implements OnInit {
     this.profileForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', [Validators.required]],
-      mobile: ['', [Validators.required]],
-      address: [''],
-      city: [''],
-      state: [''],
-      postalCode: ['', [Validators.required]],
+      mobile: [''],  // Optional field
+      address: [''], // Optional field
+      city: [''],    // Optional field
+      state: [''],   // Optional field
+      postalCode: [''], // Optional field
     });
   }
 
@@ -62,9 +62,9 @@ export class Profile implements OnInit {
             mobile: user.mobile || '',
             // If your backend stores address as an object, convert to the text fields we use in the form:
             address: user.address?.street || '',
-            city: user.address?.city ?? '',
-            state: user.address?.state ?? '',
-            postalCode: user.address?.zip ?? '',
+            city: user.address?.city || '',
+            state: user.address?.state || '',
+            postalCode: user.address?.zip || '',
           };
 
           // Populate form with user data when available

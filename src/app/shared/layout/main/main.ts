@@ -27,7 +27,7 @@ export class MainLayout  implements OnInit {
 
   getCurrentTime(): string {
     const now = new Date();
-    return now.toLocaleTimeString('en-US', { 
+    return now.toLocaleTimeString('en-IN', { 
       hour: '2-digit', 
       minute: '2-digit',
       hour12: true 
