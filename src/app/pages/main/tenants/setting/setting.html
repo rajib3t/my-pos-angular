@@ -11,366 +11,600 @@
     </div>
 </div>
  <!-- Content Area -->
-      <main class="p-6">
-        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+      <main class="p-6 bg-gray-50 min-h-screen">
+        <div class="max-w-4xl mx-auto">
           <!-- Loading Indicator -->
           @if(isLoading) {
-            <div class="flex justify-center items-center py-8">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-              <span class="ml-3 text-primary-600">Loading profile data...</span>
+            <div class="flex justify-center items-center py-12">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+              <span class="ml-4 text-primary-600 text-lg">Loading settings...</span>
             </div>
           } @else {
-          <!-- Error Message -->
-           @if(errorMessage) {
-                 <div class="mb-4 p-3 bg-warning-100 border border-warning-400 text-warning-700 rounded-lg">
-                      {{ errorMessage }}
-                  </div>
-           }
-          @if (successMessage) {
-            <!-- Success Message -->
-               <div  class="mb-4 p-3 bg-success-100 border border-success-400 text-success-900 rounded-lg">
-                {{ successMessage }}
-              </div>
+          
+          <!-- Messages -->
+          @if(errorMessage) {
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-center message-slide-in error-message">
+              <svg class="w-5 h-5 mr-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+              </svg>
+              {{ errorMessage }}
+            </div>
           }
-        }
-        <form class="space-y-6" [formGroup]="settingForm" (ngSubmit)="onSubmit()">
+          
+          @if (successMessage) {
+            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-center message-slide-in">
+              <svg class="w-5 h-5 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {{ successMessage }}
+            </div>
+          }
+
+          <form class="space-y-8" [formGroup]="settingForm" (ngSubmit)="onSubmit()">
             <!-- Shop Information Section -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Shop Name -->
-              <div class="md:col-span-2">
-                <label for="shopName" class="block text-sm font-medium text-gray-700 mb-2">Shop Name</label>
-                <input
-                  type="text"
-                  id="shopName"
-                  formControlName="shopName"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter shop name"
-                />
-                @if(settingForm.get('shopName')?.invalid && settingForm.get('shopName')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('shopName')?.hasError('required')) {
-                      <span>Shop name is required</span>
-                    }
-                    @if(settingForm.get('shopName')?.hasError('server')) {
-                      <br><span>{{ settingForm.get('shopName')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden form-section-card card-hover">
+              <div class="bg-gradient-to-r from-primary-500 to-primary-600 px-6 py-4 section-header">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                  </svg>
+                  Shop Information
+                </h3>
+                <p class="text-primary-100 text-sm mt-1">Basic details about your shop</p>
               </div>
-
-              <div class="md:col-span-2">
-                <label for="code" class="block text-sm font-medium text-gray-700 mb-2">Shop Code</label>
-                <input
-                  type="text"
-                  id="code"
-                  formControlName="code"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter shop code"
-                />
-                @if(settingForm.get('code')?.invalid && settingForm.get('code')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                      @if(settingForm.get('code')?.hasError('required')) {
-                        <span>Shop code is required</span>
-                      }
-                      @if(settingForm.get('code')?.hasError('noUppercase')) {
-                        <br><span>Must contain at least one uppercase letter</span>
-                      }
-                      @if(settingForm.get('code')?.hasError('server')) {
-                        <br><span>{{ settingForm.get('code')?.errors?.['server'] }}</span>
-                      }
-                  </div>
-                }
-              </div>
-
-              <!-- Address 1 -->
-              <div class="md:col-span-2">
-                <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Address Line 1</label>
-                <input
-                  type="text"
-                  id="address"
-                  formControlName="address"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter address line 1"
-                />
-                @if(settingForm.get('address')?.invalid && settingForm.get('address')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('address')?.hasError('server')) {
-                      <span>{{ settingForm.get('address')?.errors?.['server'] }}</span>
+              
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Shop Name -->
+                  <div class="md:col-span-2 form-group">
+                    <label for="shopName" class="block text-sm font-medium text-gray-700 mb-2">Shop Name *</label>
+                    <input
+                      type="text"
+                      id="shopName"
+                      formControlName="shopName"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter your shop name"
+                    />
+                    @if(settingForm.get('shopName')?.invalid && settingForm.get('shopName')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center error-message">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('shopName')?.hasError('required')) {
+                          <span>Shop name is required</span>
+                        }
+                        @if(settingForm.get('shopName')?.hasError('server')) {
+                          <span>{{ settingForm.get('shopName')?.errors?.['server'] }}</span>
+                        }
+                      </div>
                     }
                   </div>
-                }
-              </div>
 
-              <!-- Address 2 -->
-              <div class="md:col-span-2">
-                <label for="address2" class="block text-sm font-medium text-gray-700 mb-2">Address Line 2</label>
-                <input
-                  type="text"
-                  id="address2"
-                  formControlName="address2"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter address line 2"
-                />
-                @if(settingForm.get('address2')?.invalid && settingForm.get('address2')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('address2')?.hasError('server')) {
-                      <span>{{ settingForm.get('address2')?.errors?.['server'] }}</span>
+                  <!-- Shop Code -->
+                  <div class="md:col-span-2 form-group">
+                    <label for="code" class="block text-sm font-medium text-gray-700 mb-2">Shop Code *</label>
+                    <input
+                      type="text"
+                      id="code"
+                      formControlName="code"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter shop code (must contain uppercase)"
+                    />
+                    @if(settingForm.get('code')?.invalid && settingForm.get('code')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-start error-message">
+                        <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                          @if(settingForm.get('code')?.hasError('required')) {
+                            <div>Shop code is required</div>
+                          }
+                          @if(settingForm.get('code')?.hasError('noUppercase')) {
+                            <div>Must contain at least one uppercase letter</div>
+                          }
+                          @if(settingForm.get('code')?.hasError('server')) {
+                            <div>{{ settingForm.get('code')?.errors?.['server'] }}</div>
+                          }
+                        </div>
+                      </div>
                     }
                   </div>
-                }
-              </div>
 
-              <!-- City -->
-              <div>
-                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
-                <input
-                  type="text"
-                  id="city"
-                  formControlName="city"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter city"
-                />
-                @if(settingForm.get('city')?.invalid && settingForm.get('city')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('city')?.hasError('server')) {
-                      <span>{{ settingForm.get('city')?.errors?.['server'] }}</span>
+                  <!-- Logo URL -->
+                  <div class="md:col-span-2 form-group">
+                    <label for="logoUrl" class="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
+                    <input
+                      type="url"
+                      id="logoUrl"
+                      formControlName="logoUrl"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="https://example.com/logo.png"
+                    />
+                    @if(settingForm.get('logoUrl')?.invalid && settingForm.get('logoUrl')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center error-message">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('logoUrl')?.hasError('server')) {
+                          <span>{{ settingForm.get('logoUrl')?.errors?.['server'] }}</span>
+                        }
+                      </div>
                     }
                   </div>
-                }
-              </div>
-
-              <!-- State -->
-              <div>
-                <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
-                <input
-                  type="text"
-                  id="state"
-                  formControlName="state"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter state"
-                />
-                @if(settingForm.get('state')?.invalid && settingForm.get('state')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('state')?.hasError('server')) {
-                      <span>{{ settingForm.get('state')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Country -->
-              <div>
-                <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
-                <input
-                  type="text"
-                  id="country"
-                  formControlName="country"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter country"
-                />
-                @if(settingForm.get('country')?.invalid && settingForm.get('country')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('country')?.hasError('server')) {
-                      <span>{{ settingForm.get('country')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Zip Code -->
-              <div>
-                <label for="zipCode" class="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
-                <input
-                  type="text"
-                  id="zipCode"
-                  formControlName="zipCode"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter zip code"
-                />
-                @if(settingForm.get('zipCode')?.invalid && settingForm.get('zipCode')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('zipCode')?.hasError('server')) {
-                      <span>{{ settingForm.get('zipCode')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Currency -->
-              <div>
-                <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
-                <input
-                  type="text"
-                  id="currency"
-                  formControlName="currency"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter currency"
-                />
-                @if(settingForm.get('currency')?.invalid && settingForm.get('currency')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('currency')?.hasError('server')) {
-                      <span>{{ settingForm.get('currency')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Phone -->
-              <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  formControlName="phone"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter phone number"
-                />
-                @if(settingForm.get('phone')?.invalid && settingForm.get('phone')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('phone')?.hasError('server')) {
-                      <span>{{ settingForm.get('phone')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Email -->
-              <div class="md:col-span-2">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  formControlName="email"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter email address"
-                />
-                @if(settingForm.get('email')?.invalid && settingForm.get('email')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('email')?.hasError('email')) {
-                      <span>Please enter a valid email address.</span>
-                    }
-                    @if(settingForm.get('email')?.hasError('server')) {
-                      <br><span>{{ settingForm.get('email')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Logo URL -->
-              <div class="md:col-span-2">
-                <label for="logoUrl" class="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
-                <input
-                  type="url"
-                  id="logoUrl"
-                  formControlName="logoUrl"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter logo URL"
-                />
-                @if(settingForm.get('logoUrl')?.invalid && settingForm.get('logoUrl')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('logoUrl')?.hasError('server')) {
-                      <span>{{ settingForm.get('logoUrl')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- FASSI -->
-              <div>
-                <label for="fassi" class="block text-sm font-medium text-gray-700 mb-2">FASSI</label>
-                <input
-                  type="text"
-                  id="fassi"
-                  formControlName="fassi"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter FASSI"
-                />
-                @if(settingForm.get('fassi')?.invalid && settingForm.get('fassi')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('fassi')?.hasError('server')) {
-                      <span>{{ settingForm.get('fassi')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- GST Number -->
-              <div>
-                <label for="gstNumber" class="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
-                <input
-                  type="text"
-                  id="gstNumber"
-                  formControlName="gstNumber"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter GST number"
-                />
-                @if(settingForm.get('gstNumber')?.invalid && settingForm.get('gstNumber')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('gstNumber')?.hasError('server')) {
-                      <span>{{ settingForm.get('gstNumber')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- SGST -->
-              <div>
-                <label for="sgst" class="block text-sm font-medium text-gray-700 mb-2">SGST (%)</label>
-                <input
-                  type="number"
-                  id="sgst"
-                  formControlName="sgst"
-                  step="0.01"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter SGST percentage"
-                />
-                @if(settingForm.get('sgst')?.invalid && settingForm.get('sgst')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('sgst')?.hasError('pattern')) {
-                      <span>Please enter a valid percentage (e.g., 10.5)</span>
-                    }
-                    @if(settingForm.get('sgst')?.hasError('server')) {
-                      <br><span>{{ settingForm.get('sgst')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- CGST -->
-              <div>
-                <label for="cgst" class="block text-sm font-medium text-gray-700 mb-2">CGST (%)</label>
-                <input
-                  type="number"
-                  id="cgst"
-                  formControlName="cgst"
-                  step="0.01"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Enter CGST percentage"
-                />
-                @if(settingForm.get('cgst')?.invalid && settingForm.get('cgst')?.touched) {
-                  <div class="text-red-500 text-sm mt-1">
-                    @if(settingForm.get('cgst')?.hasError('pattern')) {
-                      <span>Please enter a valid percentage (e.g., 10.5)</span>
-                    }
-                    @if(settingForm.get('cgst')?.hasError('server')) {
-                      <br><span>{{ settingForm.get('cgst')?.errors?.['server'] }}</span>
-                    }
-                  </div>
-                }
+                </div>
               </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="flex  pt-6">
-              <button
-                type="submit"
-               [disabled]="isLoading || !isChangingInfo || isSubmitting || settingForm.invalid "
-                class="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {{ isLoading ? 'Saving...' : 'Save Settings' }}
-              </button>
+            <!-- Address Information Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  Address Information
+                </h3>
+                <p class="text-blue-100 text-sm mt-1">Location and address details</p>
+              </div>
+              
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Address 1 -->
+                  <div class="md:col-span-2">
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Address Line 1</label>
+                    <input
+                      type="text"
+                      id="address"
+                      formControlName="address"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter street address"
+                    />
+                    @if(settingForm.get('address')?.invalid && settingForm.get('address')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('address')?.hasError('server')) {
+                          <span>{{ settingForm.get('address')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Address 2 -->
+                  <div class="md:col-span-2">
+                    <label for="address2" class="block text-sm font-medium text-gray-700 mb-2">Address Line 2</label>
+                    <input
+                      type="text"
+                      id="address2"
+                      formControlName="address2"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Apartment, suite, etc. (optional)"
+                    />
+                    @if(settingForm.get('address2')?.invalid && settingForm.get('address2')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('address2')?.hasError('server')) {
+                          <span>{{ settingForm.get('address2')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- City -->
+                  <div>
+                    <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                    <input
+                      type="text"
+                      id="city"
+                      formControlName="city"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter city"
+                    />
+                    @if(settingForm.get('city')?.invalid && settingForm.get('city')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('city')?.hasError('server')) {
+                          <span>{{ settingForm.get('city')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- State -->
+                  <div>
+                    <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                    <input
+                      type="text"
+                      id="state"
+                      formControlName="state"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter state"
+                    />
+                    @if(settingForm.get('state')?.invalid && settingForm.get('state')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('state')?.hasError('server')) {
+                          <span>{{ settingForm.get('state')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Country -->
+                  <div>
+                    <label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                    <input
+                      type="text"
+                      id="country"
+                      formControlName="country"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter country"
+                    />
+                    @if(settingForm.get('country')?.invalid && settingForm.get('country')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('country')?.hasError('server')) {
+                          <span>{{ settingForm.get('country')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Zip Code -->
+                  <div>
+                    <label for="zipCode" class="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
+                    <input
+                      type="text"
+                      id="zipCode"
+                      formControlName="zipCode"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter zip code"
+                    />
+                    @if(settingForm.get('zipCode')?.invalid && settingForm.get('zipCode')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('zipCode')?.hasError('server')) {
+                          <span>{{ settingForm.get('zipCode')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
             </div>
-        </form>
+
+            <!-- Contact Information Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div class="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                  </svg>
+                  Contact Information
+                </h3>
+                <p class="text-green-100 text-sm mt-1">Contact details for communication</p>
+              </div>
+              
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Phone -->
+                  <div class="form-group">
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      formControlName="phone"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter phone number"
+                    />
+                    @if(settingForm.get('phone')?.invalid && settingForm.get('phone')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center error-message">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('phone')?.hasError('server')) {
+                          <span>{{ settingForm.get('phone')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Empty space for layout balance -->
+                  <div></div>
+
+                  <!-- Email -->
+                  <div class="md:col-span-2 form-group">
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      id="email"
+                      formControlName="email"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter email address"
+                    />
+                    @if(settingForm.get('email')?.invalid && settingForm.get('email')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-start error-message">
+                        <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                          @if(settingForm.get('email')?.hasError('email')) {
+                            <div>Please enter a valid email address</div>
+                          }
+                          @if(settingForm.get('email')?.hasError('server')) {
+                            <div>{{ settingForm.get('email')?.errors?.['server'] }}</div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Currency & Business Settings Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden form-section-card card-hover">
+              <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4 section-header">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Currency & Business Settings
+                </h3>
+                <p class="text-orange-100 text-sm mt-1">Currency and business configuration</p>
+              </div>
+              
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Currency -->
+                  <div class="form-group">
+                    <label for="currency" class="block text-sm font-medium text-gray-700 mb-2">
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        Currency
+                      </span>
+                    </label>
+                    <select
+                      id="currency"
+                      formControlName="currency"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                    >
+                      <option value="">Select Currency</option>
+                      <option value="USD">USD - US Dollar</option>
+                      <option value="EUR">EUR - Euro</option>
+                      <option value="GBP">GBP - British Pound</option>
+                      <option value="INR">INR - Indian Rupee</option>
+                      <option value="JPY">JPY - Japanese Yen</option>
+                      <option value="AUD">AUD - Australian Dollar</option>
+                      <option value="CAD">CAD - Canadian Dollar</option>
+                      <option value="CHF">CHF - Swiss Franc</option>
+                      <option value="CNY">CNY - Chinese Yuan</option>
+                      <option value="SGD">SGD - Singapore Dollar</option>
+                    </select>
+                    @if(settingForm.get('currency')?.invalid && settingForm.get('currency')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center error-message">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('currency')?.hasError('server')) {
+                          <span>{{ settingForm.get('currency')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Empty space for future business settings -->
+                  <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-400 mb-2">
+                      <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                        </svg>
+                        Additional Settings
+                      </span>
+                    </label>
+                    <div class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-400 text-center">
+                      More business settings coming soon
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Currency Display Info -->
+                <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+                  <div class="flex items-start">
+                    <svg class="w-5 h-5 text-orange-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0118 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="text-sm text-orange-800">
+                      <p class="font-medium mb-1">Currency Information</p>
+                      <p>The selected currency will be used for all pricing, invoices, and financial reports in your POS system. Make sure to select the currency that matches your business location and banking requirements.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tax Information Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                  Tax Information
+                </h3>
+                <p class="text-purple-100 text-sm mt-1">Tax registration and GST details</p>
+              </div>
+              
+              <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- FASSI -->
+                  <div>
+                    <label for="fassi" class="block text-sm font-medium text-gray-700 mb-2">FASSI</label>
+                    <input
+                      type="text"
+                      id="fassi"
+                      formControlName="fassi"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter FASSI number"
+                    />
+                    @if(settingForm.get('fassi')?.invalid && settingForm.get('fassi')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('fassi')?.hasError('server')) {
+                          <span>{{ settingForm.get('fassi')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- GST Number -->
+                  <div>
+                    <label for="gstNumber" class="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
+                    <input
+                      type="text"
+                      id="gstNumber"
+                      formControlName="gstNumber"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="Enter GST registration number"
+                    />
+                    @if(settingForm.get('gstNumber')?.invalid && settingForm.get('gstNumber')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        @if(settingForm.get('gstNumber')?.hasError('server')) {
+                          <span>{{ settingForm.get('gstNumber')?.errors?.['server'] }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- SGST -->
+                  <div>
+                    <label for="sgst" class="block text-sm font-medium text-gray-700 mb-2">SGST (%)</label>
+                    <input
+                      type="number"
+                      id="sgst"
+                      formControlName="sgst"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="0.00"
+                    />
+                    @if(settingForm.get('sgst')?.invalid && settingForm.get('sgst')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-start">
+                        <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                          @if(settingForm.get('sgst')?.hasError('pattern')) {
+                            <div>Please enter a valid percentage (e.g., 10.5)</div>
+                          }
+                          @if(settingForm.get('sgst')?.hasError('server')) {
+                            <div>{{ settingForm.get('sgst')?.errors?.['server'] }}</div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- CGST -->
+                  <div>
+                    <label for="cgst" class="block text-sm font-medium text-gray-700 mb-2">CGST (%)</label>
+                    <input
+                      type="number"
+                      id="cgst"
+                      formControlName="cgst"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white"
+                      placeholder="0.00"
+                    />
+                    @if(settingForm.get('cgst')?.invalid && settingForm.get('cgst')?.touched) {
+                      <div class="text-red-600 text-sm mt-2 flex items-start">
+                        <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                          @if(settingForm.get('cgst')?.hasError('pattern')) {
+                            <div>Please enter a valid percentage (e.g., 10.5)</div>
+                          }
+                          @if(settingForm.get('cgst')?.hasError('server')) {
+                            <div>{{ settingForm.get('cgst')?.errors?.['server'] }}</div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden form-section-card">
+              <div class="p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-lg font-semibold text-gray-900 gradient-text">Save Changes</h3>
+                    <p class="text-sm text-gray-600 mt-1">
+                      @if(isChangingInfo) {
+                        <span class="flex items-center">
+                          <div class="w-2 h-2 bg-orange-400 rounded-full mr-2 animate-pulse"></div>
+                          You have unsaved changes
+                        </span>
+                      } @else {
+                        <span class="flex items-center">
+                          <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                          All changes are saved
+                        </span>
+                      }
+                    </p>
+                  </div>
+                  <button
+                    type="submit"
+                    [disabled]="isLoading || !isChangingInfo || isSubmitting || settingForm.invalid"
+                    class="px-8 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center space-x-2 save-button focus-ring"
+                  >
+                    @if(isSubmitting) {
+                      <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Saving...</span>
+                    } @else {
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                      </svg>
+                      <span>Save Settings</span>
+                    }
+                  </button>
+                </div>
+                @if(isSubmitting) {
+                  <div class="mt-4 progress-indicator"></div>
+                }
+              </div>
+            </div>
+          </form>
+          }
         </div>
-    </main>
+      </main>
        
