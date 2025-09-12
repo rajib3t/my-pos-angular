@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 
 import { ApiService } from './services/api.service';
 import { UserService } from './services/user.service';
+import { TitleService } from './services/title.service';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +17,16 @@ export class App implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private userService: UserService
+    private userService: UserService,
+    private titleService: TitleService
   ) {}
 
   ngOnInit() {
     // Initialize authentication and fetch user data on app startup
     this.initializeApp();
+    
+    // Initialize title service (automatic title updates based on routes)
+    // The title service will handle title changes automatically
   }
 
   private initializeApp() {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthLayout } from '../../../shared/layout/auth/auth';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { ApiService } from '../../../services/api.service';
 import { ApiResponse  } from '../../../services/api-response.model';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import { TitleService } from '../../../services/title.service';
 interface LoginResponseData {
   accessToken: string;
   refreshToken: {
@@ -29,7 +30,7 @@ type LoginResponse = ApiResponse<LoginResponseData>;
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit {
   loginForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
@@ -38,12 +39,18 @@ export class Login {
      private fb: FormBuilder,
      private apiService: ApiService,
      private router: Router,
-     private userService: UserService
+     private userService: UserService,
+     private titleService: TitleService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(4)]]
     });
+  }
+
+  ngOnInit(): void {
+    // You can optionally set a custom title here
+    this.titleService.setTitle('Sign In');
   }
 
   onSubmit(): void {

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/auth/login/login';
 import { MainLayout } from './shared/layout/main/main';
-import { AuthGuard } from './auth.gaurd';
+import { AuthGuard } from './auth.gourd';
 import { LoginGuard } from './login.guard';
 import { SubdomainGuard } from './subdomain.guard';
 import { Dashboard } from './pages/main/dashboard/dashboard';
@@ -26,39 +26,47 @@ export const routes: Routes = [
             },
             {
                 path: 'dashboard',
-                component: Dashboard
+                component: Dashboard,
+                data: { title: 'Dashboard' }
             },
             {
                 path: 'profile',
-                component: Profile
+                component: Profile,
+                data: { title: 'Profile' }
             },
             {
                 path: 'password',
-                component: Password
+                component: Password,
+                data: { title: 'Change Password' }
             },
             {
                 path: 'tenants',
-                component: TenantList
+                component: TenantList,
+                data: { title: 'Tenants' }
             },
             {
                 path: 'tenants/create',
-                component: CreateTenant
+                component: CreateTenant,
+                data: { title: 'Create Tenant' }
             },
             // Subdomain protected routes
             {
                 path: 'tenants/settings',
                 component: TenantSetting,
-                canActivate: [SubdomainGuard]
+                canActivate: [SubdomainGuard],
+                data: { title: 'Tenant Settings' }
             },
             {
                 path: 'material-categories',
                 component: MaterialCategory,
-                canActivate: [SubdomainGuard]
+                canActivate: [SubdomainGuard],
+                data: { title: 'Material Categories' }
             },
             {
                 path: 'material-category-create',
                 component: MaterialCategoryCreate,
-                canActivate: [SubdomainGuard]
+                canActivate: [SubdomainGuard],
+                data: { title: 'Create Material Category' }
             },
 
         ]
@@ -66,6 +74,7 @@ export const routes: Routes = [
     {
         path: 'login',
         component: Login,
-        canActivate: [LoginGuard]
+        canActivate: [LoginGuard],
+        data: { title: 'Login' }
     }
 ];
