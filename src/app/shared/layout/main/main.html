@@ -1,19 +1,58 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-  <!-- Top Navigation Bar -->
+  <!-- Fixed Top Navigation Bar -->
+  <div class="fixed top-0 left-0 right-0 z-40">
     <app-header></app-header>
+  </div>
 
-  <div class="flex">
-    <!-- Mobile menu overlay -->
-     @if(isTenantMode){
-      <app-tenant-sidebar></app-tenant-sidebar>
-     }@else{
-      <app-sidebar></app-sidebar>
-     }
-    
+  <div class="flex pt-16 pb-12"> <!-- pt-16 for header, pb-12 for footer -->
+    <!-- Fixed Sidebar -->
+    <div class="fixed left-0 top-16 bottom-12 z-30"> <!-- bottom-12 to account for footer -->
+      @if(isTenantMode){
+        <app-tenant-sidebar></app-tenant-sidebar>
+      }@else{
+        <app-sidebar></app-sidebar>
+      }
+    </div>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 lg:ml-0">
-      <router-outlet></router-outlet>
+    <!-- Scrollable Main Content Area -->
+    <div class="flex-1 ml-0 lg:ml-64 overflow-y-auto" style="height: calc(100vh - 7rem);"> <!-- Adjusted height for header + footer -->
+      <div class="p-4">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Footer Strip -->
+  <div class="fixed bottom-0 left-0 right-0 z-35 bg-white border-t border-gray-200 shadow-lg">
+    <div class="flex items-center justify-between px-4 py-3">
+      <!-- Left side - Copyright -->
+      <div class="flex items-center space-x-4">
+        <span class="text-sm text-gray-600">
+          © 2025 MyPOS System. All rights reserved.
+        </span>
+      </div>
+
+      <!-- Center - Quick Stats or Info -->
+      <div class="hidden md:flex items-center space-x-6">
+        <div class="flex items-center space-x-2">
+          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span class="text-xs text-gray-500">System Online</span>
+        </div>
+        <div class="text-xs text-gray-500">
+          Last sync: <span class="font-medium">{{ getCurrentTime() }}</span>
+        </div>
+      </div>
+
+      <!-- Right side - Version and Links -->
+      <div class="flex items-center space-x-4">
+        <span class="text-xs text-gray-400">v1.0.0</span>
+        <button class="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+          Support
+        </button>
+        <button class="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+          Help
+        </button>
+      </div>
     </div>
   </div>
 </div>

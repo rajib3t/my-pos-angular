@@ -1,3 +1,37 @@
+/* Fixed Sidebar Styles */
+.sidebar-fixed {
+  position: fixed;
+  left: 0;
+  top: 4rem; /* Account for header height */
+  bottom: 3rem; /* Account for footer height */
+  width: 16rem; /* w-64 equivalent */
+  z-index: 30;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow-y: auto;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 1024px) {
+  .sidebar-fixed {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    height: calc(100vh - 7rem); /* Account for header + footer */
+  }
+  
+  .sidebar-fixed.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+/* Ensure sidebar is completely hidden on smaller screens */
+@media (max-width: 1023px) {
+  .sidebar-fixed:not(.mobile-open) {
+    transform: translateX(-100%) !important;
+    visibility: hidden;
+  }
+}
+
 /* Tailwind-based animations using standard CSS */
 
 /* Menu item hover effects - Enhanced */

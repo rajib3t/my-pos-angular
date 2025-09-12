@@ -1,10 +1,9 @@
 
 
-    <!-- Sidebar -->
-    <div [class]="'w-64 max-h-fit bg-white shadow-lg min-h-screen transition-transform duration-300 ease-in-out lg:translate-x-0 ' + 
-                 (isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full') + 
-                 ' fixed lg:static inset-y-0 left-0 z-50 lg:z-auto'">
-      <div class="p-6">
+    <!-- Fixed Tenant Sidebar -->
+    <div [class]="'sidebar-fixed bg-white shadow-lg transition-transform duration-300 ease-in-out lg:translate-x-0 ' + 
+                 (isMobileMenuOpen ? 'mobile-open translate-x-0' : '-translate-x-full lg:translate-x-0')">
+      <div class="p-6 h-full overflow-y-auto">
         <!-- Mobile close button -->
         <div class="flex justify-end lg:hidden mb-4">
           <button (click)="closeMobileMenu()" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
