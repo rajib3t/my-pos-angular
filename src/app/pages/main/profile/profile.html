@@ -57,7 +57,7 @@
                   >
                   @if(profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
                     <div class="text-red-500 text-sm mt-1">
-                      Name is required.
+                       {{ profileForm.get('name')?.errors?.['server'] || 'Name is required.' }}
                     </div>
                   }
                 </div>
@@ -76,7 +76,7 @@
                   >
                   @if(profileForm.get('mobile')?.invalid && profileForm.get('mobile')?.touched) {
                     <div class="text-red-500 text-sm mt-1">
-                      Please enter a valid mobile number.
+                     {{ profileForm.get('mobile')?.errors?.['server'] || 'Please enter a valid mobile number.' }}
                     </div>
                   }
                 
@@ -97,7 +97,7 @@
 
                       <div 
                           class="text-red-500 text-sm mt-1">
-                            Please enter a valid email.
+                            {{ profileForm.get('email')?.errors?.['server'] || 'Please enter a valid email address.' }}
                       </div>
                   }
                 </div>
@@ -125,7 +125,7 @@
                   @if(profileForm.get('address')?.invalid && profileForm.get('address')?.touched) {
                     <div 
                       class="text-red-500 text-sm mt-1">
-                        Please enter a valid address.
+                        {{ profileForm.get('address')?.errors?.['server'] || 'Please enter a valid address.' }}
                   </div>
                   }
                   
@@ -145,7 +145,7 @@
 
                   @if(profileForm.get('city')?.invalid && profileForm.get('city')?.touched) {
                     <div class="text-red-500 text-sm mt-1">
-                      Please enter a valid city.
+                      {{ profileForm.get('city')?.errors?.['server'] || 'Please enter a valid city.' }}
                     </div>
                   }
                 </div>
@@ -163,7 +163,7 @@
                   >
                   @if(profileForm.get('state')?.invalid && profileForm.get('state')?.touched) {
                     <div class="text-red-500 text-sm mt-1">
-                      Please enter a valid state.
+                       {{ profileForm.get('state')?.errors?.['server'] || 'Please enter a valid state.' }}
                     </div>
                   }
                 </div>
@@ -181,7 +181,7 @@
                   >
                   @if(profileForm.get('postalCode')?.invalid && profileForm.get('postalCode')?.touched) {
                     <div class="text-red-500 text-sm mt-1">
-                       Please enter a valid postal code.
+                        {{ profileForm.get('postalCode')?.errors?.['server'] || 'Please enter a valid postal code.' }}
                     </div>
                   }
                 </div>

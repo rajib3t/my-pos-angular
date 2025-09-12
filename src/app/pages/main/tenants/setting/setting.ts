@@ -1,9 +1,9 @@
 import { Component , OnInit, DestroyRef, inject} from '@angular/core';
-import { TenantSettingResponse, TenantService } from '../../../../services/tenant.service';
-import { UiService } from '../../../../services/ui.service';
+import { TenantSettingResponse, TenantService } from '@/app/services/tenant.service';
+import { UiService } from '@/app/services/ui.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { uppercaseValidator } from  '../../../../validators/uppercase.validator'
+import { uppercaseValidator } from  '@/app/validators/uppercase.validator'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
 @Component({
@@ -32,7 +32,7 @@ export class TenantSetting implements OnInit {
   ) {
     this.settingForm = this.fb.group({
     shopName: ['', Validators.required],
-    code: ["", [Validators.required, uppercaseValidator()] ],
+    code: ["", [Validators.required], uppercaseValidator()] ,
     address: [''],
     address2: [''],
     city: [''],
@@ -162,14 +162,71 @@ export class TenantSetting implements OnInit {
             });
           },
           error: (error) => {
-            console.error('Error updating profile:', error);
-            this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
             this.isSubmitting = false;
-            timer(3000).pipe(
-              takeUntilDestroyed(this.destroyRef)
-            ).subscribe(() => {
-              this.errorMessage = '';
-            });
+            if (error.error.validationErrors) {
+                const emailError = error.error.validationErrors['email'];
+                const phoneError = error.error.validationErrors['phone'];
+                const codeError = error.error.validationErrors['code'];
+                const shopNameError = error.error.validationErrors['shopName'];
+                const addressError = error.error.validationErrors['address'];
+                const cityError = error.error.validationErrors['city'];
+                const stateError = error.error.validationErrors['state'];
+                const zipCodeError = error.error.validationErrors['zipCode'];
+                const currencyError = error.error.validationErrors['currency'];
+                const gstNumberError = error.error.validationErrors['gstNumber'];
+                const sgstError = error.error.validationErrors['sgst'];
+                const cgstError = error.error.validationErrors['cgst'];
+                // Display field-specific errors in your form
+                if(emailError){
+                  this.settingForm.controls['email'].setErrors({ server: emailError });
+                }
+
+                if(phoneError){
+                  this.settingForm.controls['phone'].setErrors({ server: phoneError });
+                }
+
+                if(codeError){
+                  this.settingForm.controls['code'].setErrors({ server: codeError });
+                }
+
+                if(shopNameError){
+                  this.settingForm.controls['shopName'].setErrors({ server: shopNameError });
+                }
+                if(addressError){
+                  this.settingForm.controls['address'].setErrors({ server: addressError });
+                }
+                if(cityError){
+                  this.settingForm.controls['city'].setErrors({ server: cityError });
+                }
+                if(stateError){
+                  this.settingForm.controls['state'].setErrors({ server: stateError });
+                }
+                if(zipCodeError){
+                  this.settingForm.controls['zipCode'].setErrors({ server: zipCodeError });
+                }
+                if(currencyError){
+                  this.settingForm.controls['currency'].setErrors({ server: currencyError });
+                }
+                if(gstNumberError){
+                  this.settingForm.controls['gstNumber'].setErrors({ server: gstNumberError });
+                }
+                if(sgstError){
+                  this.settingForm.controls['sgst'].setErrors({ server: sgstError });
+                }
+                if(cgstError){
+                  this.settingForm.controls['cgst'].setErrors({ server: cgstError });
+                }
+            }else{
+              console.error('Error updating profile:', error);
+              this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
+              
+              timer(3000).pipe(
+                takeUntilDestroyed(this.destroyRef)
+              ).subscribe(() => {
+                this.errorMessage = '';
+              });
+            }
+            
           }
         });
   }

@@ -67,6 +67,37 @@ export class ApiService {
     
     // Handle raw HttpErrorResponse (fallback for non-intercepted errors)
     if (error instanceof HttpErrorResponse) {
+     
+      if(error.error.message == 'Validation failed'){
+        // Parse validation errors and create field-specific error messages
+        const validationErrors: { [key: string]: string } = {};
+        
+        if (error.error.error && Array.isArray(error.error.error)) {
+          error.error.error.forEach((errorMessage: string) => {
+            // Split by colon to get field name and error message
+            const colonIndex = errorMessage.indexOf(':');
+            if (colonIndex !== -1) {
+              const fieldName = errorMessage.substring(0, colonIndex).trim();
+              const fieldError = errorMessage.substring(colonIndex + 1).trim();
+              validationErrors[fieldName] = fieldError;
+            }
+          });
+        }
+        
+        const standardizedError = {
+          status: error.status || 0,
+          error: {
+            success: false,
+            message: 'Validation failed',
+            data: null,
+            error: 'Validation Error',
+            validationErrors: validationErrors
+          }
+        };
+        console.log('ApiService: Handling validation errors:', standardizedError);
+        return throwError(() => standardizedError);
+      }
+      
       const standardizedError = {
         status: error.status || 0,
         error: {

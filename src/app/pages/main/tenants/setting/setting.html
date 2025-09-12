@@ -51,6 +51,9 @@
                     @if(settingForm.get('shopName')?.hasError('required')) {
                       <span>Shop name is required</span>
                     }
+                    @if(settingForm.get('shopName')?.hasError('server')) {
+                      <br><span>{{ settingForm.get('shopName')?.errors?.['server'] }}</span>
+                    }
                   </div>
                 }
               </div>
@@ -72,6 +75,9 @@
                       @if(settingForm.get('code')?.hasError('noUppercase')) {
                         <br><span>Must contain at least one uppercase letter</span>
                       }
+                      @if(settingForm.get('code')?.hasError('server')) {
+                        <br><span>{{ settingForm.get('code')?.errors?.['server'] }}</span>
+                      }
                   </div>
                 }
               </div>
@@ -86,6 +92,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter address line 1"
                 />
+                @if(settingForm.get('address')?.invalid && settingForm.get('address')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('address')?.hasError('server')) {
+                      <span>{{ settingForm.get('address')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Address 2 -->
@@ -98,6 +111,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter address line 2"
                 />
+                @if(settingForm.get('address2')?.invalid && settingForm.get('address2')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('address2')?.hasError('server')) {
+                      <span>{{ settingForm.get('address2')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- City -->
@@ -110,6 +130,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter city"
                 />
+                @if(settingForm.get('city')?.invalid && settingForm.get('city')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('city')?.hasError('server')) {
+                      <span>{{ settingForm.get('city')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- State -->
@@ -122,6 +149,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter state"
                 />
+                @if(settingForm.get('state')?.invalid && settingForm.get('state')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('state')?.hasError('server')) {
+                      <span>{{ settingForm.get('state')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Country -->
@@ -134,6 +168,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter country"
                 />
+                @if(settingForm.get('country')?.invalid && settingForm.get('country')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('country')?.hasError('server')) {
+                      <span>{{ settingForm.get('country')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Zip Code -->
@@ -146,6 +187,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter zip code"
                 />
+                @if(settingForm.get('zipCode')?.invalid && settingForm.get('zipCode')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('zipCode')?.hasError('server')) {
+                      <span>{{ settingForm.get('zipCode')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Currency -->
@@ -158,6 +206,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter currency"
                 />
+                @if(settingForm.get('currency')?.invalid && settingForm.get('currency')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('currency')?.hasError('server')) {
+                      <span>{{ settingForm.get('currency')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Phone -->
@@ -170,6 +225,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter phone number"
                 />
+                @if(settingForm.get('phone')?.invalid && settingForm.get('phone')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('phone')?.hasError('server')) {
+                      <span>{{ settingForm.get('phone')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Email -->
@@ -182,6 +244,16 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter email address"
                 />
+                @if(settingForm.get('email')?.invalid && settingForm.get('email')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('email')?.hasError('email')) {
+                      <span>Please enter a valid email address.</span>
+                    }
+                    @if(settingForm.get('email')?.hasError('server')) {
+                      <br><span>{{ settingForm.get('email')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- Logo URL -->
@@ -194,6 +266,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter logo URL"
                 />
+                @if(settingForm.get('logoUrl')?.invalid && settingForm.get('logoUrl')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('logoUrl')?.hasError('server')) {
+                      <span>{{ settingForm.get('logoUrl')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- FASSI -->
@@ -206,6 +285,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter FASSI"
                 />
+                @if(settingForm.get('fassi')?.invalid && settingForm.get('fassi')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('fassi')?.hasError('server')) {
+                      <span>{{ settingForm.get('fassi')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- GST Number -->
@@ -218,6 +304,13 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter GST number"
                 />
+                @if(settingForm.get('gstNumber')?.invalid && settingForm.get('gstNumber')?.touched) {
+                  <div class="text-red-500 text-sm mt-1">
+                    @if(settingForm.get('gstNumber')?.hasError('server')) {
+                      <span>{{ settingForm.get('gstNumber')?.errors?.['server'] }}</span>
+                    }
+                  </div>
+                }
               </div>
 
               <!-- SGST -->
@@ -235,6 +328,9 @@
                   <div class="text-red-500 text-sm mt-1">
                     @if(settingForm.get('sgst')?.hasError('pattern')) {
                       <span>Please enter a valid percentage (e.g., 10.5)</span>
+                    }
+                    @if(settingForm.get('sgst')?.hasError('server')) {
+                      <br><span>{{ settingForm.get('sgst')?.errors?.['server'] }}</span>
                     }
                   </div>
                 }
@@ -255,6 +351,9 @@
                   <div class="text-red-500 text-sm mt-1">
                     @if(settingForm.get('cgst')?.hasError('pattern')) {
                       <span>Please enter a valid percentage (e.g., 10.5)</span>
+                    }
+                    @if(settingForm.get('cgst')?.hasError('server')) {
+                      <br><span>{{ settingForm.get('cgst')?.errors?.['server'] }}</span>
                     }
                   </div>
                 }

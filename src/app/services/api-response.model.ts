@@ -15,6 +15,7 @@ export interface ErrorResponse {
   message?: string;
   code?: string;
   error?: string;
+  validationErrors?: { [key: string]: string };
 }
 
 export interface ParsedCookie {

@@ -196,14 +196,53 @@ export class Profile implements OnInit {
         });
       },
       error: (error) => {
-        console.error('Error updating profile:', error);
-        this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
-        this.isSubmitting = false;
-        timer(3000).pipe(
-          takeUntilDestroyed(this.destroyRef)
-        ).subscribe(() => {
-          this.errorMessage = '';
-        });
+        if (error.error.validationErrors) {
+              const emailError = error.error.validationErrors['email'];
+              const nameError = error.error.validationErrors['name'];
+              const mobileError = error.error.validationErrors['mobile'];
+              const postalCodeError = error.error.validationErrors['postalCode'];
+              const cityError = error.error.validationErrors['city'];
+              const stateError = error.error.validationErrors['state'];
+              const addressError = error.error.validationErrors['address'];
+              
+              
+              // Display field-specific errors in your form
+              if(emailError){
+                this.profileForm.controls['email'].setErrors({ server: emailError });
+              }
+              if(nameError){
+                this.profileForm.controls['name'].setErrors({ server: nameError });
+              }
+              if(mobileError){
+                this.profileForm.controls['mobile'].setErrors({ server: mobileError });
+              }
+              if(postalCodeError){
+                this.profileForm.controls['postalCode'].setErrors({ server: postalCodeError });
+              }
+              if(cityError){
+                this.profileForm.controls['city'].setErrors({ server: cityError });
+              }
+              if(stateError){
+                this.profileForm.controls['state'].setErrors({ server: stateError });
+              }
+              if(addressError){
+                this.profileForm.controls['address'].setErrors({ server: addressError });
+              }
+
+             this.isSubmitting = false;
+              
+
+              
+            }else{
+              this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
+                this.isSubmitting = false;
+                timer(3000).pipe(
+                  takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                  this.errorMessage = '';
+                });
+            }
+       
       }
     });
    

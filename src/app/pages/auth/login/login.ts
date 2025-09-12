@@ -24,7 +24,7 @@ type LoginResponse = ApiResponse<LoginResponseData>;
     AuthLayout,
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+  
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'
@@ -42,7 +42,7 @@ export class Login {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
@@ -65,8 +65,26 @@ export class Login {
             this.isSubmitting = false;
           },
           error: (error) => {
-            this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
-            this.isSubmitting = false;
+            if (error.error.validationErrors) {
+              const emailError = error.error.validationErrors['email'];
+              const passwordError = error.error.validationErrors['password'];
+              
+              // Display field-specific errors in your form
+              if(emailError){
+                this.loginForm.controls['email'].setErrors({ server: emailError });
+              }
+
+              if(passwordError){
+                this.loginForm.controls['password'].setErrors({ server: passwordError });
+              }
+
+              
+            }else{
+              // Alternatively, set a general error message
+              this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
+              this.isSubmitting = false;
+            }
+           
           }
         });
   }
