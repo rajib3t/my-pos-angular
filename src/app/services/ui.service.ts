@@ -28,7 +28,7 @@ export class UiService {
 
 
   getDomain() : string {
-    return 'lead.mypos.test';
+    //return 'lead.mypos.test';
     return window.location.hostname;
   }
 
