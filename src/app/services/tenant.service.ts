@@ -2,7 +2,15 @@ import { Injectable } from '@angular/core';
 import {ApiService} from './api.service';
 import { Observable } from 'rxjs';
 
-interface Tenant {
+export interface PaginatedResult {
+  items: Tenant[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+export interface Tenant {
   id?: string;
   name: string;
 }
@@ -73,6 +81,22 @@ export class TenantService {
 
     return new Observable<TenantSettingResponse>((observer) => {
       this.apiService.protectedPut<{ data: TenantSettingResponse }>(`tenants/settings/${subdomain}`, settings).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+
+
+  getAllTenants(page: number = 1, limit: number = 10, filter?: { [key: string]: any }): Observable<PaginatedResult> {
+    return new Observable<PaginatedResult>((observer) => {
+      this.apiService.protectedGet<{ data: PaginatedResult }>(`tenant?page=${page}&limit=${limit}`, filter).subscribe({
         next: (response) => {
           observer.next(response.data.data);
           observer.complete();
