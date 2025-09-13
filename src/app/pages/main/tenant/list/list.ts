@@ -17,6 +17,8 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   styleUrl: './list.css'
 })
 export class TenantList implements OnInit, OnDestroy {
+  sortField: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   tenants: Tenant[] = [];
   paginationConfig: PaginationConfig = {
@@ -33,7 +35,13 @@ export class TenantList implements OnInit, OnDestroy {
 
   loadTenants() {
     this.loading = true;
-    this.tenantService.getAllTenants(this.paginationConfig.page, this.paginationConfig.limit, this.filter).subscribe({
+    // Add sort params to filter
+    const queryFilter = { ...this.filter };
+    if (this.sortField) {
+      queryFilter['sortField'] = this.sortField;
+      queryFilter['sortDirection'] = this.sortDirection;
+    }
+    this.tenantService.getAllTenants(this.paginationConfig.page, this.paginationConfig.limit, queryFilter).subscribe({
       next: (result: PaginatedResult) => {
        
         
@@ -152,5 +160,16 @@ export class TenantList implements OnInit, OnDestroy {
 
   toggleSearchFilters(): void {
     this.showSearchFilters = !this.showSearchFilters;
+  }
+
+  sortBy(field: string): void {
+    if (this.sortField === field) {
+      // Toggle direction
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.loadTenants();
   }
 }
