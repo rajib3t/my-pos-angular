@@ -1,0 +1,101 @@
+<!-- Pagination Component -->
+<div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6 p-4 bg-gray-50 rounded-lg border">
+  <!-- Results info -->
+  <div class="flex items-center text-sm text-gray-600">
+    <span>
+      Showing 
+      <span class="font-medium text-gray-900">{{ getStartItem() }}</span>
+      to 
+      <span class="font-medium text-gray-900">{{ getEndItem() }}</span>
+      of 
+      <span class="font-medium text-gray-900">{{ config.total }}</span>
+      results
+    </span>
+  </div>
+
+  <!-- Pagination controls -->
+  <div class="flex items-center gap-2">
+    <!-- Page size selector -->
+    <div *ngIf="showSizeSelector" class="flex items-center gap-2 mr-4">
+      <label class="text-sm text-gray-600">Show:</label>
+      <select 
+        (change)="onSizeChange($event)"
+        [value]="config.limit"
+        class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <option *ngFor="let size of sizeOptions" [value]="size">
+          {{ size }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Previous button -->
+    <button
+      (click)="onPageChange(config.page - 1)"
+      [disabled]="config.page <= 1"
+      class="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span class="ml-1 hidden sm:inline">Previous</span>
+    </button>
+
+    <!-- Page numbers -->
+    <div class="hidden sm:flex">
+      <!-- First page if not visible -->
+      <button
+        *ngIf="visiblePages[0] > 1"
+        (click)="onPageChange(1)"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        1
+      </button>
+      
+      <!-- Ellipsis if gap between first and visible pages -->
+      <span
+        *ngIf="visiblePages[0] > 2"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700">
+        ...
+      </span>
+
+      <!-- Visible page numbers -->
+      <button
+        *ngFor="let page of visiblePages"
+        (click)="onPageChange(page)"
+        [class]="page === config.page 
+          ? 'relative inline-flex items-center px-3 py-2 text-sm font-medium border border-blue-500 bg-blue-50 text-blue-600 z-10 transition-colors duration-200'
+          : 'relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors duration-200'">
+        {{ page }}
+      </button>
+
+      <!-- Ellipsis if gap between visible pages and last -->
+      <span
+        *ngIf="visiblePages[visiblePages.length - 1] < config.pages - 1"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700">
+        ...
+      </span>
+      
+      <!-- Last page if not visible -->
+      <button
+        *ngIf="visiblePages[visiblePages.length - 1] < config.pages"
+        (click)="onPageChange(config.pages)"
+        class="relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+        {{ config.pages }}
+      </button>
+    </div>
+
+    <!-- Mobile page info -->
+    <div class="sm:hidden flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700">
+      Page {{ config.page }} of {{ config.pages }}
+    </div>
+
+    <!-- Next button -->
+    <button
+      (click)="onPageChange(config.page + 1)"
+      [disabled]="config.page >= config.pages"
+      class="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+      <span class="mr-1 hidden sm:inline">Next</span>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+</div>

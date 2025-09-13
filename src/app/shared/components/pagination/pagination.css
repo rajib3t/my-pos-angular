@@ -1,0 +1,34 @@
+/* Pagination Component Styles - Using Tailwind CSS classes directly in HTML */
+
+/* Custom focus styles for better accessibility */
+.pagination-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for hover effects */
+.pagination-button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom styles for disabled state */
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-button:disabled:hover {
+  background-color: inherit;
+}
+
+/* Enhanced active page styling */
+.pagination-button-active {
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Select dropdown custom styling */
+select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}

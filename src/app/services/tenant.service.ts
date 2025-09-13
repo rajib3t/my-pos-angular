@@ -11,8 +11,14 @@ export interface PaginatedResult {
 }
 
 export interface Tenant {
+  _id?: string;
   id?: string;
   name: string;
+  subdomain?: string;
+  databaseName?: string;
+  databaseUser?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 export interface TenantSettingResponse {
   id?: string;
@@ -96,8 +102,19 @@ export class TenantService {
 
   getAllTenants(page: number = 1, limit: number = 10, filter?: { [key: string]: any }): Observable<PaginatedResult> {
     return new Observable<PaginatedResult>((observer) => {
-      this.apiService.protectedGet<{ data: PaginatedResult }>(`tenant?page=${page}&limit=${limit}`, filter).subscribe({
+      // Build query parameters
+      let queryParams = `page=${page}&limit=${limit}&timezone=-330`;
+      if (filter) {
+        Object.keys(filter).forEach(key => {
+          if (filter[key] !== undefined && filter[key] !== null && filter[key] !== '') {
+            queryParams += `&${key}=${encodeURIComponent(filter[key])}`;
+          }
+        });
+      }
+
+      this.apiService.protectedGet<{data: PaginatedResult}>(`tenant?${queryParams}`).subscribe({
         next: (response) => {
+          // The API returns pagination structure in response.data
           observer.next(response.data.data);
           observer.complete();
         },
