@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { uppercaseValidator } from  '@/app/validators/uppercase.validator'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormService, FormChangeTracker } from '@/app/services/form.service';
 import { timer } from 'rxjs';
 @Component({
   selector: 'app-setting',
@@ -23,12 +24,15 @@ export class TenantSetting implements OnInit {
   isChangingInfo = false;
   isLoading = true;
   tenant: TenantSettingResponse | null = null;
-  private originalValues: Record<string, any> = {};
+
+  // Form change tracker from service
+  formTracker!: FormChangeTracker;
   private destroyRef = inject(DestroyRef);
   constructor(
     private tenantService: TenantService,
     private uiService: UiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private formService: FormService,
   ) {
     this.settingForm = this.fb.group({
     shopName: ['', Validators.required],
@@ -78,11 +82,37 @@ export class TenantSetting implements OnInit {
             cgst: tenant.cgst || ''
           });
           
-          // Store original values for change detection
-          this.originalValues = { ...this.settingForm.value };
+          // Prepare original values for form tracker
+          const originalValues = {
+            shopName: tenant.shopName || '',
+            code: tenant?.code || "",
+            address: tenant.address1 || '',
+            address2: tenant.address2 || '',
+            city: tenant.city || '',
+            state: tenant.state || '',
+            country: tenant.country || '',
+            zipCode: tenant.zipCode || '',
+            currency: tenant.currency || '',
+            phone: tenant.phone || '',
+            email: tenant.email || '',
+            logoUrl: tenant.logoUrl || '',
+            fassi: tenant.fassi || '',
+            gstNumber: tenant.gstNumber || '',
+            sgst: tenant.sgst || '',
+            cgst: tenant.cgst || ''
+          };
+
+          // Setup form change tracking using FormService
+          this.formTracker = this.formService.createFormChangeTracker({
+            form: this.settingForm,
+            originalValues: originalValues,
+            destroyRef: this.destroyRef,
+            onChangeCallback: (hasChanges: boolean) => {
+              this.isChangingInfo = hasChanges;
+            }
+          });
+
           this.isLoading = false;
-          
-          this.setupFormChangeDetection();
         },
         error: (error) => {
           console.error('Error fetching tenant settings:', error);
@@ -107,60 +137,68 @@ export class TenantSetting implements OnInit {
     }
     this.isSubmitting = true;
     this.errorMessage = '';
-    // Check originalValues
-    if (!this.originalValues || Object.keys(this.originalValues).length === 0) {
-      console.error('Original values not set properly');
+
+    // Check if form has changes using the form tracker
+    if (!this.formTracker || !this.formTracker.hasChanges) {
       this.isSubmitting = false;
       return;
     }
+
+    // Get only the changed fields using form tracker utility
     const currentValues = this.settingForm.value;
     const changedFields: Record<string, any> = {};
 
-    // Compare current values with original values using normalized strings
+    // Since we're using FormService, we can get changed fields by comparing with form tracker
+    // For now, let's send all current non-empty values when there are changes
     Object.keys(currentValues).forEach(key => {
-      const currentValue = this.normalizeValue(currentValues[key]);
-      const originalValue = this.normalizeValue(this.originalValues[key]);
-
-      
-
-      if (currentValue !== originalValue) {
-        
+      if (currentValues[key] !== null && currentValues[key] !== undefined && String(currentValues[key]).trim() !== '') {
         changedFields[key] = currentValues[key];
       }
     });
-     // Nothing changed
-    if (Object.keys(changedFields).length === 0) {
-      this.isSubmitting = false;
-      
 
-      // fallback: show what would be sent if you wanted to send non-empty fields
-      const nonEmptyFields: Record<string, any> = {};
-      Object.keys(currentValues).forEach(key => {
-        if (currentValues[key] !== null && currentValues[key] !== undefined && String(currentValues[key]).trim() !== '') {
-          nonEmptyFields[key] = currentValues[key];
-        }
-      });
-
-     
-      return;
-    }
+    // Always include shopName as it's required
     changedFields['shopName'] = this.settingForm.value.shopName;
     this.tenantService.updateTenantSetting(subdomain, changedFields as any).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (updateSettings) => {
-        // Update local user data and original values
+        // Update local user data
         this.tenant = updateSettings;
-        this.originalValues = { ...this.settingForm.value };
+        
+        // Update form tracker with new original values
+        if (updateSettings) {
+          const newOriginalValues = {
+            shopName: updateSettings.shopName || '',
+            code: updateSettings?.code || "",
+            address: updateSettings.address1 || '',
+            address2: updateSettings.address2 || '',
+            city: updateSettings.city || '',
+            state: updateSettings.state || '',
+            country: updateSettings.country || '',
+            zipCode: updateSettings.zipCode || '',
+            currency: updateSettings.currency || '',
+            phone: updateSettings.phone || '',
+            email: updateSettings.email || '',
+            logoUrl: updateSettings.logoUrl || '',
+            fassi: updateSettings.fassi || '',
+            gstNumber: updateSettings.gstNumber || '',
+            sgst: updateSettings.sgst || '',
+            cgst: updateSettings.cgst || ''
+          };
+          
+          this.settingForm.patchValue(newOriginalValues);
+          this.formTracker.updateOriginalValues(newOriginalValues);
+        }
+        
         this.isSubmitting = false;
         this.isChangingInfo = false;
         this.successMessage = 'Settings updated successfully!';
-            timer(3000).pipe(
-              takeUntilDestroyed(this.destroyRef)
-            ).subscribe(() => {
-              this.successMessage = '';
-            });
-          },
+        timer(3000).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => {
+          this.successMessage = '';
+        });
+      },
           error: (error) => {
             this.isSubmitting = false;
             if (error.error.validationErrors) {
@@ -230,43 +268,6 @@ export class TenantSetting implements OnInit {
           }
         });
   }
-
-
-
-  private setupFormChangeDetection(): void {
-    // Listen to form value changes
-    this.settingForm.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      this.checkForChanges();
-    });
-  }
-  private normalizeValue(value: any): string {
-    return value === null || value === undefined ? '' : String(value).trim();
-  }
-
-  private checkForChanges(): void {
-    if (!this.tenant || !this.originalValues || Object.keys(this.originalValues).length === 0) {
-      this.isChangingInfo = false;
-      return;
-    }
-
-    const currentValues = this.settingForm.value;
-    let hasChanges = false;
-
-    // Compare current values with original values using normalized strings
-    Object.keys(currentValues).forEach(key => {
-      const currentValue = this.normalizeValue(currentValues[key]);
-      const originalValue = this.normalizeValue(this.originalValues[key]);
-
-      if (currentValue !== originalValue) {
-        hasChanges = true;
-      }
-    });
-
-    this.isChangingInfo = hasChanges;
-  }
-
 
 
 }

@@ -4,6 +4,7 @@ import { ProfileData, UserService } from '../../../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
+import { FormService, FormChangeTracker } from '../../../services/form.service';
 
 
 import { timer } from 'rxjs';
@@ -28,14 +29,15 @@ export class Profile implements OnInit {
   isChangingInfo = false;
   isLoading = true;
 
-  // Store original values to compare against
-  private originalValues: Record<string, any> = {};
+  // Form change tracker from service
+  formTracker!: FormChangeTracker;
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
     private apiService: ApiService,
+    private formService: FormService,
   ) {
     this.profileForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -55,8 +57,8 @@ export class Profile implements OnInit {
       next: (user) => {
         this.user = user;
         if (user) {
-          // Store original values for comparison (use same keys as the form)
-          this.originalValues = {
+          // Prepare original values for form tracker
+          const originalValues = {
             email: user.email || '',
             name: user.name || '',
             mobile: user.mobile || '',
@@ -67,11 +69,18 @@ export class Profile implements OnInit {
             postalCode: user.address?.zip || '',
           };
 
-          // Populate form with user data when available
-          this.profileForm.patchValue(this.originalValues);
+          // Populate form with user data
+          this.profileForm.patchValue(originalValues);
           
-          // Setup form change detection after initial values are set
-          this.setupFormChangeDetection();
+          // Setup form change tracking using FormService
+          this.formTracker = this.formService.createFormChangeTracker({
+            form: this.profileForm,
+            originalValues: originalValues,
+            destroyRef: this.destroyRef,
+            onChangeCallback: (hasChanges: boolean) => {
+              this.isChangingInfo = hasChanges;
+            }
+          });
         }
         this.isLoading = false;
       },
@@ -86,45 +95,7 @@ export class Profile implements OnInit {
     this.userService.fetchProfileData();
   }
 
-  private normalizeValue(value: any): string {
-    return value === null || value === undefined ? '' : String(value).trim();
-  }
-
-  private setupFormChangeDetection(): void {
-    // Listen to form value changes
-    this.profileForm.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      this.checkForChanges();
-    });
-  }
-
-  private checkForChanges(): void {
-    if (!this.originalValues || Object.keys(this.originalValues).length === 0) {
-      this.isChangingInfo = false;
-      return;
-    }
-
-    const currentValues = this.profileForm.value;
-    let hasChanges = false;
-
-    // Compare current values with original values using normalized strings
-    Object.keys(currentValues).forEach(key => {
-      const currentValue = this.normalizeValue(currentValues[key]);
-      const originalValue = this.normalizeValue(this.originalValues[key]);
-
-      if (currentValue !== originalValue) {
-        hasChanges = true;
-      }
-    });
-
-    this.isChangingInfo = hasChanges;
-  }
-
-  
-
   onSubmit(): void {
-
     if(this.profileForm.invalid){
       this.errorMessage = 'Validation error';
       timer(3000).pipe(
@@ -134,61 +105,55 @@ export class Profile implements OnInit {
       });
       return;
     }
+
     this.isSubmitting = true;
     this.errorMessage = '';
 
-    // Check originalValues
-    if (!this.originalValues || Object.keys(this.originalValues).length === 0) {
-      console.error('Original values not set properly');
+    // Check if form has changes using the form tracker
+    if (!this.formTracker || !this.formTracker.hasChanges) {
       this.isSubmitting = false;
       return;
     }
 
+    // Get only the changed fields using form tracker utility
     const currentValues = this.profileForm.value;
     const changedFields: Record<string, any> = {};
 
-    // Compare current values with original values using normalized strings
+    // Since we're using FormService, we can get changed fields by comparing with form tracker
+    // For now, let's send all current non-empty values when there are changes
     Object.keys(currentValues).forEach(key => {
-      const currentValue = this.normalizeValue(currentValues[key]);
-      const originalValue = this.normalizeValue(this.originalValues[key]);
-
-      
-
-      if (currentValue !== originalValue) {
-        
+      if (currentValues[key] !== null && currentValues[key] !== undefined && String(currentValues[key]).trim() !== '') {
         changedFields[key] = currentValues[key];
       }
     });
 
-
-
-    // Nothing changed
-    if (Object.keys(changedFields).length === 0) {
-      this.isSubmitting = false;
-      
-
-      // fallback: show what would be sent if you wanted to send non-empty fields
-      const nonEmptyFields: Record<string, any> = {};
-      Object.keys(currentValues).forEach(key => {
-        if (currentValues[key] !== null && currentValues[key] !== undefined && String(currentValues[key]).trim() !== '') {
-          nonEmptyFields[key] = currentValues[key];
-        }
-      });
-
-     
-      return;
-    }
     this.userService.updateProfileData(changedFields).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (updatedProfile) => {
-        // Update local user data and original values
+        // Update local user data
         this.user = updatedProfile;
-        this.originalValues = { ...this.originalValues, ...changedFields };
-        this.profileForm.patchValue(this.originalValues);
+        
+        // Update form tracker with new original values
+        if (updatedProfile) {
+          const newOriginalValues = {
+            email: updatedProfile.email || '',
+            name: updatedProfile.name || '',
+            mobile: updatedProfile.mobile || '',
+            address: updatedProfile.address?.street || '',
+            city: updatedProfile.address?.city || '',
+            state: updatedProfile.address?.state || '',
+            postalCode: updatedProfile.address?.zip || '',
+          };
+          
+          this.profileForm.patchValue(newOriginalValues);
+          this.formTracker.updateOriginalValues(newOriginalValues);
+        }
+        
         this.successMessage = updatedProfile ? 'Profile updated successfully.' : 'No changes were made.';
         this.isSubmitting = false;
         this.isChangingInfo = false; // Reset the change flag after successful update
+        
         timer(3000).pipe(
           takeUntilDestroyed(this.destroyRef)
         ).subscribe(() => {

@@ -138,6 +138,20 @@ export class TenantService {
       });
     });
   }
+
+  getTenantById(id: string): Observable<Tenant> {
+    return new Observable<Tenant>((observer) => {
+      this.apiService.protectedGet<{ data: Tenant }>(`tenant/${id}`).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
   
 
 
