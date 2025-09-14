@@ -9,7 +9,7 @@ import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { UiService } from './ui.service';
+import { UiService } from '../services/ui.service';
 const jwtHelper = new JwtHelperService();
 
 // Helper function to get appropriate error message
@@ -22,9 +22,14 @@ const getErrorMessage = (error: any): string => {
     return 'Resource not found.';
   } else if (error.status === 403) {
     return 'Access denied.';
-  } else if (error.status === 400 || error.status === 406) {
+  } else if (error.status === 400 || error.status === 406 || error.status === 422 ) {
     // For client errors, preserve the server message
     return error.error?.message || 'Bad request.';
+
+  }else if(error.status === 409) {
+    return  error.error?.message || 'Conflict error. Resource already exists.';
+  } else if (error.status === 429) {
+    return 'Too many requests. Please try again later.';
   } else {
     return error.error?.message || 'An error occurred. Please try again.';
   }

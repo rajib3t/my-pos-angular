@@ -5,6 +5,7 @@ import { PaginationComponent, PaginationConfig, PaginationChange } from '@/app/s
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -32,7 +33,7 @@ export class TenantList implements OnInit, OnDestroy {
   searchForm: FormGroup;
   private destroy$ = new Subject<void>();
   showSearchFilters: boolean = false;
-
+ 
   loadTenants() {
     this.loading = true;
     // Add sort params to filter
@@ -92,7 +93,8 @@ export class TenantList implements OnInit, OnDestroy {
 
   constructor(
     private tenantService: TenantService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.searchForm = this.fb.group({
       name: [''],
@@ -171,5 +173,11 @@ export class TenantList implements OnInit, OnDestroy {
       this.sortDirection = 'asc';
     }
     this.loadTenants();
+  }
+
+
+    onEditTenant(tenant: Tenant): void {
+    // TODO: Implement edit tenant functionality
+   this.router.navigate([`/tenants/edit/${tenant.id || tenant._id}`]);
   }
 }

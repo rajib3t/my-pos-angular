@@ -12,6 +12,7 @@ import { CreateTenant } from './pages/main/tenant/create/create'
 import { TenantSetting } from './pages/main/tenants/setting/setting';
 import { MaterialCategory } from './pages/main/tenants/material/material-category/material-category'
 import {MaterialCategoryCreate} from './pages/main/tenants/material/material-category-create/material-category-create'
+import { EditTenant } from './pages/main/tenant/edit/edit';
 export const routes: Routes = [
 
     {
@@ -48,6 +49,11 @@ export const routes: Routes = [
                 path: 'tenants/create',
                 component: CreateTenant,
                 data: { title: 'Create Tenant' }
+            },
+            {
+                path: 'tenants/edit/:id',
+                component: EditTenant,
+                data: { title: 'Edit Tenant' }
             },
             // Subdomain protected routes
             {

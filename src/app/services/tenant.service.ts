@@ -125,6 +125,19 @@ export class TenantService {
     });
   }
 
+  updateTenant (subdomain: string, tenant: Tenant): Observable<Tenant> {
+    return new Observable<Tenant>((observer) => {
+      this.apiService.protectedPut<{ data: Tenant }>(`tenant/${subdomain}`, tenant).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
   
 
 
