@@ -1,9 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
+export interface Notification {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title?: string;
+  message: string;
+  duration?: number;
+  dismissible?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UiService {
+  private notifications$ = new BehaviorSubject<Notification[]>([]);
+  public notifications = this.notifications$.asObservable();
   
 
   constructor() { }
@@ -45,7 +57,72 @@ export class UiService {
     return hostParts.length > 2;
   }
 
+  // Notification methods
+  showNotification(notification: Omit<Notification, 'id'>): void {
+    const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    const newNotification: Notification = {
+      id,
+      duration: 5000,
+      dismissible: true,
+      ...notification
+    };
 
+    const currentNotifications = this.notifications$.value;
+    this.notifications$.next([...currentNotifications, newNotification]);
+
+    // Auto-dismiss if duration is set
+    if (newNotification.duration && newNotification.duration > 0) {
+      setTimeout(() => {
+        this.dismissNotification(id);
+      }, newNotification.duration);
+    }
+  }
+
+  success(message: string, title?: string, duration?: number): void {
+    this.showNotification({
+      type: 'success',
+      message,
+      title,
+      duration
+    });
+  }
+
+  error(message: string, title?: string, duration?: number): void {
+    this.showNotification({
+      type: 'error',
+      message,
+      title,
+      duration: duration || 8000 // Errors stay longer by default
+    });
+  }
+
+  warning(message: string, title?: string, duration?: number): void {
+    this.showNotification({
+      type: 'warning',
+      message,
+      title,
+      duration
+    });
+  }
+
+  info(message: string, title?: string, duration?: number): void {
+    this.showNotification({
+      type: 'info',
+      message,
+      title,
+      duration
+    });
+  }
+
+  dismissNotification(id: string): void {
+    const currentNotifications = this.notifications$.value;
+    const filteredNotifications = currentNotifications.filter(n => n.id !== id);
+    this.notifications$.next(filteredNotifications);
+  }
+
+  clearAllNotifications(): void {
+    this.notifications$.next([]);
+  }
 
 
   

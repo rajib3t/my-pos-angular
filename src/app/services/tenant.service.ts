@@ -40,6 +40,12 @@ export interface TenantSettingResponse {
   sgst?: number;
   cgst?: number;
 }
+
+export interface DeleteResponse {
+  success: boolean;
+  message: string;
+  deletedId?: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -153,11 +159,17 @@ export class TenantService {
     });
   }
 
-  deleteTenant(id: string): Observable<any> {
-    return new Observable<any>((observer) => {
-      this.apiService.protectedDelete<{ data: any }>(`tenant/${id}`).subscribe({
+  deleteTenant(id: string): Observable<DeleteResponse> {
+    return new Observable<DeleteResponse>((observer) => {
+      this.apiService.protectedDelete<{ data: { message?: string } }>(`tenant/${id}`).subscribe({
         next: (response) => {
-          observer.next(response.data);
+          // Transform API response to DeleteResponse format
+          const deleteResponse: DeleteResponse = {
+            success: true,
+            message: response.data.data.message || 'Tenant deleted successfully',
+            deletedId: id
+          };
+          observer.next(deleteResponse);
           observer.complete();
         },
         error: (error) => {

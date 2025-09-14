@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angul
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { UiService } from '@/app/services/ui.service';
 
 @Component({
   selector: 'app-list',
@@ -63,7 +64,7 @@ export class TenantList implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching tenants:', error);
+        this.uiService.error('Failed to load tenants. Please try again.', 'Error');
         this.loading = false;
       }
     });
@@ -101,7 +102,8 @@ export class TenantList implements OnInit, OnDestroy {
   constructor(
     private tenantService: TenantService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private uiService: UiService
   ) {
     this.searchForm = this.fb.group({
       name: [''],
@@ -211,14 +213,13 @@ export class TenantList implements OnInit, OnDestroy {
     const tenantName = this.tenantToDelete.name;
 
     if (!tenantId) {
-      console.error('No tenant ID found');
+      this.uiService.error('Unable to delete tenant. Invalid tenant ID.', 'Error');
       this.isDeleting = false;
       return;
     }
 
     this.tenantService.deleteTenant(tenantId).subscribe({
       next: (response) => {
-        console.log('Tenant deleted successfully:', response);
         // Remove the tenant from the local array
         this.tenants = this.tenants.filter(t => (t.id || t._id) !== tenantId);
         
@@ -235,14 +236,12 @@ export class TenantList implements OnInit, OnDestroy {
         this.closeDeletePopup();
         this.isDeleting = false;
         this.showDeletePopup = false;
-        // Show success message (you can implement toast/notification service)
-        console.log(`Tenant "${tenantName}" has been successfully deleted.`);
+        
+        this.uiService.success(`Tenant "${tenantName}" has been successfully deleted.`, 'Success');
       },
       error: (error) => {
-        console.error('Error deleting tenant:', error);
+        this.uiService.error(`Failed to delete tenant "${tenantName}". Please try again.`, 'Error');
         this.isDeleting = false;
-        // Show error message (you can implement toast/notification service)
-        console.error(`Failed to delete tenant "${tenantName}". Please try again.`);
       }
     });
   }
