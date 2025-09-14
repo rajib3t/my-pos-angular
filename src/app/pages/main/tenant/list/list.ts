@@ -178,6 +178,6 @@ export class TenantList implements OnInit, OnDestroy {
 
     onEditTenant(tenant: Tenant): void {
     // TODO: Implement edit tenant functionality
-   this.router.navigate([`/tenants/edit/${tenant.id || tenant._id}`]);
+   this.router.navigate([`/tenants/${tenant.id || tenant._id}/edit`]);
   }
 }
