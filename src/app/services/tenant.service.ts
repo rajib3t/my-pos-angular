@@ -125,9 +125,9 @@ export class TenantService {
     });
   }
 
-  updateTenant (subdomain: string, tenant: Tenant): Observable<Tenant> {
-    return new Observable<Tenant>((observer) => {
-      this.apiService.protectedPut<{ data: Tenant }>(`tenant/${subdomain}`, tenant).subscribe({
+  updateTenant (id: string, tenant: Partial<Tenant>): Observable<Partial<Tenant>> {
+    return new Observable<Partial<Tenant>>((observer) => {
+      this.apiService.protectedPut<{ data: Partial<Tenant> }>(`tenant/${id}`, tenant).subscribe({
         next: (response) => {
           observer.next(response.data.data);
           observer.complete();
@@ -144,6 +144,20 @@ export class TenantService {
       this.apiService.protectedGet<{ data: Tenant }>(`tenant/${id}`).subscribe({
         next: (response) => {
           observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  deleteTenant(id: string): Observable<any> {
+    return new Observable<any>((observer) => {
+      this.apiService.protectedDelete<{ data: any }>(`tenant/${id}`).subscribe({
+        next: (response) => {
+          observer.next(response.data);
           observer.complete();
         },
         error: (error) => {

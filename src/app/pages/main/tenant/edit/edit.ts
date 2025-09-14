@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { TenantService, Tenant } from '../../../../services/tenant.service';
 import { FormService, FormChangeTracker } from '../../../../services/form.service';
 import { CommonModule } from '@angular/common';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { timer } from 'rxjs';
 @Component({
   selector: 'app-tenant-edit',
   templateUrl: './edit.html',
@@ -120,18 +121,47 @@ export class EditTenant implements OnInit {
       this.loading = false;
       return;
     }
-    this.tenantService.updateTenantSetting(this.tenant.subdomain, {
+    this.tenantService.updateTenant(this.tenantId as string, {
       ...this.tenant,
       ...this.tenantForm.value
     }).subscribe({
-      next: (updatedTenant: Tenant) => {
+      next: (updatedTenant: Partial<Tenant>) => {
         this.loading = false;
         this.resetFormChanges(); // Reset form changes after successful save
+        
         this.save.emit(updatedTenant);
+        this.successMessage = 'Tenant updated successfully.';
+        timer(3000).pipe(
+                  takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                  this.successMessage = '';
+                });
+        // Optionally navigate away or reset form state here
+        // this.router.navigate(['/tenants']); 
+        // or
+        // this.tenantForm.markAsPristine();
       },
       error: (err: any) => {
-        this.loading = false;
-        this.error = err?.message || 'Update failed';
+
+         if (err.error.validationErrors) {
+          // Handle validation errors
+          const validationErrors = err.error.validationErrors;
+          Object.keys(validationErrors).forEach(field => {
+            const control = this.tenantForm.get(field);
+            if (control) {
+              control.setErrors({ server: validationErrors[field] });
+            }
+          });
+         }else{
+          this.loading = false;
+          this.errorMessage = err?.error?.message || 'Update failed'; 
+          timer(3000).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                  ).subscribe(() => {
+                    this.errorMessage = '';
+                  });
+         }
+        
       }
     });
   }

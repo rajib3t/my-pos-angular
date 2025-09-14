@@ -2,7 +2,7 @@ import { TenantService, Tenant, PaginatedResult } from '@/app/services/tenant.se
 import { Component , OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginationComponent, PaginationConfig, PaginationChange } from '@/app/shared/components/pagination/pagination';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
      CommonModule,
      PaginationComponent,
      ReactiveFormsModule,
+     FormsModule,
   ],
   templateUrl: './list.html',
   styleUrl: './list.css'
@@ -33,6 +34,12 @@ export class TenantList implements OnInit, OnDestroy {
   searchForm: FormGroup;
   private destroy$ = new Subject<void>();
   showSearchFilters: boolean = false;
+
+  // Delete popup properties
+  showDeletePopup: boolean = false;
+  tenantToDelete: Tenant | null = null;
+  confirmationName: string = '';
+  isDeleting: boolean = false;
  
   loadTenants() {
     this.loading = true;
@@ -179,5 +186,74 @@ export class TenantList implements OnInit, OnDestroy {
     onEditTenant(tenant: Tenant): void {
     // TODO: Implement edit tenant functionality
    this.router.navigate([`/tenants/${tenant.id || tenant._id}/edit`]);
+  }
+
+  onDeleteTenant(tenant: Tenant): void {
+    this.tenantToDelete = tenant;
+    this.confirmationName = '';
+    this.showDeletePopup = true;
+  }
+
+  closeDeletePopup(): void {
+    if (this.isDeleting) return; // Prevent closing during deletion
+    this.showDeletePopup = false;
+    this.tenantToDelete = null;
+    this.confirmationName = '';
+  }
+
+  confirmDeleteTenant(): void {
+    if (!this.tenantToDelete || this.confirmationName.trim() !== this.tenantToDelete.name || this.isDeleting) {
+      return;
+    }
+
+    this.isDeleting = true;
+    const tenantId = this.tenantToDelete.id || this.tenantToDelete._id;
+    const tenantName = this.tenantToDelete.name;
+
+    if (!tenantId) {
+      console.error('No tenant ID found');
+      this.isDeleting = false;
+      return;
+    }
+
+    this.tenantService.deleteTenant(tenantId).subscribe({
+      next: (response) => {
+        console.log('Tenant deleted successfully:', response);
+        // Remove the tenant from the local array
+        this.tenants = this.tenants.filter(t => (t.id || t._id) !== tenantId);
+        
+        // Update pagination if needed
+        if (this.tenants.length === 0 && this.paginationConfig.page > 1) {
+          this.paginationConfig.page--;
+          this.loadTenants();
+        } else {
+          // Update total count
+          this.paginationConfig.total--;
+          this.paginationConfig.pages = Math.ceil(this.paginationConfig.total / this.paginationConfig.limit);
+        }
+
+        this.closeDeletePopup();
+        this.isDeleting = false;
+        this.showDeletePopup = false;
+        // Show success message (you can implement toast/notification service)
+        console.log(`Tenant "${tenantName}" has been successfully deleted.`);
+      },
+      error: (error) => {
+        console.error('Error deleting tenant:', error);
+        this.isDeleting = false;
+        // Show error message (you can implement toast/notification service)
+        console.error(`Failed to delete tenant "${tenantName}". Please try again.`);
+      }
+    });
+  }
+
+  canDeleteTenant(): boolean {
+    return this.tenantToDelete !== null &&
+           this.confirmationName.trim() === this.tenantToDelete.name &&
+           !this.isDeleting;  
+  }
+  
+  gotoAddTenant(): void {
+    this.router.navigate(['/tenants/create']);
   }
 }

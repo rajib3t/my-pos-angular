@@ -111,21 +111,21 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
         console.log("AuthInterceptor: 401 error on protected request, attempting token refresh");
         
         const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) {
-          console.log("AuthInterceptor: No refresh token available");
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('refreshToken');
-          const standardizedError = {
-            status: 401,
-            error: {
-              success: false,
-              message: 'Authentication failed. Please login again.',
-              data: null,
-              error: 'No refresh token available'
-            }
-          };
-          return throwError(() => standardizedError);
-        }
+        // if (!refreshToken) {
+        //   console.log("AuthInterceptor: No refresh token available");
+        //   localStorage.removeItem('authToken');
+        //   localStorage.removeItem('refreshToken');
+        //   const standardizedError = {
+        //     status: 401,
+        //     error: {
+        //       success: false,
+        //       message: 'Authentication failed. Please login again.',
+        //       data: null,
+        //       error: 'No refresh token available'
+        //     }
+        //   };
+        //   return throwError(() => standardizedError);
+        // }
         
         // Make direct HTTP call to refresh endpoint to avoid circular dependency
         const refreshUrl = `${environment.apiUrl}/auth/refresh`;
