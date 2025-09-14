@@ -22,8 +22,8 @@ export interface PaginationChange {
 export class PaginationComponent implements OnInit, OnChanges {
   @Input() config!: PaginationConfig;
   @Input() showSizeSelector: boolean = true;
-  @Input() sizeOptions: number[] = [5, 10, 25, 50, 100];
-  @Input() maxVisiblePages: number = 5;
+  @Input() sizeOptions: number[] = [10, 25, 50, 100];
+  @Input() maxVisiblePages: number = 10;
   
   @Output() pageChange = new EventEmitter<PaginationChange>();
   
