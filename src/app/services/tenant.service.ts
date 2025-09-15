@@ -19,6 +19,11 @@ export interface Tenant {
   databaseUser?: string;
   createdAt?: string;
   updatedAt?: string;
+  createdBy?: {
+    _id?: string;
+    name?: string;
+    email?: string;
+  }
 }
 export interface TenantSettingResponse {
   id?: string;
@@ -179,6 +184,30 @@ export class TenantService {
     });
   }
   
+
+  getTenantUsers (tenantId: string, page: number = 1, limit: number = 10, filter?: { [key: string]: any }): Observable<any> {
+    return new Observable<any>((observer) => {
+      // Build query parameters
+      let queryParams = `page=${page}&limit=${limit}`;
+      if (filter) {
+        Object.keys(filter).forEach(key => {
+          if (filter[key] !== undefined && filter[key] !== null && filter[key] !== '') {
+            queryParams += `&${key}=${encodeURIComponent(filter[key])}`;
+          }
+        });
+      }
+
+      this.apiService.protectedGet<{ data: any }>(`tenant/${tenantId}/users?${queryParams}`).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
 
 
 }

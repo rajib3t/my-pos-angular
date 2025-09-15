@@ -15,6 +15,8 @@ import { MaterialCategory } from './pages/main/tenants/material/material-categor
 import {MaterialCategoryCreate} from './pages/main/tenants/material/material-category-create/material-category-create'
 import { EditTenant } from './pages/main/tenant/edit/edit';
 import { NotFound } from './pages/error/not-found';
+import { UserList as TenantUserList } from './pages/main/tenant/users/user-list/user-list';
+import { UserCreate as TenantUserCreate } from './pages/main/tenant/users/user-create/user-create';
 export const routes: Routes = [
 
     {
@@ -55,13 +57,25 @@ export const routes: Routes = [
                 path: 'tenants/create',
                 component: CreateTenant,
                 canActivate: [NoSubdomainGuard], // Only accessible on main domain
-                data: { title: 'Create Tenant' }
+                data: { title: 'Create Sub Account' }
             },
             {
                 path: 'tenants/:id/edit',
                 component: EditTenant,
                 canActivate: [NoSubdomainGuard], // Only accessible on main domain
-                data: { title: 'Edit Tenant' }
+                data: { title: 'Edit Sub Account' }
+            },
+            {
+                path:'tenants/:id/users',
+                component:TenantUserList,
+                canActivate:[NoSubdomainGuard],
+                data:{title:'Sub Account User List'}
+            },
+            {
+                path: 'tenants/:id/users/create',
+                component: TenantUserCreate,
+                canActivate: [NoSubdomainGuard],
+                data: { title: 'Create Sub Account User' }
             },
             // Subdomain protected routes
             {

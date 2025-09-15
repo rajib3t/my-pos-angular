@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { UiService } from '@/app/services/ui.service';
+import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 
 @Component({
   selector: 'app-list',
@@ -80,24 +81,9 @@ export class TenantList implements OnInit, OnDestroy {
     return tenant._id || tenant.id || index.toString();
   }
 
-  formatDate(dateString?: string): string {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
-
-  formatTime(dateString?: string): string {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
+  // Use global utility functions for date/time formatting
+  formatDate = formatDate;
+  formatTime = formatTime;
 
   constructor(
     private tenantService: TenantService,
@@ -255,4 +241,12 @@ export class TenantList implements OnInit, OnDestroy {
   gotoAddTenant(): void {
     this.router.navigate(['/tenants/create']);
   }
+
+  onUsersTenant (tenant : Partial<Tenant>): void {
+    this.router.navigate(
+      [`/tenants/${tenant._id}/users`]
+    )
+  }
+
+
 }
