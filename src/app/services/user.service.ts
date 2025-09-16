@@ -1,15 +1,38 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
+
 export interface User {
   id?: string;
   email: string;
   name: string;
+  isActive?: boolean;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  mobile?: string;
   // Add other user properties as needed
 }
 
+
+
+export interface UserList {
+  items: {
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface ProfileData extends User {
-  mobile?: string;
+  
   address?: {
     street?: string;
     city?: string;
@@ -32,6 +55,7 @@ export class UserService {
   private readonly USER_STORAGE_KEY = 'authUser';
   private profileData = new BehaviorSubject<User | null>(null);
   constructor(private apiService: ApiService) { }
+  private userData = new BehaviorSubject<User | null>(null);
   private getStoredUser(): User | null {
       try {
         const userData = localStorage.getItem(this.USER_STORAGE_KEY);
@@ -139,4 +163,124 @@ export class UserService {
       });
     });
   }
+
+
+    getUsers ( page: number = 1, limit: number = 10, filter?: { [key: string]: any }, tenantId?: string): Observable<UserList> {
+    return new Observable<UserList>((observer) => {
+      // Build query parameters
+      let queryParams = `page=${page}&limit=${limit}&timezone=-330`;
+      if (filter) {
+        Object.keys(filter).forEach(key => {
+          if (filter[key] !== undefined && filter[key] !== null && filter[key] !== '') {
+            queryParams += `&${key}=${encodeURIComponent(filter[key])}`;
+          }
+        });
+      }
+      let url = '';
+      if(tenantId){
+        url = `tenant/${tenantId}/users?${queryParams}`;
+      }else{
+        url = `users?${queryParams}`;
+      }
+      
+
+      this.apiService.protectedGet<{ data: any }>(url).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  createUser( user: Partial<User> & { password: string }, tenantId?: string): Observable<User> {
+    return new Observable<User>((observer) => {
+      let url = '';
+      if(tenantId){
+        url = `tenant/${tenantId}/users`;
+      }else{
+        url = `users`;
+      }
+      this.apiService.protectedPost<{ data: User }>(url, user).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+
+ 
+
+  getUser(userId: string, tenantId?: string): Observable<User | null> {
+    return new Observable<User | null>((observer) => {
+      let url = '';
+      if (tenantId) {
+        url = `tenant/${tenantId}/users/${userId}`;
+      } else {
+        url = `users/${userId}`;
+      }
+
+      this.apiService.protectedGet<{ data: User }>(url).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  updateUser(userId: string, updatedData: Partial<ProfileData>, tenantId?: string): Observable<ProfileData> {
+    return new Observable<ProfileData>((observer) => {
+      let url = '';
+      if (tenantId) {
+        url = `tenant/${tenantId}/users/${userId}`;
+      } else {
+        url = `users/${userId}`;
+      }
+
+      this.apiService.protectedPatch<{ data: User }>(url, updatedData).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  deleteUser(userId: string, tenantId?: string): Observable<{ message: string }> {
+    return new Observable<{ message: string }>((observer) => {
+      let url = '';
+      if (tenantId) {
+        url = `tenant/${tenantId}/users/${userId}`;
+      } else {
+        url = `users/${userId}`;
+      }
+
+      this.apiService.protectedDelete<{ message: string }>(url).subscribe({
+        next: (response) => {
+          observer.next({ message: response.data.message });
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  
 }

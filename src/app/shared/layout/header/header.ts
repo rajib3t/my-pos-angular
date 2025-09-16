@@ -1,4 +1,4 @@
-import { Component, HostListener, ElementRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild, OnInit, OnDestroy, Signal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../../services/ui.service';
 import { User , UserService} from '../../../services/user.service';
@@ -24,6 +24,7 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings
     readonly PlusIcon = Plus;
     readonly BarChartIcon = BarChart3;
     readonly ChevronRightIcon = ChevronRight;
+    
     isSubdomain = false;
   authUser: User | null = null;
    private userSubscription!: Subscription;
@@ -35,6 +36,8 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings
 
 
   ngOnInit() {
+  
+    
     this.userSubscription = this.userService.getAuthUser.subscribe(data => {
      
       this.authUser = data;

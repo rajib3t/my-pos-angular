@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthLayout } from '../../../shared/layout/auth/auth';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +34,7 @@ export class Login implements OnInit {
   loginForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
-
+  
   constructor(
      private fb: FormBuilder,
      private apiService: ApiService,
@@ -64,6 +64,7 @@ export class Login implements OnInit {
               this.apiService.setAuthToken(response.data.data.accessToken);
               this.apiService.setRefreshToken(response.data.data.refreshToken?.token);
               this.userService.setAuthUser(response.data.data.user);
+            
               // Redirect to dashboard or another page
               this.router.navigate(['/dashboard']);
             } else {

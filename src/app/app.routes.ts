@@ -17,6 +17,7 @@ import { EditTenant } from './pages/main/tenant/edit/edit';
 import { NotFound } from './pages/error/not-found';
 import { UserList as TenantUserList } from './pages/main/tenant/users/user-list/user-list';
 import { UserCreate as TenantUserCreate } from './pages/main/tenant/users/user-create/user-create';
+import { UserEdit as TenantUserEdit } from './pages/main/tenant/users/user-edit/user-edit';
 export const routes: Routes = [
 
     {
@@ -76,6 +77,12 @@ export const routes: Routes = [
                 component: TenantUserCreate,
                 canActivate: [NoSubdomainGuard],
                 data: { title: 'Create Sub Account User' }
+            },
+            {
+                path: 'tenants/:id/users/:userId/edit',
+                component: TenantUserEdit,
+                canActivate: [NoSubdomainGuard],
+                data: { title: 'Edit Sub Account User' }
             },
             // Subdomain protected routes
             {
