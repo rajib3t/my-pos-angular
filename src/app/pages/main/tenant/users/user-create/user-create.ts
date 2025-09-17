@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule,User as UserIcon , Mail as MailIcon, LockKeyhole as LockKeyholeIcon} from 'lucide-angular';
+import { LucideAngularModule,User as UserIcon , Mail as MailIcon, LockKeyhole as LockKeyholeIcon, LayoutList , ShieldCheck} from 'lucide-angular';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { timer } from 'rxjs';
 import { UserService } from '@/app/services/user.service';
@@ -22,10 +22,12 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
   styleUrl: './user-create.css'
 })
 export class UserCreate implements OnInit {
-   tenantId: string | null = null;
+  tenantId: string | null = null;
   readonly UserIcon = UserIcon;
   readonly MailIcon = MailIcon;
   readonly LockKeyholeIcon = LockKeyholeIcon;
+  readonly HouseIcon = LayoutList;
+  readonly ShieldCheckIcon = ShieldCheck;
   errorMessage: string | null = null;
 
   ngOnInit() {
@@ -41,13 +43,15 @@ export class UserCreate implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(10)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirm_password: ['', Validators.required]
+      confirm_password: ['', Validators.required],
+      role: ['', Validators.required]
     }, { validators: passwordsMatchValidator });
   }
 
@@ -105,5 +109,17 @@ export class UserCreate implements OnInit {
     return this.userForm.get('confirm_password');
   }
 
+  get role() {
+    return this.userForm.get('role');
+  }
 
+
+  goToUserList() : void {
+    this.router.navigate(['/tenants', this.tenantId, 'users']);
+  
+  }
+
+  gotoTenantList(): void {
+    this.router.navigate(['/tenants']);
+  }
 }

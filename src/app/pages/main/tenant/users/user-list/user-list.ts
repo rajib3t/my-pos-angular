@@ -7,20 +7,24 @@ import { UiService } from '@/app/services/ui.service';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 import { User, UserService , UserList as UserListResponse} from '@/app/services/user.service';
-
+import { LayoutList, LucideAngularModule , SquarePen, UserPlus} from 'lucide-angular';
 @Component({
   selector: 'app-tenant-user-list',
   imports: [
-    CommonModule, 
-    RouterModule, 
-    PaginationComponent, 
-    ReactiveFormsModule, 
-    FormsModule
-  ],
+    CommonModule,
+    RouterModule,
+    PaginationComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    LucideAngularModule
+],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css'
 })
 export class UserList implements OnInit {
+  readonly EditIcon = SquarePen;
+  readonly HouseIcon = LayoutList;
+  readonly UserAddIcon = UserPlus;
   tenantId: string | null = null;
   showSearchFilters: boolean = false;
   loading: boolean = false;
@@ -64,8 +68,9 @@ export class UserList implements OnInit {
       this.searchForm = this.fb.group({
         name: [''],
         email: [''],
+        mobile: [''],
         role: [''],
-        isActive: [true]
+        status: [true]
       });
     }
 
@@ -247,5 +252,11 @@ export class UserList implements OnInit {
 
   backToTenantList(): void {
     this.router.navigate(['/tenants']); 
+  }
+
+  gotoEditTenant(): void {
+    if (this.tenantId) {
+      this.router.navigate([`/tenants/${this.tenantId}/edit`]);
+    }
   }
 }

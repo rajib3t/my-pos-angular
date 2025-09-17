@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { timer } from 'rxjs';
+import { LucideAngularModule , LayoutList, SquarePen, Users} from 'lucide-angular';
 @Component({
   selector: 'app-tenant-edit',
   templateUrl: './edit.html',
@@ -13,12 +14,15 @@ import { timer } from 'rxjs';
    imports: [
      CommonModule,
      ReactiveFormsModule,
-     RouterModule
+     RouterModule,
+     LucideAngularModule
    ]
  ,
 
 })
 export class EditTenant implements OnInit {
+  readonly HouseIcon = LayoutList;
+  readonly EditIcon = SquarePen;
   @Input() tenant: Tenant | null = null;
   @Output() save = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
@@ -169,4 +173,17 @@ export class EditTenant implements OnInit {
   onCancel() {
     this.cancel.emit();
   }
+
+
+   gotoTenantList() {
+      // Implement navigation to tenant list page
+      this.router.navigate(['/tenants']);
+   }
+
+  gotoTenantUsers() {
+      // Implement navigation to tenant users page
+      if (this.tenantId) {
+        this.router.navigate([`/tenants/${this.tenantId}/users`]);
+      }
+   }
 }

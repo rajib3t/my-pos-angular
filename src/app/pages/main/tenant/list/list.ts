@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { UiService } from '@/app/services/ui.service';
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
-
+import { LucideAngularModule, LayoutList, SquarePlus, House } from 'lucide-angular';
 @Component({
   selector: 'app-list',
   imports: [
@@ -16,11 +16,14 @@ import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
      PaginationComponent,
      ReactiveFormsModule,
      FormsModule,
+     LucideAngularModule
   ],
   templateUrl: './list.html',
   styleUrl: './list.css'
 })
 export class TenantList implements OnInit, OnDestroy {
+  readonly HouseIcon = LayoutList;
+  readonly TenantAddIcon = SquarePlus;
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 

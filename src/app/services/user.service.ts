@@ -22,7 +22,8 @@ export interface UserList {
     name: string;
     email: string;
     role: string;
-    isActive: boolean;
+    mobile:string;
+    status: boolean;
     createdAt: string;
     updatedAt: string;
   }[];
