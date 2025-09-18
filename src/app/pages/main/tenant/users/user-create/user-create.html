@@ -135,7 +135,20 @@
                                 placeholder="Enter your mobile number"
                                 />
                                 @if(mobile?.invalid && (mobile?.dirty || mobile?.touched)) {
-                                  <p class="mt-1 text-sm text-red-600">Mobile number is required</p>
+                                  <div class="mt-1 text-sm text-red-600">
+                                    @if(mobile?.errors?.['required']) {
+                                      <p>Mobile number is required</p>
+                                    }
+                                    @if(mobile?.errors?.['pattern']) {
+                                      <p>Please enter a valid mobile number</p>
+                                    }
+                                    @if(mobile?.errors?.['minlength']) {
+                                      <p>Mobile number must be at least 10 digits long</p>
+                                    }
+                                    @if(mobile?.errors?.['maxlength']) {
+                                      <p>Mobile number cannot exceed 10 digits</p>
+                                    }
+                                  </div>
                                 }
                             </div>
                         </div>
