@@ -62,13 +62,33 @@ export class CreateTenant implements OnInit {
                   });
               },
               error: (error) => {
-                 this.errorMessage = 'Failed to create tenant. Please try again.';
-                 this.isSubmitting = false;
-                 timer(3000).pipe(
-                  takeUntilDestroyed(this.destroyRef)
-                ).subscribe(() => {
-                  this.errorMessage = '';
-                });
+               
+                  if (error.error.validationErrors) {
+                     const nameError = error.error.validationErrors['name'];
+                     const subdomainError = error.error.validationErrors['subdomain'];
+                     if (nameError) {
+                        this.tenantForm.controls['name'].setErrors({ server: nameError });
+                     } else if (subdomainError) {
+                        this.tenantForm.controls['subdomain'].setErrors({ server: subdomainError });
+                     } else {
+                        this.errorMessage = 'Failed to create tenant. Please check the form for errors.';
+                     }
+                     this.isSubmitting = false;
+                     timer(5000).pipe(
+                        takeUntilDestroyed(this.destroyRef)
+                     ).subscribe(() => {
+                        this.errorMessage = '';
+                     });
+                  }else{
+                     this.errorMessage = 'Failed to create tenant. Please try again.';
+                     this.isSubmitting = false;
+                     timer(3000).pipe(
+                        takeUntilDestroyed(this.destroyRef)
+                     ).subscribe(() => {
+                        this.errorMessage = '';
+                     });
+                  }
+                 
               }
            });
      } else {

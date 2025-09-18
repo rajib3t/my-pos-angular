@@ -201,7 +201,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
       }
 
 
-       if(error.error.message == 'Validation failed'){
+       if(error.error.message === 'Validation failed'){
         // Parse validation errors and create field-specific error messages
         const validationErrors: { [key: string]: string } = {};
         
