@@ -7,7 +7,8 @@ import { UiService } from '@/app/services/ui.service';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 import { User, UserService , UserList as UserListResponse} from '@/app/services/user.service';
-import { LayoutList, LucideAngularModule , SquarePen, UserPlus} from 'lucide-angular';
+import { LayoutList, LucideAngularModule , SquarePen, UserPlus, KeyIcon} from 'lucide-angular';
+import { UserPasswordReset } from '@/app/shared/components/popup/user-password-reset/user-password-reset';
 @Component({
   selector: 'app-tenant-user-list',
   imports: [
@@ -16,7 +17,8 @@ import { LayoutList, LucideAngularModule , SquarePen, UserPlus} from 'lucide-ang
     PaginationComponent,
     ReactiveFormsModule,
     FormsModule,
-    LucideAngularModule
+    LucideAngularModule,
+    UserPasswordReset
 ],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css'
@@ -25,6 +27,7 @@ export class UserList implements OnInit {
   readonly EditIcon = SquarePen;
   readonly HouseIcon = LayoutList;
   readonly UserAddIcon = UserPlus;
+  readonly KeyIcon = KeyIcon;
   tenantId: string | null = null;
   showSearchFilters: boolean = false;
   loading: boolean = false;
@@ -34,12 +37,16 @@ export class UserList implements OnInit {
   searchForm!: FormGroup;
 
 
-    // Delete popup properties
-    showDeletePopup: boolean = false;
+  // Delete popup properties
+  showDeletePopup: boolean = false;
   userToDelete: UserListResponse['items'][0] | null = null;
-    confirmationName: string = '';
-    isDeleting: boolean = false;
+  confirmationName: string = '';
+  isDeleting: boolean = false;
 
+  // Password reset popup properties
+  showResetPasswordPopup: boolean = false;
+  userToResetPassword: UserListResponse['items'][0] | null = null;
+  isResettingPassword: boolean = false;
    
   users: UserListResponse['items'] = [];
     paginationConfig: PaginationConfig = {
@@ -259,4 +266,26 @@ export class UserList implements OnInit {
       this.router.navigate([`/tenants/${this.tenantId}/edit`]);
     }
   }
+  onChangePassword(user: UserListResponse['items'][0]): void {
+    this.userToResetPassword = user;
+    this.showResetPasswordPopup = true;
+    this.isResettingPassword = false;
+  }
+
+  onCloseResetPasswordPopup(): void {
+    if (this.isResettingPassword) return; // Prevent closing during reset
+    this.showResetPasswordPopup = false;
+    this.userToResetPassword = null;
+  }
+
+  onPasswordReset(event: { user: Partial<UserListResponse['items'][0]>, success: boolean, error?: any }): void {
+    if (event.success) {
+      this.uiService.success(`Password for user "${event.user.name}" has been successfully reset.`, 'Success');
+    } else {
+      this.uiService.error(`Failed to reset password for user "${event.user.name}". Please try again.`, 'Error');
+    }
+    this.isResettingPassword = false;
+  }
+
+  
 }

@@ -60,6 +60,17 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+                "host": "0.0.0.0", 
+                "allowedHosts": [
+                  "mypos.local",
+                  "localhost",
+                  "127.0.0.1",
+                  "lead.mypos.local",
+                   "test.mypos.local"
+                  
+                ]
+              },
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {

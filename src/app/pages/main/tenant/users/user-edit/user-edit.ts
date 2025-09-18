@@ -1,11 +1,12 @@
 import { Component, OnInit, signal, DestroyRef , inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { User, UserService } from '@/app/services/user.service';
 import { ReactiveFormsModule , FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { FormChangeTracker, FormService } from '@/app/services/form.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
+import { LucideAngularModule, LayoutList } from 'lucide-angular';
 interface Address {
   street?: string;
   city?: string;
@@ -19,11 +20,12 @@ interface UserEditData extends User {
 
 @Component({
   selector: 'app-tenant-user-edit',
-  imports: [CommonModule, RouterModule,  ReactiveFormsModule,],
+  imports: [CommonModule, RouterModule,  ReactiveFormsModule,LucideAngularModule],
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.css'
 })
 export class UserEdit implements OnInit {
+  readonly HouseIcon = LayoutList;
   editForm: FormGroup;
   tenantId : string = null!;
   userId : string = null!;
@@ -39,7 +41,8 @@ export class UserEdit implements OnInit {
     private activatedRoute: ActivatedRoute,
     private userService: UserService,
     private fb: FormBuilder,
-     private formService: FormService,
+    private formService: FormService,
+    private router : Router
   ){
     this.editForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -206,6 +209,15 @@ export class UserEdit implements OnInit {
       }
     });
    
+  }
+
+  backToTenantList(): void {
+    this.router.navigate(['/tenants']);
+   
+  }
+
+  gotoTenantUsers(): void {
+    this.router.navigate(['/tenants', this.tenantId, 'users']);
   }
 
 

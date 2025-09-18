@@ -14,6 +14,18 @@ export interface User {
   // Add other user properties as needed
 }
 
+export interface User {
+  id?: string;
+  email: string;
+  name: string;
+  isActive?: boolean;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  mobile?: string;
+  // Add other user properties as needed
+}
+
 
 
 export interface UserList {
@@ -56,6 +68,30 @@ export class UserService {
   private readonly USER_STORAGE_KEY = 'authUser';
   private profileData = new BehaviorSubject<User | null>(null);
   constructor(private apiService: ApiService) { }
+  /**
+   * Reset a user's password (admin action)
+   * @param userId The id of the user to reset
+   * @returns Observable<{ message: string }>
+   */
+  resetUserPassword(userId: string, tenantId?: string): Observable<{ message: string }> {
+    return new Observable<{ message: string }>((observer) => {
+      let url = '';
+      if (tenantId) {
+        url = `tenant/${tenantId}/users/${userId}/reset-password`;
+      } else {
+        url = `users/${userId}/reset-password`;
+      }
+      this.apiService.protectedPost<{ message: string }>(url, {}).subscribe({
+        next: (response) => {
+          observer.next({ message: response.data.message });
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
   private userData = new BehaviorSubject<User | null>(null);
   private getStoredUser(): User | null {
       try {
@@ -274,6 +310,28 @@ export class UserService {
       this.apiService.protectedDelete<{ message: string }>(url).subscribe({
         next: (response) => {
           observer.next({ message: response.data.message });
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+
+  resetPassword(userId: string, newPassword: string, tenantId?: string): Observable<void> {
+    return new Observable<void>((observer) => {
+      let url = '';
+      if (tenantId) {
+        url = `tenant/${tenantId}/users/${userId}/reset-password`;
+      } else {
+        url = `users/${userId}/reset-password`;
+      }
+      
+      this.apiService.protectedPatch<{ message: string }>(url, { newPassword }).subscribe({
+        next: () => {
+          observer.next();
           observer.complete();
         },
         error: (error) => {

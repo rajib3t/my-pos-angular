@@ -2,7 +2,7 @@ import { Injectable, DestroyRef, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, BehaviorSubject } from 'rxjs';
-
+import {AbstractControl, ValidationErrors } from '@angular/forms';
 export interface FormChangeDetectionConfig {
   form: FormGroup;
   originalValues?: any;
@@ -138,5 +138,16 @@ export class FormService {
     const normalizedValue1 = this.normalizeValue(value1);
     const normalizedValue2 = this.normalizeValue(value2);
     return normalizedValue1 === normalizedValue2;
+  }
+
+
+  passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    if (!confirmPassword) return null; // Don't show error if confirmPassword is empty
+    if (password !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    return null;
   }
 }

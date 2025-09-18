@@ -6,16 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { UserService } from '../../../../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
+import { FormService } from '@/app/services/form.service';
 // Move the validator function outside the component
-function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
-  const newPassword = control.get('newPassword')?.value;
-  const confirmPassword = control.get('confirmPassword')?.value;
-  
-  if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-    return { passwordMismatch: true };
-  }
-  return null;
-}
+
 
 @Component({
   standalone: true,
@@ -37,7 +30,8 @@ export class Password implements OnInit {
    private destroyRef = inject(DestroyRef);
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private formService: FormService
   ) {
     
     // Initialize the form with correct control names
@@ -45,7 +39,7 @@ export class Password implements OnInit {
       currentPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(8)]], // Changed to 8 to match template
       confirmPassword: ['', [Validators.required]] // Fixed name to match template
-    }, { validators: passwordsMatchValidator });
+    }, { validators: formService.passwordsMatchValidator });
   }
 
   changePassword() {

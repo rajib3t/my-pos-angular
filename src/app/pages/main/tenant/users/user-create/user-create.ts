@@ -5,16 +5,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractContro
 import { timer } from 'rxjs';
 import { UserService } from '@/app/services/user.service';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
-// Move the validator function outside the component
-function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
-  const newPassword = control.get('password')?.value;
-  const confirmPassword = control.get('confirm_password')?.value;
+import { FormService } from '@/app/services/form.service';
 
-  if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-    return { passwordMismatch: true };
-  }
-  return null;
-}
 @Component({
   selector: 'app-tenant-user-create',
   imports: [CommonModule, LucideAngularModule, ReactiveFormsModule, RouterModule],
@@ -43,16 +35,17 @@ export class UserCreate implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private formService: FormService
   ) {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(10)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirm_password: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
       role: ['', Validators.required]
-    }, { validators: passwordsMatchValidator });
+    }, { validators: formService.passwordsMatchValidator });
   }
 
   onSubmit() {
@@ -106,7 +99,7 @@ export class UserCreate implements OnInit {
   }
 
   get confirmPassword() {
-    return this.userForm.get('confirm_password');
+    return this.userForm.get('confirmPassword');
   }
 
   get role() {
