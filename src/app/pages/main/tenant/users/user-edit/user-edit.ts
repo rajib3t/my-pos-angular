@@ -46,8 +46,8 @@ export class UserEdit implements OnInit {
   ){
     this.editForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      name: ['', [Validators.required]],
-      mobile: [''],  // Optional field
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      mobile: ['', [Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(10)]],  // Optional field
       address: [''], // Optional field
       city: [''],    // Optional field
       state: [''],   // Optional field

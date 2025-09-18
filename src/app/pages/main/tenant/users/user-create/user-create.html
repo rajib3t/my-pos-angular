@@ -83,7 +83,20 @@
                                 placeholder="Enter your name"
                                 />
                                 @if(name?.invalid && (name?.dirty || name?.touched)) {
-                                  <p class="mt-1 text-sm text-red-600">Name is required</p>
+                                  <div class="mt-1 text-sm text-red-600">
+                                    @if(name?.errors?.['required']) {
+                                      <p>Name is required</p>
+                                    }
+                                    @if(name?.errors?.['minlength']) {
+                                      <p>Name must be at least 3 characters long</p>
+                                    }
+                                    @if(name?.errors?.['maxlength']) {
+                                      <p>Name cannot exceed 50 characters</p>
+                                    }
+                                    @if(name?.errors?.['server']) {
+                                      <p>{{ name?.errors?.['server'] }}</p>
+                                    }
+                                  </div>
                                 }
                             </div>
                         </div>
@@ -120,6 +133,9 @@
                                     @if(email?.errors?.['email']) {
                                       <p>Please enter a valid email address</p>
                                     }
+                                    @if(email?.errors?.['server']) {
+                                      <p>{{ email?.errors?.['server'] }}</p>
+                                    }
                                   </div>
                                 }
                             </div>
@@ -147,6 +163,9 @@
                                     }
                                     @if(mobile?.errors?.['maxlength']) {
                                       <p>Mobile number cannot exceed 10 digits</p>
+                                    }
+                                    @if(mobile?.errors?.['server']) {
+                                      <p>{{ mobile?.errors?.['server'] }}</p>
                                     }
                                   </div>
                                 }
@@ -236,7 +255,14 @@
                                   <option value="staff">Staff</option>
                                 </select>
                                 @if(role?.invalid && (role?.dirty || role?.touched)) {
-                                  <p class="mt-1 text-sm text-red-600">Role is required</p>
+                                  <div class="mt-1 text-sm text-red-600">
+                                    @if(role?.errors?.['required']) {
+                                      <p>Role is required</p>
+                                    }
+                                    @if(role?.errors?.['server']) {
+                                      <p>{{ role?.errors?.['server'] }}</p>
+                                    }
+                                  </div>
                                 }
                             </div>
                             <!-- Email -->

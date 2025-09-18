@@ -7,16 +7,21 @@ import { uppercaseValidator } from  '@/app/validators/uppercase.validator'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormService, FormChangeTracker } from '@/app/services/form.service';
 import { timer } from 'rxjs';
+import { Album, LucideAngularModule, Route } from 'lucide-angular';
+import { RouterModule, Router } from '@angular/router';
 @Component({
   selector: 'app-setting',
   imports: [
       CommonModule,
       ReactiveFormsModule,
+      LucideAngularModule,
+      RouterModule
   ],
   templateUrl: './setting.html',
   styleUrl: './setting.css'
 })
 export class TenantSetting implements OnInit {
+  readonly DashboardIcon = Album;
   settingForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
@@ -28,6 +33,8 @@ export class TenantSetting implements OnInit {
   // Form change tracker from service
   formTracker!: FormChangeTracker;
   private destroyRef = inject(DestroyRef);
+  
+  readonly router = inject(Router);
   constructor(
     private tenantService: TenantService,
     private uiService: UiService,

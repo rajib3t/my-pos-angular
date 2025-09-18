@@ -39,7 +39,7 @@ export class UserCreate implements OnInit {
     private formService: FormService
   ) {
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required, Validators.minLength(3)],
       email: ['', [Validators.required, Validators.email]],
       mobile: ['', [Validators.required, Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(10)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -72,12 +72,33 @@ export class UserCreate implements OnInit {
         });
       },
       error: (error) => {
-        this.isSubmitting = false;
-        this.errorMessage = error?.error?.message || 'An error occurred while creating the user.';
-        // Clear error message after a delay
-        timer(5000).subscribe(() => {
-          this.errorMessage = null;
-        });
+
+        if(error.error.validationErrors) {
+          const validationErrors = error.error.validationErrors;
+          Object.keys(validationErrors).forEach(prop => {
+            const formControl = this.userForm.get(prop);
+            if (formControl) {
+              // Set the server validation error on the form control
+              formControl.setErrors({
+                server: validationErrors[prop]
+              });
+            }
+          });
+          this.isSubmitting = false;
+          this.errorMessage = 'Please correct the errors in the form.';
+          // Clear error message after a delay
+          timer(5000).subscribe(() => {
+            this.errorMessage = null;
+          });
+        }else{
+          this.isSubmitting = false;
+          this.errorMessage = error?.error?.message || 'An error occurred while creating the user.';
+          // Clear error message after a delay
+          timer(5000).subscribe(() => {
+            this.errorMessage = null;
+          });
+        }
+        
       }
     });
   }

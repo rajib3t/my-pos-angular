@@ -5,15 +5,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { FormService, FormChangeTracker } from '../../../services/form.service';
-
-
+import { Router, RouterModule } from '@angular/router';
 import { timer } from 'rxjs';
+import { Album, LucideAngularModule, KeyIcon } from 'lucide-angular';
+
 @Component({
   selector: 'app-profile',
   standalone: true,                 // required when using `imports` on a component
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
+    LucideAngularModule
 
   ],
   templateUrl: './profile.html',
@@ -21,6 +24,8 @@ import { timer } from 'rxjs';
   
 })
 export class Profile implements OnInit {
+  readonly DashboardIcon = Album;
+  readonly KeyIcon = KeyIcon;
   profileForm: FormGroup;
   user: ProfileData | null = null;
   isSubmitting = false;
@@ -28,7 +33,8 @@ export class Profile implements OnInit {
   successMessage = '';
   isChangingInfo = false;
   isLoading = true;
-
+  readonly router = inject(Router);
+  
   // Form change tracker from service
   formTracker!: FormChangeTracker;
   private destroyRef = inject(DestroyRef);
@@ -38,6 +44,7 @@ export class Profile implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private formService: FormService,
+   
   ) {
     this.profileForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

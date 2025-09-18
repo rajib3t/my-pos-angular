@@ -7,8 +7,9 @@ import { UserService } from '../../../../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
 import { FormService } from '@/app/services/form.service';
+import { Album, LucideAngularModule } from 'lucide-angular';
 // Move the validator function outside the component
-
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -16,18 +17,21 @@ import { FormService } from '@/app/services/form.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+    RouterModule,
+    LucideAngularModule
   ],
   templateUrl: './password.html',
   styleUrl: './password.css',
   
 })
 export class Password implements OnInit {
+  readonly DashboardIcon = Album;
   passwordForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
   successMessage = '';
-   private destroyRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
+  readonly router = inject(Router);
   constructor(
     private fb: FormBuilder,
     private userService: UserService,

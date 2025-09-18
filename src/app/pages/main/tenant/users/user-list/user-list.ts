@@ -166,7 +166,7 @@ export class UserList implements OnInit {
 
 
   onEditUser(user: UserListResponse['items'][0]): void {
-    console.log(user);
+    
     
     this.router.navigate([`/tenants/${this.tenantId}/users/${user._id}/edit`]);
   }
