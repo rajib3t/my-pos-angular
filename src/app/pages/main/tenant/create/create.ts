@@ -62,8 +62,10 @@ export class CreateTenant implements OnInit {
                   });
               },
               error: (error) => {
-               
-                  if (error.error.validationErrors) {
+                  console.log('Error occurred while creating tenant:', error);
+                  
+                  if (error.error.validationErrors
+) {
                      const nameError = error.error.validationErrors['name'];
                      const subdomainError = error.error.validationErrors['subdomain'];
                      if (nameError) {

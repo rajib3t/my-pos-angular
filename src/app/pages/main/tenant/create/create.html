@@ -87,7 +87,18 @@
                               <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                               </svg>
-                                Account name is required.
+                               @if(tenantForm.get('name')?.errors?.['required']) {
+                                   Name is required.
+                               }
+                               @if(tenantForm.get('name')?.errors?.['minlength']) {
+                                   Name must be at least 3 characters long.
+                               }
+                               @if(tenantForm.get('name')?.errors?.['maxlength']) {
+                                   Name cannot exceed 50 characters.
+                               }
+                               @if(tenantForm.get('name')?.errors?.['server']) {
+                                  {{tenantForm.get('name')?.errors?.['server']}}
+                               }
                             </div>
                         }
                     </div>
@@ -120,7 +131,13 @@
                               <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                               </svg>
-                                Subdomain is required.
+                                @if(tenantForm.get('subdomain')?.errors?.['required']) {
+                                   Sub Domain is required.
+                               }
+                              
+                               @if(tenantForm.get('subdomain')?.errors?.['server']) {
+                                  {{tenantForm.get('subdomain')?.errors?.['server']}}
+                               }
                             </div>
                         }
                         <p class="mt-2 text-sm text-gray-500">This will be your account's unique web address</p>

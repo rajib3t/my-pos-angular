@@ -66,8 +66,8 @@
                   "mypos.local",
                   "localhost",
                   "127.0.0.1",
-                  "lead.mypos.local",
-                   "test.mypos.local"
+                  ".mypos.local"
+                  
                   
                 ]
               },

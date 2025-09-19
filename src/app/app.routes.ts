@@ -18,6 +18,7 @@ import { NotFound } from './pages/error/not-found';
 import { UserList as TenantUserList } from './pages/main/tenant/users/user-list/user-list';
 import { UserCreate as TenantUserCreate } from './pages/main/tenant/users/user-create/user-create';
 import { UserEdit as TenantUserEdit } from './pages/main/tenant/users/user-edit/user-edit';
+import { UserList } from './pages/main/users/user-list/user-list';
 export const routes: Routes = [
 
     {
@@ -47,6 +48,11 @@ export const routes: Routes = [
                 component: Password,
                
                 data: { title: 'Change Password' }
+            },
+            {
+                path:'users',
+                component: UserList,
+                data: { title: 'User List' }
             },
             {
                 path: 'tenants',

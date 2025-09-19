@@ -4,7 +4,7 @@ import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
 import { Root } from 'postcss';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { LucideAngularModule, Album, Network , ChevronDown, Plus, List} from 'lucide-angular';
+import { LucideAngularModule, Album , ChevronDown, Plus, List, LayoutList, Users} from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-sidebar',
@@ -14,17 +14,18 @@ import { filter } from 'rxjs/operators';
 })
 export class Sidebar implements OnInit, OnDestroy {
   readonly DashboardIcon = Album;
-  readonly TenantIcon = Network;
+  readonly TenantIcon = LayoutList;
   readonly ChevronDown =ChevronDown;
   readonly PlusIcon = Plus;
   readonly ListIcon = List;
+  readonly UsersIcon = Users;
   private uiSubscription!: Subscription;
   private routerSubscription!: Subscription;
 
   isMobileMenuOpen = false;
   submenuStates: { [key: string]: boolean } = {
     tenants: false,
-    orders: false,
+    users: false,
     customers: false,
     reports: false,
     settings: false
@@ -92,8 +93,8 @@ export class Sidebar implements OnInit, OnDestroy {
         // Auto-open appropriate submenu based on route
         if (this.currentRoute.includes('/tenants')) {
             this.submenuStates['tenants'] = true;
-        } else if (this.currentRoute.includes('/orders')) {
-            this.submenuStates['orders'] = true;
+        } else if (this.currentRoute.includes('/users')) {
+            this.submenuStates['users'] = true;
         } else if (this.currentRoute.includes('/customers')) {
             this.submenuStates['customers'] = true;
         } else if (this.currentRoute.includes('/reports')) {
@@ -112,7 +113,7 @@ export class Sidebar implements OnInit, OnDestroy {
     isParentActive(menuKey: string): boolean {
         const routeMap: { [key: string]: string } = {
             tenants: '/tenants',
-            orders: '/orders',
+            users: '/users',
             customers: '/customers',
             reports: '/reports',
             settings: '/settings'
