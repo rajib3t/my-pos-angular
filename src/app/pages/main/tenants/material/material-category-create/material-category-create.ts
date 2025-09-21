@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators , ReactiveFormsModule} from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
@@ -24,7 +25,8 @@ export class MaterialCategoryCreate implements OnInit {
   constructor(
     private fb: FormBuilder,
     private tenantService: TenantService,
-    private uiService: UiService
+    private uiService: UiService,
+    public router: Router
   ) {
     this.categoryForm = this.fb.group({
       name: ["", Validators.required],
