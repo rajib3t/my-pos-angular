@@ -30,8 +30,10 @@ const getErrorMessage = (error: any): string => {
     return  error.error?.message || 'Conflict error. Resource already exists.';
   } else if (error.status === 429) {
     return 'Too many requests. Please try again later.';
-  } else {
-    return error.error?.message || 'An error occurred. Please try again.';
+  } else if (error.status === 422) {
+    return 'Validation error. Please check your input.';
+  }else{
+     return error.error?.message || 'An error occurred. Please try again.';
   }
 };
 
@@ -201,7 +203,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
       }
 
 
-       if(error.error.message === 'Validation failed'){
+       if((error.error.message === 'Validation failed' && error.status === 422) || (error.error.message === 'Validation failed' && error.status === 409) ) {
         // Parse validation errors and create field-specific error messages
         const validationErrors: { [key: string]: string } = {};
         

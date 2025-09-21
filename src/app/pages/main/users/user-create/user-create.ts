@@ -14,7 +14,7 @@ import { FormService } from '@/app/services/form.service';
   styleUrl: './user-create.css'
 })
 export class UserCreate implements OnInit {
-  tenantId: string | null = null;
+  
   readonly UserIcon = UserIcon;
   readonly MailIcon = MailIcon;
   readonly LockKeyholeIcon = LockKeyholeIcon;
@@ -23,14 +23,7 @@ export class UserCreate implements OnInit {
   errorMessage: string | null = null;
 
   ngOnInit() {
-     this.activatedRoute.paramMap.subscribe(params => {
-      if (params.get('id') || params.get('id') !== null) {
-        this.tenantId = params.get('id');
-      }else{
-        this.tenantId = null;
-        this.router.navigate(['/404']);
-      }
-   });
+     
   }
   successMessage: string | null = null;
   isSubmitting = false;
@@ -62,7 +55,7 @@ export class UserCreate implements OnInit {
     this.successMessage = null;
 
     const formData = this.userForm.value;
-    this.userService.createUser(formData, this.tenantId ?? '').subscribe({
+    this.userService.createUser(formData).subscribe({
       next: (response) => {
         this.isSubmitting = false;
         this.successMessage = 'User created successfully!';
@@ -134,7 +127,7 @@ export class UserCreate implements OnInit {
 
 
   goToUserList() : void {
-    this.router.navigate(['/tenants', this.tenantId, 'users']);
+    this.router.navigate(['/users']);
   
   }
 

@@ -19,6 +19,8 @@ import { UserList as TenantUserList } from './pages/main/tenant/users/user-list/
 import { UserCreate as TenantUserCreate } from './pages/main/tenant/users/user-create/user-create';
 import { UserEdit as TenantUserEdit } from './pages/main/tenant/users/user-edit/user-edit';
 import { UserList } from './pages/main/users/user-list/user-list';
+import { UserCreate } from './pages/main/users/user-create/user-create';
+import { UserEdit } from './pages/main/users/user-edit/user-edit';
 export const routes: Routes = [
 
     {
@@ -53,6 +55,16 @@ export const routes: Routes = [
                 path:'users',
                 component: UserList,
                 data: { title: 'User List' }
+            },
+            {
+                path: 'users/create',
+                component: UserCreate,
+                data: { title: 'Create User' }
+            },
+            {
+                path: 'users/:id/edit',
+                component: UserEdit,
+                data: { title: 'Edit User' }
             },
             {
                 path: 'tenants',

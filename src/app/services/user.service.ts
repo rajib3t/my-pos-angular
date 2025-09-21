@@ -107,6 +107,7 @@ export class UserService {
   private storeUser(user: User | null): void {
     try {
       if (user) {
+
         localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
       } else {
         localStorage.removeItem(this.USER_STORAGE_KEY);
@@ -257,6 +258,8 @@ export class UserService {
  
 
   getUser(userId: string, tenantId?: string): Observable<User | null> {
+    console.log('userId in service:', userId, 'tenantId:', tenantId);
+    
     return new Observable<User | null>((observer) => {
       let url = '';
       if (tenantId) {
@@ -264,6 +267,9 @@ export class UserService {
       } else {
         url = `users/${userId}`;
       }
+
+      console.log('Fetching user from URL:', url);
+      
 
       this.apiService.protectedGet<{ data: User }>(url).subscribe({
         next: (response) => {
@@ -286,7 +292,7 @@ export class UserService {
         url = `users/${userId}`;
       }
 
-      this.apiService.protectedPatch<{ data: User }>(url, updatedData).subscribe({
+      this.apiService.protectedPut<{ data: User }>(url, updatedData).subscribe({
         next: (response) => {
           observer.next(response.data.data);
           observer.complete();

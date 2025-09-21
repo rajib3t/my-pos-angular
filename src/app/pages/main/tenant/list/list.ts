@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { UiService } from '@/app/services/ui.service';
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 import { LucideAngularModule, LayoutList, SquarePlus, House } from 'lucide-angular';
+import { environment } from '@/environments/environment';
 @Component({
   selector: 'app-list',
   imports: [
@@ -24,6 +25,7 @@ import { LucideAngularModule, LayoutList, SquarePlus, House } from 'lucide-angul
 export class TenantList implements OnInit, OnDestroy {
   readonly HouseIcon = LayoutList;
   readonly TenantAddIcon = SquarePlus;
+  readonly mainDomain = environment.mainDomain || '';
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -100,6 +102,7 @@ export class TenantList implements OnInit, OnDestroy {
       createdAtFrom: [''],
       createdAtTo: ['']
     });
+
   }
 
   ngOnInit(): void {
@@ -251,5 +254,9 @@ export class TenantList implements OnInit, OnDestroy {
     )
   }
 
+  openSubdomain(tenant: Tenant): void {
+    const url = `http://${tenant.subdomain}.${this.mainDomain}`;
+    window.open(url, '_blank');
+  }
 
 }

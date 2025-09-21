@@ -32,7 +32,7 @@ export class UserList implements OnInit {
   readonly HouseIcon = LayoutList;
   readonly UserAddIcon = UserPlus;
   readonly KeyIcon = KeyIcon;
-  tenantId: string | null = null;
+  authUser: Partial<User> | null = null;
   showSearchFilters: boolean = false;
   loading: boolean = false;
   filter: { [key: string]: any } = {};
@@ -98,14 +98,12 @@ export class UserList implements OnInit {
         
         // Reset to first page and reload
         this.paginationConfig.page = 1;
-        this.loadUsers(this.tenantId);
+        this.loadUsers();
       });
     }
 
-  loadUsers(tenantId: string | null) {
-      if (!tenantId) {
-        return;
-      }
+  loadUsers() {
+     
       this.loading = true;
       // Add sort params to filter
       const queryFilter = { ...this.filter };
@@ -113,7 +111,7 @@ export class UserList implements OnInit {
         queryFilter['sortField'] = this.sortField;
         queryFilter['sortDirection'] = this.sortDirection;
       }
-      this.userService.getUsers(this.paginationConfig.page, this.paginationConfig.limit, queryFilter, tenantId).subscribe({
+      this.userService.getUsers(this.paginationConfig.page, this.paginationConfig.limit, queryFilter).subscribe({
         next: (result: UserListResponse) => {
           this.users = result.items;
           this.paginationConfig = {
@@ -139,21 +137,23 @@ export class UserList implements OnInit {
         this.sortDirection = 'asc';
       }
       this.paginationConfig.page = 1;
-      this.loadUsers(this.tenantId);
+      this.loadUsers();
     }
   
     onPaginationChange(change: PaginationChange) {
       this.paginationConfig.page = change.page;
       this.paginationConfig.limit = change.limit;
-      this.loadUsers(this.tenantId);
+      this.loadUsers();
     }
 
   ngOnInit(): void {
-      this.activatedRoute.paramMap.subscribe(params => {
-        this.tenantId = params.get('id');
-      });
-      this.loadUsers(this.tenantId);
+      this.loadUsers();
+  
       this.setupSearchSubscription();
+
+      this.userService.getAuthUser.subscribe(user => {
+        this.authUser = user;
+      });
    }
 
   toggleSearchFilters(): void {
@@ -165,14 +165,20 @@ export class UserList implements OnInit {
     this.searchForm.reset();
     this.filter = {};
     this.paginationConfig.page = 1;
-    this.loadUsers(this.tenantId);
+    this.loadUsers();
   }
 
 
   onEditUser(user: UserListResponse['items'][0]): void {
+    if(!user || !user._id) return;
+
+    if(this.authUser?.email === user.email){
+      this.router.navigate([`/profile`]);
+    }else{
+      this.router.navigate([`/users/${user._id}/edit`]);
+    }
     
-    
-    this.router.navigate([`/tenants/${this.tenantId}/users/${user._id}/edit`]);
+   
   }
 
   onDeleteUser(user: UserListResponse['items'][0]): void {
@@ -185,9 +191,10 @@ export class UserList implements OnInit {
   }
 
 
+
   gotoAddUser(): void {
     
-    this.router.navigate([`/tenants/${this.tenantId}/users/create`]);
+    this.router.navigate([`/users/create`]);
     
   }
 
@@ -208,7 +215,7 @@ export class UserList implements OnInit {
 
 
   confirmDeleteUser(): void {
-    console.log(this.userToDelete);
+   
     
     if (!this.userToDelete || this.confirmationName.trim() !== this.userToDelete.name || this.isDeleting) {
       return;
@@ -226,7 +233,7 @@ export class UserList implements OnInit {
       return;
     }
 
-    this.userService.deleteUser(userId, this.tenantId as string).subscribe({
+    this.userService.deleteUser(userId).subscribe({
       next: (response) => {
         // Remove the user from the local array
         this.users = this.users.filter(u => ( u._id) !== userId);
@@ -234,7 +241,7 @@ export class UserList implements OnInit {
         // Update pagination if needed
         if (this.users.length === 0 && this.paginationConfig.page > 1) {
           this.paginationConfig.page--;
-          this.loadUsers(this.tenantId);
+          this.loadUsers();
         } else {
           // Update total count
           this.paginationConfig.total--;
@@ -261,15 +268,9 @@ export class UserList implements OnInit {
     this.confirmationName = '';
   }
 
-  backToTenantList(): void {
-    this.router.navigate(['/tenants']); 
-  }
+ 
 
-  gotoEditTenant(): void {
-    if (this.tenantId) {
-      this.router.navigate([`/tenants/${this.tenantId}/edit`]);
-    }
-  }
+
   onChangePassword(user: UserListResponse['items'][0]): void {
     this.userToResetPassword = user;
     this.showResetPasswordPopup = true;

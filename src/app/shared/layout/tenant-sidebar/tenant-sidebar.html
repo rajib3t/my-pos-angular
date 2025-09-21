@@ -171,6 +171,63 @@
       </div>
     </nav>
 
+
+       <!-- Materials Section -->
+    <nav class="px-6 space-y-2 mt-8">
+      <h3 class="text-xs font-semibold text-white/60 uppercase tracking-wider mb-4 flex items-center">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 00-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+        </svg>
+        Users
+      </h3>
+
+      <div class="space-y-1">
+        <!-- Categories Menu -->
+        <div class="modern-menu-group">
+          <button 
+            (click)="toggleSubmenu('users'); closeMobileMenu()" 
+            [class]="getParentMenuClasses('material-category')"
+            class="modern-menu-item modern-parent-menu w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition-all duration-200 group"
+            type="button">
+            <div class="flex items-center space-x-3">
+              <div class="menu-icon-container">
+                <lucide-angular [img]="UsersIcon" [strokeWidth]="1.5" class="w-5 h-5"></lucide-angular>
+              </div>
+              <span class="font-medium">Users</span>
+            </div>
+            <lucide-angular [class.chevron-rotated]="isSubmenuOpen('users')" 
+                          [img]="ChevronDown" [strokeWidth]="2" 
+                          class="w-4 h-4 transition-transform duration-300 text-white/60 group-hover:text-white/90"></lucide-angular>
+          </button>
+          
+          <div class="submenu-container overflow-hidden transition-all duration-300 ease-in-out"
+               [class.max-h-0]="!isSubmenuOpen('users')"
+               [class.max-h-48]="isSubmenuOpen('users')"
+               [class.opacity-0]="!isSubmenuOpen('users')"
+               [class.opacity-100]="isSubmenuOpen('users')">
+            <div class="ml-8 mt-2 space-y-1 border-l border-white/10 pl-4">
+              <a [routerLink]="['/users']" 
+                 [class.router-link-active]="isRouteActive('/users')"
+                 (click)="closeMobileMenu()" 
+                 class="modern-submenu-item flex items-center space-x-3 px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200">
+                <lucide-angular [img]="ListIcon" [strokeWidth]="1.5" class="w-4 h-4"></lucide-angular>
+                <span class="font-medium">List</span>
+              </a>
+              <a [routerLink]="['/users/create']" 
+                 [class.router-link-active]="isRouteActive('/users/create')"
+                 (click)="closeMobileMenu()" 
+                 class="modern-submenu-item flex items-center space-x-3 px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200">
+                <lucide-angular [img]="PlusIcon" [strokeWidth]="1.5" class="w-4 h-4"></lucide-angular>
+                <span class="font-medium">Create</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        
+      </div>
+    </nav>
+
     <!-- Quick Actions -->
     <div class="px-6 mt-8 pt-6">
       <h3 class="text-xs font-semibold text-white/60 uppercase tracking-wider mb-4 flex items-center">

@@ -115,22 +115,13 @@
               <lucide-angular [img]="ListIcon" [strokeWidth]="1.5" class="w-4 h-4"></lucide-angular>
               <span class="font-medium">List</span>
             </a>
-            <a href="#" 
+            <a [routerLink]="['/users/create']" 
                (click)="closeMobileMenu()" 
                class="modern-submenu-item flex items-center space-x-3 px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span class="font-medium">Pending Orders</span>
+              <lucide-angular [img]="PlusIcon" [strokeWidth]="1.5" class="w-4 h-4"></lucide-angular>
+              <span class="font-medium">Create</span>
             </a>
-            <a href="#" 
-               (click)="closeMobileMenu()" 
-               class="modern-submenu-item flex items-center space-x-3 px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-all duration-200">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span class="font-medium">Completed Orders</span>
-            </a>
+            
           </div>
         </div>
       </div>
