@@ -7,7 +7,7 @@ import { uppercaseValidator } from  '@/app/validators/uppercase.validator'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormService, FormChangeTracker } from '@/app/services/form.service';
 import { timer } from 'rxjs';
-import { Album, LucideAngularModule, Route } from 'lucide-angular';
+import { Album, LucideAngularModule, Route, Settings } from 'lucide-angular';
 import { RouterModule, Router } from '@angular/router';
 @Component({
   selector: 'app-setting',
@@ -22,6 +22,7 @@ import { RouterModule, Router } from '@angular/router';
 })
 export class TenantSetting implements OnInit {
   readonly DashboardIcon = Album;
+  readonly SettingsIcon = Settings;
   settingForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
@@ -276,5 +277,77 @@ export class TenantSetting implements OnInit {
         });
   }
 
+  // Dynamic Progress Methods
+  getStepProgress(step: number): number {
+    const fields = this.getStepFields(step);
+    const validFields = fields.filter(field => this.settingForm.get(field)?.valid).length;
+    return Math.round((validFields / fields.length) * 100);
+  }
+
+  getStepFields(step: number): string[] {
+    switch (step) {
+      case 1: return ['shopName', 'code', 'logoUrl'];
+      case 2: return ['address', 'address2', 'city', 'state', 'country', 'zipCode'];
+      case 3: return ['phone', 'email', 'currency', 'fassi', 'gstNumber', 'sgst', 'cgst'];
+      default: return [];
+    }
+  }
+
+  isStepCompleted(step: number): boolean {
+    return this.getStepProgress(step) === 100;
+  }
+
+  isStepActive(step: number): boolean {
+    const previousStep = step - 1;
+    if (step === 1) return true;
+    return previousStep === 0 || this.isStepCompleted(previousStep);
+  }
+
+  getStepClass(step: number): string {
+    const baseClass = 'w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shadow-lg transition-all duration-500 transform';
+    
+    if (this.isStepCompleted(step)) {
+      return `${baseClass} bg-gradient-to-r from-green-500 to-emerald-500 scale-110`;
+    } else if (this.isStepActive(step)) {
+      switch (step) {
+        case 1: return `${baseClass} bg-gradient-to-r from-indigo-500 to-purple-500 scale-105`;
+        case 2: return `${baseClass} bg-gradient-to-r from-purple-500 to-pink-500 scale-105`;
+        case 3: return `${baseClass} bg-gradient-to-r from-pink-500 to-red-500 scale-105`;
+        default: return `${baseClass} bg-gray-300`;
+      }
+    } else {
+      return `${baseClass} bg-gray-300`;
+    }
+  }
+
+  getStepTextClass(step: number): string {
+    if (this.isStepCompleted(step)) {
+      return 'text-green-600';
+    } else if (this.isStepActive(step)) {
+      switch (step) {
+        case 1: return 'text-indigo-600';
+        case 2: return 'text-purple-600';
+        case 3: return 'text-pink-600';
+        default: return 'text-gray-500';
+      }
+    } else {
+      return 'text-gray-500';
+    }
+  }
+
+  getProgressWidth(fromStep: number, toStep: number): number {
+    const fromProgress = this.getStepProgress(fromStep);
+    if (fromProgress === 100) {
+      const toProgress = this.getStepProgress(toStep);
+      return toProgress;
+    }
+    return 0;
+  }
+
+  getOverallProgress(): number {
+    const allFields = ['shopName', 'code', 'logoUrl', 'address', 'address2', 'city', 'state', 'country', 'zipCode', 'phone', 'email', 'currency', 'fassi', 'gstNumber', 'sgst', 'cgst'];
+    const validFields = allFields.filter(field => this.settingForm.get(field)?.valid).length;
+    return Math.round((validFields / allFields.length) * 100);
+  }
 
 }
