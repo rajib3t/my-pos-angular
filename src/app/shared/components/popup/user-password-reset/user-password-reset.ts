@@ -88,8 +88,111 @@ export class UserPasswordReset {
   get confirmPassword() {
     return this.passwordResetForm.get('confirmPassword');
   }
- 
 
+  // Password Strength Methods
+  getPasswordValue(): string {
+    return this.passwordResetForm.get('password')?.value || '';
+  }
 
+  getPasswordStrength(): number {
+    const password = this.getPasswordValue();
+    let strength = 0;
+    
+    if (this.hasMinLength()) strength++;
+    if (this.hasLowerCase()) strength++;
+    if (this.hasUpperCase()) strength++;
+    if (this.hasNumber()) strength++;
+    if (this.hasSpecialChar()) strength++;
+    
+    return strength;
+  }
 
+  hasMinLength(): boolean {
+    return this.getPasswordValue().length >= 8;
+  }
+
+  hasLowerCase(): boolean {
+    return /[a-z]/.test(this.getPasswordValue());
+  }
+
+  hasUpperCase(): boolean {
+    return /[A-Z]/.test(this.getPasswordValue());
+  }
+
+  hasNumber(): boolean {
+    return /\d/.test(this.getPasswordValue());
+  }
+
+  hasSpecialChar(): boolean {
+    return /[!@#$%^&*(),.?":{}|<>]/.test(this.getPasswordValue());
+  }
+
+  getPasswordStrengthBarClass(barIndex: number): string {
+    const strength = this.getPasswordStrength();
+    
+    if (barIndex <= strength) {
+      switch (strength) {
+        case 1:
+        case 2:
+          return 'bg-red-400';
+        case 3:
+          return 'bg-yellow-400';
+        case 4:
+          return 'bg-blue-400';
+        case 5:
+          return 'bg-green-400';
+        default:
+          return 'bg-gray-200';
+      }
+    }
+    return 'bg-gray-200';
+  }
+
+  getPasswordStrengthText(): string {
+    const strength = this.getPasswordStrength();
+    
+    switch (strength) {
+      case 0:
+      case 1:
+        return 'Very Weak';
+      case 2:
+        return 'Weak';
+      case 3:
+        return 'Fair';
+      case 4:
+        return 'Good';
+      case 5:
+        return 'Strong';
+      default:
+        return 'Very Weak';
+    }
+  }
+
+  getPasswordStrengthTextClass(): string {
+    const strength = this.getPasswordStrength();
+    
+    switch (strength) {
+      case 0:
+      case 1:
+        return 'text-red-500';
+      case 2:
+        return 'text-red-400';
+      case 3:
+        return 'text-yellow-500';
+      case 4:
+        return 'text-blue-500';
+      case 5:
+        return 'text-green-500';
+      default:
+        return 'text-gray-500';
+    }
+  }
+
+  // Password visibility toggle
+  togglePasswordVisibility(fieldId: string): void {
+    const field = document.getElementById(fieldId) as HTMLInputElement;
+    if (field) {
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
+  }
 }
