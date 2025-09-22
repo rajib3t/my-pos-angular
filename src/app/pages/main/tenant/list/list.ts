@@ -229,10 +229,10 @@ export class TenantList implements OnInit, OnDestroy {
         this.isDeleting = false;
         this.showDeletePopup = false;
         
-        this.uiService.success(`Tenant "${tenantName}" has been successfully deleted.`, 'Success');
+        this.uiService.success(`Sub Account "${tenantName}" has been successfully deleted.`, 'Success', 2000);
       },
       error: (error) => {
-        this.uiService.error(`Failed to delete tenant "${tenantName}". Please try again.`, 'Error');
+        this.uiService.error(`Failed to delete sub account "${tenantName}". Please try again.`, 'Error', 2000);
         this.isDeleting = false;
       }
     });

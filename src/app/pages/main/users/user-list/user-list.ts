@@ -252,10 +252,10 @@ export class UserList implements OnInit {
         this.isDeleting = false;
         this.showDeletePopup = false;
 
-        this.uiService.success(`User "${userName}" has been successfully deleted.`, 'Success');
+        this.uiService.success(`User "${userName}" has been successfully deleted.`, 'Success', 2000);
       },
       error: (error) => {
-        this.uiService.error(`Failed to delete user "${userName}". Please try again.`, 'Error');
+        this.uiService.error(`Failed to delete user "${userName}". Please try again.`, 'Error', 2000);
         this.isDeleting = false;
       }
     });

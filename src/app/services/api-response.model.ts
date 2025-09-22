@@ -30,3 +30,11 @@ export interface AuthToken {
   exp?: number;
   [key: string]: any;
 }
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}

@@ -18,6 +18,12 @@
     <div class="flex-1 ml-0 lg:ml-64 overflow-y-auto" style="height: calc(100vh - 7rem);"> <!-- Adjusted height for header + footer -->
       <div class="p-4">
         <router-outlet></router-outlet>
+        
+        <!-- Loading Overlay -->
+        <app-loading></app-loading>
+        
+        <!-- Notifications -->
+        <app-notification></app-notification>
       </div>
     </div>
   </div>

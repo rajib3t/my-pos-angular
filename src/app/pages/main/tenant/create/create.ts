@@ -7,6 +7,7 @@ import { timer } from 'rxjs';
 import { LucideAngularModule, SquarePlus, LayoutList } from 'lucide-angular';
 import { RouterModule , Router} from '@angular/router';
 import { environment } from '@/environments/environment';
+import { UiService } from '@/app/services/ui.service';
 @Component({
   selector: 'app-create',
   imports: [
@@ -32,7 +33,8 @@ export class CreateTenant implements OnInit {
    constructor(
          private fb: FormBuilder,
          private tenantService: TenantService,
-         private router: Router
+         private router: Router,
+         private uiService : UiService
    ) {
       this.tenantForm = this.fb.group({
          name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -82,9 +84,10 @@ export class CreateTenant implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                next: (tenant) => {
-                  this.successMessage = 'Tenant created successfully!';
+                  this.successMessage = 'Sub account created successfully!';
                   this.tenantForm.reset();
                   this.isSubmitting = false;
+                  this.uiService.success(this.successMessage, 'Sub Account', 2000)
                   timer(3000).pipe(
                      takeUntilDestroyed(this.destroyRef)
                      ).subscribe(() => {
@@ -92,7 +95,7 @@ export class CreateTenant implements OnInit {
                      });
                },
                error: (error) => {
-                     console.log('Error occurred while creating tenant:', error);
+                     
                      if (error.error.validationErrors) {
                         const nameError = error.error.validationErrors['name'];
                         const subdomainError = error.error.validationErrors['subdomain'];
@@ -132,7 +135,7 @@ export class CreateTenant implements OnInit {
                            this.errorMessage = '';
                         });
                      } else {
-                        this.errorMessage = 'Failed to create tenant. Please try again.';
+                        this.errorMessage = 'Failed to create sub account. Please try again.';
                         this.isSubmitting = false;
                         timer(3000).pipe(
                            takeUntilDestroyed(this.destroyRef)

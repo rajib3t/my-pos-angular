@@ -5,9 +5,19 @@ import { RouterOutlet } from '@angular/router';
 import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
 import { TenantSidebar } from '../tenant-sidebar/tenant-sidebar';
+import { LoadingComponent } from '../../components/loading/loading.component';
+import { NotificationComponent } from '../../components/notification/notification.component';
 @Component({
   selector: 'app-main',
-  imports: [Header, Sidebar, RouterOutlet, TenantSidebar],
+  standalone: true,
+  imports: [
+    Header, 
+    Sidebar, 
+    RouterOutlet, 
+    TenantSidebar, 
+    LoadingComponent, 
+    NotificationComponent
+  ],
   templateUrl: './main.html',
   styleUrl: './main.css'
 })

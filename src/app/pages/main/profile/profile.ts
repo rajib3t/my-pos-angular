@@ -8,7 +8,7 @@ import { FormService, FormChangeTracker } from '../../../services/form.service';
 import { Router, RouterModule } from '@angular/router';
 import { timer } from 'rxjs';
 import { Album, LucideAngularModule, KeyIcon } from 'lucide-angular';
-
+import { UiService } from '@/app/services/ui.service';
 @Component({
   selector: 'app-profile',
   standalone: true,                 // required when using `imports` on a component
@@ -44,6 +44,7 @@ export class Profile implements OnInit {
     private fb: FormBuilder,
     private apiService: ApiService,
     private formService: FormService,
+    private uiService : UiService
    
   ) {
     this.profileForm = this.fb.group({
@@ -160,7 +161,8 @@ export class Profile implements OnInit {
         this.successMessage = updatedProfile ? 'Profile updated successfully.' : 'No changes were made.';
         this.isSubmitting = false;
         this.isChangingInfo = false; // Reset the change flag after successful update
-        
+        this.uiService.success('Operation completed successfully!','Profile', 2000);
+
         timer(3000).pipe(
           takeUntilDestroyed(this.destroyRef)
         ).subscribe(() => {
