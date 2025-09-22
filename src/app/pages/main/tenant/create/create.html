@@ -232,7 +232,7 @@
                           Subdomain *
                         </label>
                         <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                          <span class="text-indigo-500 text-sm font-semibold bg-indigo-50 px-2 py-1 rounded-lg">.mypos.com</span>
+                          <span class="text-indigo-500 text-sm font-semibold bg-indigo-50 px-2 py-1 rounded-lg">.{{mainDomain}}</span>
                         </div>
                       </div>
                       @if(tenantForm.get('subdomain')?.invalid && tenantForm.get('subdomain')?.touched) {
@@ -258,7 +258,7 @@
                             <p class="text-xs text-indigo-600 mt-1">
                               Your account will be accessible at: 
                               <span class="font-mono bg-white px-2 py-1 rounded border">
-                                {{tenantForm.get('subdomain')?.value || 'your-subdomain'}}.mypos.com
+                                {{tenantForm.get('subdomain')?.value || 'your-subdomain'}}.{{mainDomain}}
                               </span>
                             </p>
                           </div>

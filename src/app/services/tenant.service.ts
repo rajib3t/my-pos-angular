@@ -66,6 +66,8 @@ export class TenantService {
 
   createTenant(tenant: Tenant): Observable<Tenant> {
     return new Observable<Tenant>((observer) => {
+
+    
       this.apiService.protectedPost<{ data: Tenant }>('tenant/create', tenant).subscribe({
         next: (response) => {
           observer.next(response.data.data);

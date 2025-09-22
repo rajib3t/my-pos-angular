@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8087' // Replace with your actual production API URL
+  apiUrl: 'http://localhost:8087',// Replace with your actual production API URL
+  mainDomain: 'mypos.local',   // Replace with your actual main domain
 };
