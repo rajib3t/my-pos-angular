@@ -80,10 +80,10 @@ export class TenantService {
     });
   }
 
-  getTenantSetting(subdomain: string): Observable<TenantSettingResponse> {
+  getTenantSetting(storeID: string): Observable<TenantSettingResponse> {
 
     return new Observable<TenantSettingResponse>((observer) => {
-      this.apiService.protectedGet<{ data: TenantSettingResponse }>(`tenants/settings/${subdomain}`).subscribe({
+      this.apiService.protectedGet<{ data: TenantSettingResponse }>(`tenants/settings/${storeID}`).subscribe({
         next: (response) => {
           observer.next(response.data.data);
           observer.complete();

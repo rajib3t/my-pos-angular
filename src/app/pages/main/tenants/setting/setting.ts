@@ -1,4 +1,4 @@
-import { Component , OnInit, DestroyRef, inject} from '@angular/core';
+import { Component , OnInit, DestroyRef, inject, effect} from '@angular/core';
 import { TenantSettingResponse, TenantService } from '@/app/services/tenant.service';
 import { UiService } from '@/app/services/ui.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,7 +8,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormService, FormChangeTracker } from '@/app/services/form.service';
 import { timer } from 'rxjs';
 import { Album, LucideAngularModule, Route, Settings } from 'lucide-angular';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
+import { appState } from '@/app/state/app.state';
+import { Store } from '@/app/services/store.service';
 @Component({
   selector: 'app-setting',
   imports: [
@@ -23,6 +25,7 @@ import { RouterModule, Router } from '@angular/router';
 export class TenantSetting implements OnInit {
   readonly DashboardIcon = Album;
   readonly SettingsIcon = Settings;
+  storeID : string = null!;
   settingForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
@@ -30,18 +33,28 @@ export class TenantSetting implements OnInit {
   isChangingInfo = false;
   isLoading = true;
   tenant: TenantSettingResponse | null = null;
-
+  store : Partial<Store> | null = null
   // Form change tracker from service
   formTracker!: FormChangeTracker;
   private destroyRef = inject(DestroyRef);
   
   readonly router = inject(Router);
   constructor(
+    private activatedRoute: ActivatedRoute,
     private tenantService: TenantService,
     private uiService: UiService,
     private fb: FormBuilder,
     private formService: FormService,
   ) {
+    const storeEffect = effect(() => {
+      const storeData = appState.store;
+      this.store = storeData
+    });
+
+    
+    
+    // Clean up the effect when the component is destroyed
+    this.destroyRef.onDestroy(() => storeEffect.destroy());
     this.settingForm = this.fb.group({
     shopName: ['', Validators.required],
     code: ["", [Validators.required, uppercaseValidator()]] ,
@@ -60,20 +73,29 @@ export class TenantSetting implements OnInit {
     sgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')],
     cgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')]
     });
+
+
+     // Clean up the effect when the component is destroyed
+    this.destroyRef.onDestroy(() => storeEffect.destroy());
   }
 
   ngOnInit(): void {
+     this.activatedRoute.paramMap.subscribe(params => {
+        this.storeID = params.get('storeID') || '';
+      });
     const subdomain = this.uiService.getSubDomain();
+    console.log(this.store?._id);
+    
     if (subdomain) {
-      this.tenantService.getTenantSetting(subdomain).pipe(
+      this.tenantService.getTenantSetting(this.storeID  as string).pipe(
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (tenant) => {
           this.tenant = tenant;
           this.settingForm.patchValue({
-            shopName: tenant.shopName || '',
-            code: tenant?.code || "",
+            shopName: this.store?.name || '',
+            code: this.store?.code || "",
             address: tenant.address1 || '',
             address2: tenant.address2 || '',
             city: tenant.city || '',
@@ -165,8 +187,8 @@ export class TenantSetting implements OnInit {
     });
 
     // Always include shopName as it's required
-    changedFields['shopName'] = this.settingForm.value.shopName;
-    this.tenantService.updateTenantSetting(subdomain, changedFields as any).pipe(
+    changedFields['shopName'] = this.store?.name
+    this.tenantService.updateTenantSetting(this.storeID , changedFields as any).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (updateSettings) => {

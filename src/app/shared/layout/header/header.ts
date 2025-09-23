@@ -1,12 +1,12 @@
-import { Component, HostListener, ElementRef, ViewChild, OnInit, OnDestroy, Signal, signal } from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild, OnInit, OnDestroy, effect, Signal, computed, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../../services/ui.service';
-import { User , UserService} from '../../../services/user.service';
+import { User, UserService } from '../../../services/user.service';
 import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
-import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings, Bell, Plus, BarChart3, ChevronRight} from 'lucide-angular';
+import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings, Bell, Plus, BarChart3, ChevronRight } from 'lucide-angular';
 import { appState } from '@/app/state/app.state';
 @Component({
   selector: 'app-header',
@@ -24,28 +24,38 @@ import { appState } from '@/app/state/app.state';
     readonly PlusIcon = Plus;
     readonly BarChartIcon = BarChart3;
     readonly ChevronRightIcon = ChevronRight;
-    storeID = ''
-    isSubdomain = false;
+    storeID = '';
+  isSubdomain = false;
   authUser: User | null = null;
-   private userSubscription!: Subscription;
+  private userSubscription!: Subscription;
+  private destroyRef = inject(DestroyRef);
   @ViewChild('userMenuButton', { static: false }) userMenuButton!: ElementRef;
   @ViewChild('userMenuDropdown', { static: false }) userMenuDropdown!: ElementRef;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
-  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService, private router: Router  ) { 
-   
-     this.storeID = appState.store?._id as string
+  constructor(
+    private uiService: UiService, 
+    private userService: UserService, 
+    private apiService: ApiService, 
+    private router: Router
+  ) {
+    // Set up an effect to watch for store changes
+    const storeEffect = effect(() => {
+      const store = appState.store;
+      this.storeID = store?._id || '';
+    });
+
+    // Clean up the effect when the component is destroyed
+    this.destroyRef.onDestroy(() => storeEffect.destroy());
   }
 
 
   ngOnInit() {
-   
-    
-   
+    // Subscribe to user changes
     this.userSubscription = this.userService.getAuthUser.subscribe(data => {
-     
       this.authUser = data;
     });
+    
     this.isSubdomain = this.uiService.isSubDomain();
   }
 

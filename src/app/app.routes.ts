@@ -104,7 +104,7 @@ export const routes: Routes = [
             },
             // Subdomain protected routes
             {
-                path: 'settings',
+                path: 'settings/:storeID',
                 component: TenantSetting,
                 canActivate: [SubdomainGuard],
                 data: { title: 'Tenant Settings' }

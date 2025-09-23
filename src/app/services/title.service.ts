@@ -1,24 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable , effect, DestroyRef, inject} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { TenantService } from './tenant.service';
 import { UiService } from './ui.service';
-
+import { appState } from '../state/app.state';
+import { Store } from './store.service';
 @Injectable({
   providedIn: 'root'
 })
 export class TitleService {
   private readonly appName = 'MyPos';
-  
+    store : Partial<Store> | null = null
+     private destroyRef = inject(DestroyRef);
   constructor(
     private titleService: Title,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private tenantService: TenantService,
     private uiService: UiService
+  
   ) {
     this.initializeTitleUpdates();
+      const storeEffect = effect(() => {
+      const storeData = appState.store;
+      this.store = storeData
+    });
+
+     // Clean up the effect when the component is destroyed
+    this.destroyRef.onDestroy(() => storeEffect.destroy());
   }
 
   /**
@@ -27,7 +37,7 @@ export class TitleService {
    */
   setTitle(title: string): void {
     if(this.uiService.isSubDomain()) {
-        const tenantName = this.tenantService.getTenantSetting(this.uiService.getSubDomain()).subscribe(tenant => {
+        const tenantName = this.tenantService.getTenantSetting(this.store?._id as string).subscribe(tenant => {
         const fullTitle = title ? `${title} -  ${tenant.shopName}` : ` ${tenant.shopName}`;
         this.titleService.setTitle(fullTitle);
         });
