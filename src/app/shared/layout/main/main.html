@@ -24,6 +24,9 @@
         
         <!-- Notifications -->
         <app-notification></app-notification>
+        @if(isTenantMode){
+          <app-first-store-create></app-first-store-create>
+        }
       </div>
     </div>
   </div>

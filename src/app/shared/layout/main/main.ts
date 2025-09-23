@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { TenantSidebar } from '../tenant-sidebar/tenant-sidebar';
 import { LoadingComponent } from '../../components/loading/loading.component';
 import { NotificationComponent } from '../../components/notification/notification.component';
+import { FirstStoreCreate } from '../../components/popup/first-store-create/first-store-create';
 @Component({
   selector: 'app-main',
   standalone: true,
@@ -16,7 +17,8 @@ import { NotificationComponent } from '../../components/notification/notificatio
     RouterOutlet, 
     TenantSidebar, 
     LoadingComponent, 
-    NotificationComponent
+    NotificationComponent,
+    FirstStoreCreate
   ],
   templateUrl: './main.html',
   styleUrl: './main.css'
