@@ -2,7 +2,7 @@ import { Injectable, DestroyRef, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, BehaviorSubject } from 'rxjs';
-import {AbstractControl, ValidationErrors } from '@angular/forms';
+import {AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 export interface FormChangeDetectionConfig {
   form: FormGroup;
   originalValues?: any;
@@ -150,4 +150,15 @@ export class FormService {
     }
     return null;
   }
+
+  uppercaseValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (!value) {
+      return null; // Don't validate empty values
+    }
+    const onlyUppercase = /^[A-Z]*$/.test(value); // Regex for only uppercase letters
+    return onlyUppercase ? null : { 'uppercaseOnly': { value: control.value } };
+  };
+}
 }
