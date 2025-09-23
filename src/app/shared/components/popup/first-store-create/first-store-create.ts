@@ -18,6 +18,7 @@ export class FirstStoreCreate {
   readonly StoreIcon = StoreIcon;
   readonly PhoneIcon = PhoneIcon;
   readonly AtSignIcon = AtSignIcon;
+  isSubmitting = false
   firstStoreCreateForm : FormGroup
   
 
@@ -32,7 +33,10 @@ export class FirstStoreCreate {
   ){
     this.firstStoreCreateForm = this.fb.group({
       name:['',  [Validators.required, Validators.minLength(8)]],
-      code: ['', [Validators.required, Validators.minLength(3)] ]
+      code: ['', [Validators.required, Validators.minLength(3)] ],
+      mobile:['', [Validators.required, Validators.minLength(10)]],
+      email:['', [Validators.required, Validators.minLength(10)], Validators.email],
+      
     })
   }
 
