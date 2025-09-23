@@ -37,4 +37,20 @@ export class StoreService {
       });
     });
   }
+
+
+  create(data : Partial<Store>) : Observable<Partial<Store>>{
+    return new Observable<Partial<Store>>((observer) => {
+      this.apiService.protectedPost<{ data: Partial<Store> }>(`tenants/stores`,data).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    })
+
+  }
 }

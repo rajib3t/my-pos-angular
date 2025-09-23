@@ -39,8 +39,9 @@ export class App implements OnInit {
        
         if (isAuthenticated) {
           // If authenticated, fetch fresh user profile data
-          this.checkAndSetStore();
+         
           this.userService.fetchProfileData();
+           this.checkAndSetStore();
         }
       },
       error: (error) => {

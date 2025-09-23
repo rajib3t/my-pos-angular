@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { AuthLayout } from '../../../shared/layout/auth/auth';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +9,9 @@ import { ApiResponse  } from '../../../services/api-response.model';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { TitleService } from '../../../services/title.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { timer } from 'rxjs';
 interface LoginResponseData {
   accessToken: string;
   refreshToken: {
@@ -34,7 +37,7 @@ export class Login implements OnInit {
   loginForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
-  
+  private destroyRef = inject(DestroyRef);
   constructor(
      private fb: FormBuilder,
      private apiService: ApiService,
@@ -66,7 +69,11 @@ export class Login implements OnInit {
               this.userService.setAuthUser(response.data.data.user);
             
               // Redirect to dashboard or another page
-              this.router.navigate(['/dashboard']);
+              
+       
+                    
+                    this.router.navigate(['dashboard'])
+               
             } else {
               this.errorMessage = 'Login failed. Please try again.';
             }

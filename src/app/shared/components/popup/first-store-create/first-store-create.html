@@ -140,9 +140,9 @@
                                                 </svg>
                                                 <div>
                                                     @if(firstStoreCreateForm.get('code')?.errors?.['required']) { <span class="font-medium">Code is required.</span> }
-                                                    @if(firstStoreCreateForm.get('code')?.errors?.['minlength']) { <span class="font-medium">Code must be at least 3 characters long.</span> }
-                                                    @if(firstStoreCreateForm.get('code')?.errors?.['maxlength']) { <span class="font-medium">Code cannot exceed 50 characters.</span> }
-                                                    @if(firstStoreCreateForm.get('code')?.errors?.['uppercaseOnly']) { <span class="font-medium">Code cannot exceed 50 characters.</span> }
+                                                    @if(firstStoreCreateForm.get('code')?.errors?.['minlength']) { <span class="font-medium">Code must be at least 2 characters long.</span> }
+                                                    @if(firstStoreCreateForm.get('code')?.errors?.['maxlength']) { <span class="font-medium">Code cannot exceed 10 characters.</span> }
+                                                    @if(firstStoreCreateForm.get('code')?.errors?.['uppercaseOnly']) { <span class="font-medium">Code must contain only uppercase letters.</span> }
                                                     @if(firstStoreCreateForm.get('code')?.errors?.['server']) { <span class="font-medium">{{firstStoreCreateForm.get('code')?.errors?.['server']}}</span> }
                                                 </div>
                                             </div>
@@ -180,6 +180,19 @@
                                                 
                                             </div>
                                         </div>
+                                        @if(firstStoreCreateForm.get('mobile')?.invalid && firstStoreCreateForm.get('mobile')?.touched) {
+                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
+                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                <div>
+                                                    @if(firstStoreCreateForm.get('mobile')?.errors?.['required']) { <span class="font-medium">Mobile is required.</span> }
+                                                    @if(firstStoreCreateForm.get('mobile')?.errors?.['minlength']) { <span class="font-medium">Mobile must be at least 10 characters long.</span> }
+                                                    @if(firstStoreCreateForm.get('mobile')?.errors?.['maxlength']) { <span class="font-medium">Mobile cannot exceed 10 characters.</span> }
+                                                    @if(firstStoreCreateForm.get('mobile')?.errors?.['server']) { <span class="font-medium">{{firstStoreCreateForm.get('name')?.errors?.['server']}}</span> }
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
                                     <!-- Store code Field -->
                                     <div class="group relative">
@@ -202,6 +215,18 @@
                                                 <lucide-angular [img]="AtSignIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-400 peer-focus:text-indigo-500 transition-color"></lucide-angular>
                                             </div>
                                         </div>
+                                         @if(firstStoreCreateForm.get('email')?.invalid && firstStoreCreateForm.get('email')?.touched) {
+                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
+                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                </svg>
+                                                <div>
+                                                    @if(firstStoreCreateForm.get('email')?.errors?.['required']) { <span class="font-medium">Email is required.</span> }
+                                                    @if(firstStoreCreateForm.get('email')?.errors?.['email']) { <span class="font-medium">Email is not valid.</span> }
+                                                    @if(firstStoreCreateForm.get('email')?.errors?.['server']) { <span class="font-medium">{{firstStoreCreateForm.get('email')?.errors?.['server']}}</span> }
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>

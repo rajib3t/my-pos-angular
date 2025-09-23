@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings, Bell, Plus, BarChart3, ChevronRight} from 'lucide-angular';
-
+import { appState } from '@/app/state/app.state';
 @Component({
   selector: 'app-header',
   imports: [CommonModule, RouterModule, LucideAngularModule],
@@ -24,7 +24,7 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings
     readonly PlusIcon = Plus;
     readonly BarChartIcon = BarChart3;
     readonly ChevronRightIcon = ChevronRight;
-    
+    storeID = ''
     isSubdomain = false;
   authUser: User | null = null;
    private userSubscription!: Subscription;
@@ -32,12 +32,16 @@ import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings
   @ViewChild('userMenuDropdown', { static: false }) userMenuDropdown!: ElementRef;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
-  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService, private router: Router  ) { }
+  constructor(private uiService: UiService, private userService: UserService, private apiService: ApiService, private router: Router  ) { 
+   
+     this.storeID = appState.store?._id as string
+  }
 
 
   ngOnInit() {
-  
+   
     
+   
     this.userSubscription = this.userService.getAuthUser.subscribe(data => {
      
       this.authUser = data;

@@ -1,16 +1,20 @@
 import { Component, OnInit, inject , DestroyRef} from '@angular/core';
 import { appState } from  '@/app/state/app.state'
-import { LucideAngularModule,  Store as StoreIcon, Phone as PhoneIcon, AtSign as AtSignIcon} from 'lucide-angular';
+import { LucideAngularModule,  Store as StoreIcon, Phone as PhoneIcon, AtSign as AtSignIcon, Route} from 'lucide-angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {CommonModule} from '@angular/common'
 import {FormService} from '@/app/services/form.service'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { StoreService } from '@/app/services/store.service';
+import { RouterModule, Router } from '@angular/router';
+import { timer } from 'rxjs';
 @Component({
   selector: 'app-first-store-create',
   imports: [
     CommonModule,
     LucideAngularModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
   templateUrl: './first-store-create.html',
   styleUrl: './first-store-create.css'
@@ -22,24 +26,29 @@ export class FirstStoreCreate implements OnInit {
   isSubmitting = false
   firstStoreCreateForm : FormGroup
   private destroyRef = inject(DestroyRef);
+ 
 
-
-  successMessage = ''
-  errorMessage=''
+  successMessage : string | null = null;
+  errorMessage:string | null = null;
   showFirstStoreCreate = false;
 
 
   constructor(
     private fb: FormBuilder,
-    private formService : FormService
-  
-  ){
+    private formService: FormService,
+    private storeService: StoreService,
+    private router: Router,
+  ) {
     this.firstStoreCreateForm = this.fb.group({
-      name:['',  [Validators.required, Validators.minLength(8)]],
-      code: ['', [Validators.required], this.formService.uppercaseValidator()],
-      mobile:['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-      email:['', [Validators.required, Validators.minLength(10)], Validators.email],
-      
+      name: ['', [Validators.required, Validators.minLength(8)]],
+      code: ['', [
+        Validators.required, 
+        this.formService.uppercaseValidator(),
+        Validators.minLength(2),
+        Validators.maxLength(10)
+      ]],
+      mobile: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      email: ['', [Validators.required, Validators.email, Validators.minLength(10)]]
     })
   }
 
@@ -49,18 +58,84 @@ export class FirstStoreCreate implements OnInit {
             .subscribe(() => this.onNameChange());
   }
     get isFirstStore() {
+     
+      
         return this.showFirstStoreCreate = appState.store === null;
-        
+       
       }
 
     onSubmit(): void{
-      
+      if (this.firstStoreCreateForm.valid) {
+          this.isSubmitting = true;
+          this.errorMessage = null;
+          this.successMessage = null
+          this.storeService.create(this.firstStoreCreateForm.value).pipe(
+            takeUntilDestroyed(this.destroyRef)
+
+          ).subscribe({
+           next: (data) => {
+                this.isSubmitting = false;
+                this.successMessage = 'Store created successfully';
+                appState.setStore({
+                  _id: data?._id as string,
+                  name: data?.name as string,
+                  code: data?.code as string,
+                  status: (data?.status ?? "inactive"),
+                  createdBy: data?.createdBy as string
+                });
+                 timer(3000).pipe(
+                  takeUntilDestroyed(this.destroyRef)
+                  ).subscribe(() => {
+                    this.successMessage = '';
+                    this.router.navigate(['dashboard'])
+                });
+              
+
+            },
+            error: (error) => {
+              if (error.error.validationErrors) {
+                const nameError = error.error.validationErrors['name'];
+                const codeError = error.error.validationErrors['code'];
+                const emailError = error.error.validationErrors['email'];
+                const mobileError = error.error.validationErrors['mobile'];
+                if (nameError) {
+                    this.firstStoreCreateForm.controls['name'].setErrors({ server: nameError });
+                }
+                 if (codeError) {
+                    this.firstStoreCreateForm.controls['code'].setErrors({ server: codeError });
+                }
+                 if (emailError) {
+                    this.firstStoreCreateForm.controls['email'].setErrors({ server: emailError });
+                }
+                if (mobileError) {
+                    this.firstStoreCreateForm.controls['mobile'].setErrors({ server: mobileError });
+                }
+                this.isSubmitting = false;
+                timer(5000).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                    this.errorMessage = '';
+                });
+              }else{
+               
+                this.isSubmitting = false;
+                timer(5000).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                    this.errorMessage = 'Something went wrong, please try again';
+                });
+                
+              }
+              
+            }
+          })
+      }
     }
    
      onNameChange() {
       const nameValue = this.firstStoreCreateForm.get('name')?.value || '';
       const code = this.getUserInitials(nameValue)   // Trim leading/trailing hyphens
-      console.log(code);
+     
       
       this.firstStoreCreateForm.get('code')?.setValue(code, { emitEvent: false });
    }
