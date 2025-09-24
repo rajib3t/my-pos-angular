@@ -6,6 +6,7 @@ import { TenantService } from './tenant.service';
 import { UiService } from './ui.service';
 import { appState } from '../state/app.state';
 import { Store } from './store.service';
+import { ApiService } from './api.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +19,8 @@ export class TitleService {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private tenantService: TenantService,
-    private uiService: UiService
+    private uiService: UiService,
+    private apiService: ApiService
   
   ) {
     this.initializeTitleUpdates();
@@ -37,10 +39,25 @@ export class TitleService {
    */
   setTitle(title: string): void {
     if(this.uiService.isSubDomain()) {
-        const tenantName = this.tenantService.getTenantSetting(this.store?._id as string).subscribe(tenant => {
-        const fullTitle = title ? `${title} -  ${tenant.shopName}` : ` ${tenant.shopName}`;
-        this.titleService.setTitle(fullTitle);
-        });
+        this.apiService.initializeAuth().subscribe({
+          next: (isAuthenticated) => {
+            if(isAuthenticated){
+               const tenantName = this.tenantService.getTenantSetting(this.store?._id as string).subscribe(tenant => {
+                const fullTitle = title ? `${title} -  ${tenant.shopName}` : ` ${tenant.shopName}`;
+                this.titleService.setTitle(fullTitle);
+                });
+            }else{
+              const fullTitle = title ? `${title} - ${this.appName}` : this.appName;
+              this.titleService.setTitle(fullTitle);
+            }
+          },
+          error: (error) => {
+          console.error('App: Authentication initialization failed:', error);
+           appState.reset();
+        }
+          
+        })
+       
     }else{
         const fullTitle = title ? `${title} - ${this.appName}` : this.appName;
         this.titleService.setTitle(fullTitle);

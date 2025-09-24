@@ -1,4 +1,4 @@
-import { Component, OnInit, inject , DestroyRef} from '@angular/core';
+import { Component, OnInit, inject , DestroyRef, effect} from '@angular/core';
 import { appState } from  '@/app/state/app.state'
 import { LucideAngularModule,  Store as StoreIcon, Phone as PhoneIcon, AtSign as AtSignIcon, Route} from 'lucide-angular';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -31,6 +31,7 @@ export class FirstStoreCreate implements OnInit {
   successMessage : string | null = null;
   errorMessage:string | null = null;
   showFirstStoreCreate = false;
+  isCheckingStores = true; // Add loading state to prevent premature popup display
 
 
   constructor(
@@ -49,19 +50,54 @@ export class FirstStoreCreate implements OnInit {
       ]],
       mobile: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       email: ['', [Validators.required, Validators.email, Validators.minLength(10)]]
-    })
+    });
+
+    // Watch for store changes in app state
+    const storeEffect = effect(() => {
+      const store = appState.store;
+      const loading = appState.loading;
+      console.log('FirstStoreCreate: Store state changed:', store, 'Loading:', loading);
+      
+      // Only show popup if:
+      // 1. Not loading (store fetch completed)
+      // 2. No store exists
+      // 3. User is authenticated
+      if (!loading && appState.isAuthenticated) {
+        this.isCheckingStores = false;
+        this.showFirstStoreCreate = store === null;
+        console.log('FirstStoreCreate: Should show popup:', this.showFirstStoreCreate);
+      } else if (loading) {
+        this.isCheckingStores = true;
+        this.showFirstStoreCreate = false;
+      }
+    });
+
+    // Clean up the effect when the component is destroyed
+    this.destroyRef.onDestroy(() => storeEffect.destroy());
   }
 
   ngOnInit(): void {
     this.firstStoreCreateForm.get('name')?.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => this.onNameChange());
+    
+    // Fallback: If still checking stores after 5 seconds, assume no stores exist
+    timer(5000).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      if (this.isCheckingStores && appState.isAuthenticated && !appState.store) {
+        console.log('FirstStoreCreate: Timeout reached, assuming no stores exist');
+        this.isCheckingStores = false;
+        this.showFirstStoreCreate = true;
+      }
+    });
   }
     get isFirstStore() {
-     
-      
-        return this.showFirstStoreCreate = appState.store === null;
-       
+        // Don't show popup while checking stores or if not authenticated
+        if (this.isCheckingStores || !appState.isAuthenticated) {
+          return false;
+        }
+        return this.showFirstStoreCreate;
       }
 
     onSubmit(): void{
@@ -76,13 +112,22 @@ export class FirstStoreCreate implements OnInit {
            next: (data) => {
                 this.isSubmitting = false;
                 this.successMessage = 'Store created successfully';
-                appState.setStore({
-                  _id: data?._id as string,
-                  name: data?.name as string,
-                  code: data?.code as string,
-                  status: (data?.status ?? "inactive"),
-                  createdBy: data?.createdBy as string
-                });
+                console.log('FirstStoreCreate: Store created successfully:', data);
+                
+                // Set the store in app state with proper type handling
+                if (data && data._id) {
+                  const storeData = {
+                    _id: data._id,
+                    name: data.name || '',
+                    code: data.code || '',
+                    status: (data.status as 'active' | 'inactive') || 'active',
+                    createdBy: data.createdBy || ''
+                  };
+                  console.log('FirstStoreCreate: Setting store in app state:', storeData);
+                  appState.setStore(storeData);
+                } else {
+                  console.error('FirstStoreCreate: Invalid store data received:', data);
+                }
                  timer(3000).pipe(
                   takeUntilDestroyed(this.destroyRef)
                   ).subscribe(() => {

@@ -1,0 +1,3 @@
+[serve]
+port = 4200
+env = { PORT = "4200" } # Overrides the default port

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { ApiService } from './api.service';
 
 export interface Notification {
   id: string;
@@ -18,7 +19,9 @@ export class UiService {
   public notifications = this.notifications$.asObservable();
   
 
-  constructor() { }
+  constructor(
+    private apiService: ApiService
+  ) { }
 
   isMobileMenuOpen =  new BehaviorSubject<boolean | null>(false);
   isUserMenuOpen = false;
@@ -124,6 +127,20 @@ export class UiService {
     this.notifications$.next([]);
   }
 
+
+  getSubAccount(subdomain: string): Observable<{_id: string, name: string, subdomain: string}> {
+    return new Observable<{_id: string, name: string, subdomain: string}>((observer) => {
+      this.apiService.get<{_id: string, name: string, subdomain: string}>(`/subdomain/${subdomain}`).subscribe({
+        next: (response) => {
+          observer.next(response.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
 
   
 

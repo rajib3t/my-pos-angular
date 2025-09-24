@@ -18,12 +18,50 @@ export interface AppState {
   } | null;
 }
 
-const initialState: AppState = {
-  loading: false,
-  error: null,
-  user: null,
-  store: null
-};
+// Storage key for persisting state
+const APP_STATE_STORAGE_KEY = 'appState';
+
+// Function to load state from localStorage
+function loadPersistedState(): AppState {
+  try {
+    const persistedState = localStorage.getItem(APP_STATE_STORAGE_KEY);
+    if (persistedState) {
+      const parsed = JSON.parse(persistedState);
+      // Only restore non-loading state and exclude error state
+      return {
+        loading: false, // Always start with loading false
+        error: null, // Don't persist errors
+        user: parsed.user || null,
+        store: parsed.store || null
+      };
+    }
+  } catch (error) {
+    console.error('Error loading persisted state:', error);
+    localStorage.removeItem(APP_STATE_STORAGE_KEY);
+  }
+  return {
+    loading: false,
+    error: null,
+    user: null,
+    store: null
+  };
+}
+
+// Function to persist state to localStorage
+function persistState(state: AppState): void {
+  try {
+    // Only persist user and store data, not loading/error states
+    const stateToPersist = {
+      user: state.user,
+      store: state.store
+    };
+    localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(stateToPersist));
+  } catch (error) {
+    console.error('Error persisting state:', error);
+  }
+}
+
+const initialState: AppState = loadPersistedState();
 
 interface AppStateMethods {
   // State
@@ -76,19 +114,35 @@ export const appState: AppStateMethods = {
 
   // Actions
   setLoading(loading: boolean) {
-    this._state.update(state => ({ ...state, loading }));
+    this._state.update(state => {
+      const newState = { ...state, loading };
+      // Don't persist loading state
+      return newState;
+    });
   },
   
   setError(error: string | null) {
-    this._state.update(state => ({ ...state, error }));
+    this._state.update(state => {
+      const newState = { ...state, error };
+      // Don't persist error state
+      return newState;
+    });
   },
   
   setUser(user: AppState['user']) {
-    this._state.update(state => ({ ...state, user }));
+    this._state.update(state => {
+      const newState = { ...state, user };
+      persistState(newState);
+      return newState;
+    });
   },
   
   setStore(store: AppState['store']) {
-    this._state.update(state => ({ ...state, store }));
+    this._state.update(state => {
+      const newState = { ...state, store };
+      persistState(newState);
+      return newState;
+    });
   },
   
   clearError() {
@@ -96,17 +150,39 @@ export const appState: AppStateMethods = {
   },
   
   reset() {
-    this._state.set(initialState);
+    const resetState = {
+      loading: false,
+      error: null,
+      user: null,
+      store: null
+    };
+    this._state.set(resetState);
+    // Clear persisted state
+    localStorage.removeItem(APP_STATE_STORAGE_KEY);
   },
 
   // Generic state update function - supports both single key-value updates and partial state updates
   updateState<K extends keyof AppState>(keyOrUpdates: K | Partial<AppState>, value?: AppState[K]) {
     if (typeof keyOrUpdates === 'string') {
       // Single key-value update
-      this._state.update(state => ({ ...state, [keyOrUpdates]: value }));
+      this._state.update(state => {
+        const newState = { ...state, [keyOrUpdates]: value };
+        // Only persist if updating user or store
+        if (keyOrUpdates === 'user' || keyOrUpdates === 'store') {
+          persistState(newState);
+        }
+        return newState;
+      });
     } else {
       // Partial state update
-      this._state.update(state => ({ ...state, ...keyOrUpdates }));
+      this._state.update(state => {
+        const newState = { ...state, ...keyOrUpdates };
+        // Persist if user or store data is being updated
+        if ('user' in keyOrUpdates || 'store' in keyOrUpdates) {
+          persistState(newState);
+        }
+        return newState;
+      });
     }
   }
 };

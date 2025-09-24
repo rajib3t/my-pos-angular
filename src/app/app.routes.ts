@@ -21,6 +21,7 @@ import { UserEdit as TenantUserEdit } from './pages/main/tenant/users/user-edit/
 import { UserList } from './pages/main/users/user-list/user-list';
 import { UserCreate } from './pages/main/users/user-create/user-create';
 import { UserEdit } from './pages/main/users/user-edit/user-edit';
+import { TestStateComponent } from './test-state.component';
 export const routes: Routes = [
 
     {
@@ -65,6 +66,11 @@ export const routes: Routes = [
                 path: 'users/:id/edit',
                 component: UserEdit,
                 data: { title: 'Edit User' }
+            },
+            {
+                path: 'test-state',
+                component: TestStateComponent,
+                data: { title: 'Test State' }
             },
             {
                 path: 'tenants',

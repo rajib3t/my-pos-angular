@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { appState } from '../state/app.state';
 
 export interface User {
   id?: string;
@@ -164,6 +165,8 @@ export class UserService {
     this.storeUser(null);
     this.authUserData.next(null);
     this.profileData.next(null);
+    // Also clear app state
+    appState.reset();
   }
 
 

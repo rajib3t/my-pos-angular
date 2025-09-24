@@ -46,56 +46,67 @@ export class TenantSetting implements OnInit {
     private fb: FormBuilder,
     private formService: FormService,
   ) {
+    // Initialize the form first
+    this.settingForm = this.fb.group({
+      shopName: ['', Validators.required],
+      code: ["", [Validators.required, uppercaseValidator()]] ,
+      address: [''],
+      address2: [''],
+      city: [''],
+      state: [''],
+      country: [''],
+      zipCode: [''],
+      currency: [''],
+      phone: [''],
+      email: [''],
+      logoUrl: [''],
+      fassi: [''],
+      gstNumber: [''],
+      sgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')],
+      cgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')]
+    });
+
+    // Set up the store effect after form is initialized
     const storeEffect = effect(() => {
       const storeData = appState.store;
-      this.store = storeData
+      this.store = storeData;
+      
+      // If we have store data and the form is initialized, update the form
+      if (storeData && this.settingForm) {
+        this.settingForm.patchValue({
+          shopName: storeData.name || '',
+          code: storeData.code || ''
+        });
+      }
     });
 
-    
-    
-    // Clean up the effect when the component is destroyed
-    this.destroyRef.onDestroy(() => storeEffect.destroy());
-    this.settingForm = this.fb.group({
-    shopName: ['', Validators.required],
-    code: ["", [Validators.required, uppercaseValidator()]] ,
-    address: [''],
-    address2: [''],
-    city: [''],
-    state: [''],
-    country: [''],
-    zipCode: [''],
-    currency: [''],
-    phone: [''],
-    email: [''],
-    logoUrl: [''],
-    fassi: [''],
-    gstNumber: [''],
-    sgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')],
-    cgst: ['', Validators.pattern('^\\d*(\\.\\d+)?$')]
-    });
-
-
-     // Clean up the effect when the component is destroyed
+    // Clean up the effect when the component is destroyed (only once)
     this.destroyRef.onDestroy(() => storeEffect.destroy());
   }
 
   ngOnInit(): void {
-     this.activatedRoute.paramMap.subscribe(params => {
-        this.storeID = params.get('storeID') || '';
-      });
-    const subdomain = this.uiService.getSubDomain();
-    console.log(this.store?._id);
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.storeID = params.get('storeID') || '';
+    });
     
-    if (subdomain) {
-      this.tenantService.getTenantSetting(this.storeID  as string).pipe(
+    // If we don't have storeID from route params, try to get it from app state
+    if (!this.storeID && appState.store?._id) {
+      this.storeID = appState.store._id;
+    }
+    
+    const subdomain = this.uiService.getSubDomain();
+    console.log('Settings: StoreID:', this.storeID, 'Subdomain:', subdomain, 'Store from app state:', appState.store);
+    
+    if (subdomain && this.storeID) {
+      this.tenantService.getTenantSetting(this.storeID as string).pipe(
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (tenant) => {
           this.tenant = tenant;
           this.settingForm.patchValue({
-            shopName: this.store?.name || '',
-            code: this.store?.code || "",
+            shopName: this.store?.name || tenant.shopName || '',
+            code: this.store?.code || tenant.code || "",
             address: tenant.address1 || '',
             address2: tenant.address2 || '',
             city: tenant.city || '',
@@ -146,10 +157,26 @@ export class TenantSetting implements OnInit {
         },
         error: (error) => {
           console.error('Error fetching tenant settings:', error);
+          this.isLoading = false;
+          // If there's an error but we have store data from app state, still populate basic fields
+          if (this.store) {
+            this.settingForm.patchValue({
+              shopName: this.store.name || '',
+              code: this.store.code || ''
+            });
+          }
         }
       });
     } else {
-      console.error('No subdomain found in the URL.');
+      console.error('No subdomain found in the URL or no store ID available.');
+      this.isLoading = false;
+      // If no subdomain but we have store data, still populate what we can
+      if (this.store) {
+        this.settingForm.patchValue({
+          shopName: this.store.name || '',
+          code: this.store.code || ''
+        });
+      }
     }
   }
 

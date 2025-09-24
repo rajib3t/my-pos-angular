@@ -45,16 +45,43 @@ import { appState } from '@/app/state/app.state';
       this.storeID = store?._id || '';
     });
 
-    // Clean up the effect when the component is destroyed
-    this.destroyRef.onDestroy(() => storeEffect.destroy());
+    // Set up an effect to watch for user changes from app state
+    const userEffect = effect(() => {
+      const user = appState.user;
+      if (user && !this.authUser) {
+        // If app state has user but component doesn't, sync it
+        this.authUser = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        };
+      }
+    });
+
+    // Clean up the effects when the component is destroyed
+    this.destroyRef.onDestroy(() => {
+      storeEffect.destroy();
+      userEffect.destroy();
+    });
   }
 
 
   ngOnInit() {
-    // Subscribe to user changes
+    // Subscribe to user changes from user service
     this.userSubscription = this.userService.getAuthUser.subscribe(data => {
       this.authUser = data;
     });
+    
+    // If we don't have user data from service but have it in app state, use that
+    if (!this.authUser && appState.user) {
+      this.authUser = {
+        id: appState.user.id,
+        name: appState.user.name,
+        email: appState.user.email,
+        role: appState.user.role
+      };
+    }
     
     this.isSubdomain = this.uiService.isSubDomain();
   }
