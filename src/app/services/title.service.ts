@@ -42,8 +42,8 @@ export class TitleService {
         this.apiService.initializeAuth().subscribe({
           next: (isAuthenticated) => {
             if(isAuthenticated){
-               const tenantName = this.tenantService.getTenantSetting(this.store?._id as string).subscribe(tenant => {
-                const fullTitle = title ? `${title} -  ${tenant.shopName}` : ` ${tenant.shopName}`;
+               const tenantName = this.uiService.getSubAccount(this.uiService.getSubDomain() as string).subscribe(data => {
+                const fullTitle = title ? `${title} -  ${data.data.name}` : ` ${data.data.name}`;
                 this.titleService.setTitle(fullTitle);
                 });
             }else{

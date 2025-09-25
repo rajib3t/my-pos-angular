@@ -161,4 +161,24 @@ export class FormService {
     return onlyUppercase ? null : { 'uppercaseOnly': { value: control.value } };
   };
 }
+
+
+getUserInitials(name: string): string {
+      if (!name) return '';
+      
+      const words = name
+          .trim()
+          .split(/[\s-]+/) // Split by spaces and hyphens
+          .filter(word => word.length > 0);
+      
+      if (words.length === 1) {
+          // Single word - return first two characters
+          return words[0].substring(0, 2).toUpperCase();
+      } else {
+          // Multiple words - return first letter of each word
+          return words
+              .map(word => word.charAt(0).toUpperCase())
+              .join('');
+      }
+  }
 }

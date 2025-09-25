@@ -128,9 +128,9 @@ export class UiService {
   }
 
 
-  getSubAccount(subdomain: string): Observable<{_id: string, name: string, subdomain: string}> {
-    return new Observable<{_id: string, name: string, subdomain: string}>((observer) => {
-      this.apiService.get<{_id: string, name: string, subdomain: string}>(`/subdomain/${subdomain}`).subscribe({
+getSubAccount(subdomain: string): Observable<{data:{_id: string, name: string, subdomain: string}}> {
+    return new Observable<{data:{_id: string, name: string, subdomain: string}}>((observer) => {
+      this.apiService.get<{data:{_id: string, name: string, subdomain: string}}>(`subdomain/${subdomain}`).subscribe({
         next: (response) => {
           observer.next(response.data);
           observer.complete();
@@ -139,6 +139,59 @@ export class UiService {
           observer.error(error);
         }
       });
+    });
+  }
+
+  /**
+   * Check if subdomain is available for registration
+   * Returns success if subdomain is available (404), error if taken (200)
+   */
+  checkSubdomainAvailability(subdomain: string): Observable<{available: boolean, message: string}> {
+    return new Observable<{available: boolean, message: string}>((observer) => {
+      this.apiService.get<{data:{_id: string, name: string, subdomain: string}}>(`subdomain/${subdomain}`).subscribe({
+        next: (response) => {
+          // If we get a successful response, subdomain exists and is NOT available
+          observer.next({
+            available: false,
+            message: `Subdomain Not Available\nThe subdomain ${subdomain} is not available.\nThis subdomain account is not available`
+          });
+          observer.complete();
+        },
+        error: (error) => {
+          if (error.status === 404) {
+            // 404 means subdomain doesn't exist, so it's available
+            observer.next({
+              available: true,
+              message: `Subdomain ${subdomain} is available`
+            });
+          } else {
+            // Other errors
+            observer.next({
+              available: false,
+              message: `Error checking subdomain availability: ${error.message || 'Unknown error'}`
+            });
+          }
+          observer.complete();
+        }
+      });
+    });
+  }
+
+  /**
+   * Check subdomain availability and show notification
+   */
+  checkAndNotifySubdomainAvailability(subdomain: string): void {
+    this.checkSubdomainAvailability(subdomain).subscribe({
+      next: (result) => {
+        if (result.available) {
+          this.success(result.message, 'Subdomain Available');
+        } else {
+          this.error(result.message, 'Subdomain Not Available');
+        }
+      },
+      error: (error) => {
+        this.error('Failed to check subdomain availability', 'Error');
+      }
     });
   }
 

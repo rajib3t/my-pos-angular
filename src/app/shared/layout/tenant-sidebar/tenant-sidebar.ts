@@ -4,7 +4,7 @@ import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
 import { Root } from 'postcss';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
-import { LucideAngularModule, Album, Network , ChevronDown, Plus, List, ShoppingBasket, LayoutGrid, Users} from 'lucide-angular';
+import { LucideAngularModule, Album, Network , ChevronDown, Plus, List, ShoppingBasket, LayoutGrid, Users, Store as StoreIcon} from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -14,6 +14,7 @@ import { filter } from 'rxjs/operators';
   styleUrl: './tenant-sidebar.css'
 })
 export class TenantSidebar {
+    readonly StoreIcon = StoreIcon
     readonly UsersIcon = Users;
   readonly DashboardIcon = Album;
   readonly TenantIcon = Network;
@@ -30,6 +31,7 @@ export class TenantSidebar {
     "material-item": false,
     "material-category": false,
     "users": false,
+    "stores":false
   };
   currentRoute = '';
 
@@ -98,8 +100,8 @@ export class TenantSidebar {
             this.submenuStates['material-category'] = true;
         } else if (this.currentRoute.includes('/users')) {
             this.submenuStates['users'] = true;
-        } else if (this.currentRoute.includes('/reports')) {
-            this.submenuStates['reports'] = true;
+        } else if (this.currentRoute.includes('/stores')) {
+            this.submenuStates['stores'] = true;
         } else if (this.currentRoute.includes('/settings')) {
             this.submenuStates['settings'] = true;
         }

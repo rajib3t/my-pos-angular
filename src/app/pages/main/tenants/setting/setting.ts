@@ -85,9 +85,7 @@ export class TenantSetting implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.storeID = params.get('storeID') || '';
-    });
+   
     
     // If we don't have storeID from route params, try to get it from app state
     if (!this.storeID && appState.store?._id) {

@@ -44,7 +44,7 @@ export class App implements OnInit, OnDestroy {
     this.apiService.initializeAuth().subscribe({
       next: (isAuthenticated) => {
         if (isAuthenticated) {
-          console.log('App: User is authenticated, initializing user data and store...');
+          
           
           // First, fetch fresh user profile data
           this.userService.fetchProfileData();
@@ -89,10 +89,10 @@ export class App implements OnInit, OnDestroy {
     
     this.storeService.getAllStores(1, 1).subscribe({
       next: (response) => {
-        console.log('App: Store API response:', response);
+        
         if (response?.items?.length > 0) {
           const store = response.items[0];
-          console.log('App: First store found:', store);
+          
           // Ensure all required fields are present
           if (store._id) {
             const storeData = {
@@ -102,7 +102,7 @@ export class App implements OnInit, OnDestroy {
               status: (store.status as 'active' | 'inactive') || 'active',
               createdBy: store.createdBy || ''
             };
-            console.log('App: Setting store in app state:', storeData);
+           
             appState.setStore(storeData);
           } else {
             console.warn('App: Store found but missing _id:', store);

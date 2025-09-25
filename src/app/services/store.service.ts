@@ -8,6 +8,8 @@ export interface Store {
   _id?: string;
   name: string;
   code?: string;
+  email?:string;
+  mobile?:string;
   status: 'inactive' | 'active';
   createdBy?: string;
 }
@@ -26,7 +28,16 @@ export class StoreService {
 
   getAllStores(page: number = 1, limit: number = 10, filter?: { [key: string]: any }): Observable<PaginatedResponse<Store>> {
     return new Observable<PaginatedResponse<Store>>((observer) => {
-      this.apiService.protectedGet<{ data: PaginatedResponse<Store> }>(`tenants/stores?page=${page}&limit=${limit}&timezone=-330`).subscribe({
+       let queryParams = `page=${page}&limit=${limit}&timezone=-330`;
+      if (filter) {
+        Object.keys(filter).forEach(key => {
+          if (filter[key] !== undefined && filter[key] !== null && filter[key] !== '') {
+            queryParams += `&${key}=${encodeURIComponent(filter[key])}`;
+          }
+        });
+      }
+       const url = `tenants/stores?${queryParams}`;
+      this.apiService.protectedGet<{ data: PaginatedResponse<Store> }>(url).subscribe({
         next: (response) => {
           observer.next(response.data.data);
           observer.complete();

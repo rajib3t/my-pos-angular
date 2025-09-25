@@ -9,9 +9,13 @@ import { ApiResponse  } from '../../../services/api-response.model';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { TitleService } from '../../../services/title.service';
+import { UiService } from '../../../services/ui.service';
+import { SubdomainValidationService } from '../../../services/subdomain-validation.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { timer } from 'rxjs';
+import { StoreService } from '@/app/services/store.service';
+import { appState } from '@/app/state/app.state';
 interface LoginResponseData {
   accessToken: string;
   refreshToken: {
@@ -37,13 +41,19 @@ export class Login implements OnInit {
   loginForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
+  isValidatingSubdomain = false;
+  subdomainError = '';
   private destroyRef = inject(DestroyRef);
+  
   constructor(
      private fb: FormBuilder,
      private apiService: ApiService,
      private router: Router,
      private userService: UserService,
-     private titleService: TitleService
+     private titleService: TitleService,
+     private uiService: UiService,
+     private subdomainValidationService: SubdomainValidationService,
+     private storeService:StoreService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -54,53 +64,152 @@ export class Login implements OnInit {
   ngOnInit(): void {
     // You can optionally set a custom title here
     this.titleService.setTitle('Sign In');
+    
+    // Validate subdomain on component initialization
+    this.validateSubdomainOnInit();
+  }
+
+  private validateSubdomainOnInit(): void {
+    const subdomainInfo = this.subdomainValidationService.getSubdomainInfo();
+    
+    // If it's a subdomain, validate it
+    if (subdomainInfo.isSubdomain) {
+      this.isValidatingSubdomain = true;
+      this.subdomainValidationService.validateCurrentSubdomain()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (result) => {
+            this.isValidatingSubdomain = false;
+            if (!result.isValid) {
+              // Redirect to subdomain error page
+              this.router.navigate(['/subdomain-error']);
+            }
+          },
+          error: (error) => {
+            this.isValidatingSubdomain = false;
+            console.error('Subdomain validation error:', error);
+            // Redirect to subdomain error page on validation error
+            this.router.navigate(['/subdomain-error']);
+          }
+        });
+    }
   }
 
   onSubmit(): void {
-      this.isSubmitting = true;
-      this.errorMessage = '';
-      const { email, password } = this.loginForm.value;
-      this.apiService.post<LoginResponse>('auth/login', { email, password })
-        .subscribe({
-          next: (response) => {
-            if (response && response.data) {
-              this.apiService.setAuthToken(response.data.data.accessToken);
-              this.apiService.setRefreshToken(response.data.data.refreshToken?.token);
-              this.userService.setAuthUser(response.data.data.user);
-            
-              // Redirect to dashboard or another page
-              
-       
-                    
-                    this.router.navigate(['dashboard'])
-               
-            } else {
-              this.errorMessage = 'Login failed. Please try again.';
-            }
-            this.isSubmitting = false;
-          },
-          error: (error) => {
-            if (error.error.validationErrors) {
-              const emailError = error.error.validationErrors['email'];
-              const passwordError = error.error.validationErrors['password'];
-              
-              // Display field-specific errors in your form
-              if(emailError){
-                this.loginForm.controls['email'].setErrors({ server: emailError });
-              }
+    // First validate subdomain if it's a subdomain
+    const subdomainInfo = this.subdomainValidationService.getSubdomainInfo();
+    
+    if (subdomainInfo.isSubdomain) {
+      this.validateSubdomainBeforeLogin();
+    } else {
+      this.performLogin();
+    }
+  }
 
-              if(passwordError){
-                this.loginForm.controls['password'].setErrors({ server: passwordError });
-              }
-
-              
-            }else{
-              // Alternatively, set a general error message
-              this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
-              this.isSubmitting = false;
-            }
-           
+  private validateSubdomainBeforeLogin(): void {
+    this.isValidatingSubdomain = true;
+    this.subdomainError = '';
+    
+    this.subdomainValidationService.validateCurrentSubdomain()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.isValidatingSubdomain = false;
+          if (result.isValid) {
+            // Subdomain is valid, proceed with login
+            this.performLogin();
+          } else {
+            // Subdomain is invalid, show error and redirect
+            this.subdomainError = result.error || 'Subdomain account not available';
+            setTimeout(() => {
+              this.router.navigate(['/subdomain-error']);
+            }, 2000);
           }
-        });
+        },
+        error: (error) => {
+          this.isValidatingSubdomain = false;
+          console.error('Subdomain validation error:', error);
+          this.subdomainError = 'Unable to validate subdomain. Please try again.';
+          setTimeout(() => {
+            this.router.navigate(['/subdomain-error']);
+          }, 2000);
+        }
+      });
+  }
+
+  private performLogin(): void {
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    const { email, password } = this.loginForm.value;
+    
+    this.apiService.post<LoginResponse>('auth/login', { email, password })
+      .subscribe({
+        next: (response) => {
+          if (response && response.data) {
+            this.apiService.setAuthToken(response.data.data.accessToken);
+            this.apiService.setRefreshToken(response.data.data.refreshToken?.token);
+            this.userService.setAuthUser(response.data.data.user);
+            if(this.uiService.isSubDomain()){
+              this.storeService.getAllStores(1, 1).subscribe({
+                    next: (res) => {
+                      console.log('App: Store API response:', res);
+                      if (res?.items?.length > 0) {
+                        const store = res.items[0];
+                        console.log('App: First store found:', store);
+                        // Ensure all required fields are present
+                        if (store._id) {
+                          const storeData = {
+                            _id: store._id,
+                            name: store.name || '',
+                            code: store.code || '',
+                            status: (store.status as 'active' | 'inactive') || 'active',
+                            createdBy: store.createdBy || ''
+                          };
+                          console.log('App: Setting store in app state:', storeData);
+                          appState.setStore(storeData);
+                        } else {
+                          console.warn('App: Store found but missing _id:', store);
+                        }
+                      } else {
+                        console.warn('App: No stores found in response:', response);
+                      }
+                      appState.setLoading(false);
+                    },
+                    error: (err) => {
+                      console.error('App: Store check failed:', err);
+                      appState.setLoading(false);
+                      // Don't clear store on error, keep existing data if any
+                    }
+                  });
+                
+            }
+
+            // Redirect to dashboard or another page
+            this.router.navigate(['dashboard']);
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          if (error.error.validationErrors) {
+            const emailError = error.error.validationErrors['email'];
+            const passwordError = error.error.validationErrors['password'];
+            
+            // Display field-specific errors in your form
+            if(emailError){
+              this.loginForm.controls['email'].setErrors({ server: emailError });
+            }
+
+            if(passwordError){
+              this.loginForm.controls['password'].setErrors({ server: passwordError });
+            }
+          } else {
+            // Alternatively, set a general error message
+            this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
+          }
+          this.isSubmitting = false;
+        }
+      });
   }
 }

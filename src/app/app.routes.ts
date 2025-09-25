@@ -15,6 +15,7 @@ import { MaterialCategory } from './pages/main/tenants/material/material-categor
 import {MaterialCategoryCreate} from './pages/main/tenants/material/material-category-create/material-category-create'
 import { EditTenant } from './pages/main/tenant/edit/edit';
 import { NotFound } from './pages/error/not-found';
+import { SubdomainError } from './pages/error/subdomain-error/subdomain-error';
 import { UserList as TenantUserList } from './pages/main/tenant/users/user-list/user-list';
 import { UserCreate as TenantUserCreate } from './pages/main/tenant/users/user-create/user-create';
 import { UserEdit as TenantUserEdit } from './pages/main/tenant/users/user-edit/user-edit';
@@ -22,6 +23,8 @@ import { UserList } from './pages/main/users/user-list/user-list';
 import { UserCreate } from './pages/main/users/user-create/user-create';
 import { UserEdit } from './pages/main/users/user-edit/user-edit';
 import { TestStateComponent } from './test-state.component';
+import { StoreList } from './pages/main/tenants/stores/store-list/store-list';
+import { StoreCreate } from './pages/main/tenants/stores/store-create/store-create';
 export const routes: Routes = [
 
     {
@@ -108,9 +111,22 @@ export const routes: Routes = [
                 canActivate: [NoSubdomainGuard],
                 data: { title: 'Edit Sub Account User' }
             },
+            
             // Subdomain protected routes
             {
-                path: 'settings/:storeID',
+                path:'stores',
+                component:StoreList,
+                canActivate:[SubdomainGuard],
+                data:{title:'Store List'}
+            },
+            {
+                path:'stores/create',
+                component:StoreCreate,
+                canActivate:[SubdomainGuard],
+                data:{title:'Store Create'}
+            },
+            {
+                path: 'settings',
                 component: TenantSetting,
                 canActivate: [SubdomainGuard],
                 data: { title: 'Tenant Settings' }
@@ -135,6 +151,11 @@ export const routes: Routes = [
         component: Login,
         canActivate: [LoginGuard],
         data: { title: 'Login' }
+    },
+    {
+        path: 'subdomain-error',
+        component: SubdomainError,
+        data: { title: 'Subdomain Not Available' }
     },
     {
         path: '**',
