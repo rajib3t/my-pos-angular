@@ -64,4 +64,32 @@ export class StoreService {
     })
 
   }
+
+  getById(storeId: string): Observable<Store> {
+    return new Observable<Store>((observer) => {
+      this.apiService.protectedGet<{ data: Store }>(`tenants/stores/${storeId}`).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  update(storeId: string, data: Partial<Store>): Observable<Store> {
+    return new Observable<Store>((observer) => {
+      this.apiService.protectedPut<{ data: Store }>(`tenants/stores/${storeId}`, data).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
 }
