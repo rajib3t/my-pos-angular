@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component , OnInit} from '@angular/core';
-import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon } from 'lucide-angular';
+import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, } from 'lucide-angular';
 import { Router, RouterModule } from '@angular/router';
 import {FormGroup, ReactiveFormsModule, FormBuilder} from '@angular/forms'
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
@@ -15,7 +15,8 @@ import { UiService } from '@/app/services/ui.service';
     CommonModule,
     LucideAngularModule,
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+     PaginationComponent,
   ],
   templateUrl: './store-list.html',
   styleUrl: './store-list.css'
@@ -49,7 +50,8 @@ export class StoreList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadStores()
+      this.loadStores()
+      this.setupSearchSubscription();
   }
 
   formatDate = formatDate;
@@ -60,8 +62,8 @@ export class StoreList implements OnInit {
       name: [''],
       code: [''],
       mobile: [''],
-     
-      status: [true]
+      // Keep status empty by default to represent "All"
+      status: ['']
     });
   }
   private setupSearchSubscription(): void {
@@ -153,5 +155,55 @@ export class StoreList implements OnInit {
         }
       });
       
+  }
+  // Whether any filters are currently active
+  hasActiveFilters(): boolean {
+    return Object.keys(this.filter).length > 0;
+  }
+
+  // Generate a user-friendly message for empty results when filters are applied
+  getNoResultsMessage(): string {
+    if (!this.hasActiveFilters()) {
+      return 'No stores found.';
+    }
+
+    const parts: string[] = [];
+    const mapLabel = (key: string): string => {
+      switch (key) {
+        case 'name': return 'Name';
+        case 'code': return 'Code';
+        case 'mobile': return 'Mobile';
+        case 'status': return 'Status';
+        default: return key;
+      }
+    };
+
+    Object.keys(this.filter).forEach(key => {
+      if (key === 'status') {
+        const val = this.filter[key];
+        const label = val === 'active' ? 'Active' : val === 'inactive' ? 'Inactive' : '';
+        if (label) parts.push(`${mapLabel(key)}: ${label}`);
+      } else if (this.filter[key]) {
+        parts.push(`${mapLabel(key)}: "${this.filter[key]}"`);
+      }
+    });
+
+    const filtersDesc = parts.join(', ');
+    return filtersDesc
+      ? `No stores found for filters — ${filtersDesc}.`
+      : 'No stores found.';
+  }
+   onPaginationChange(change: PaginationChange) {
+      this.paginationConfig.page = change.page;
+      this.paginationConfig.limit = change.limit;
+      this.loadStores();
+    }
+
+  onEditUser(store : Store):void{
+
+  }
+
+  onDeleteUser(store : Store):void{
+
   }
 }

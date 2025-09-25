@@ -1,56 +1,130 @@
-<!-- Page Header -->
-<div class="bg-gradient-to-br from-slate-50 to-white shadow-lg border-b border-gray-100 px-8 py-6">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
-                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="w-6 h-6 text-white"></lucide-angular>
-                
+<!-- Ultra Modern Page Header -->
+<div class="relative bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40 backdrop-blur-xl border-b border-white/20 px-8 py-8 overflow-hidden">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-xl animate-pulse"></div>
+        <div class="absolute top-1/2 -left-8 w-32 h-32 bg-gradient-to-br from-purple-400/10 to-pink-400/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div class="absolute bottom-0 right-1/3 w-20 h-20 bg-gradient-to-br from-cyan-400/15 to-blue-400/15 rounded-full blur-xl animate-pulse delay-500"></div>
+    </div>
+    
+    <div class="relative z-10 flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+            <!-- Enhanced Icon Container -->
+            <div class="relative group">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                <div class="relative bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-2xl shadow-2xl transform group-hover:scale-105 transition-all duration-300">
+                    <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="w-7 h-7 text-white"></lucide-angular>
+                </div>
             </div>
-            <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                    Create strokeWidth
-                </h1>
-                <p class="text-gray-600 mt-1 text-sm font-medium">Manage stores</p>
-                <div class="flex items-center mt-2 space-x-3">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        Active Stores
-                    </span>
-                    <span class="text-gray-400">•</span>
-                    <span class="text-xs text-gray-500 font-medium">Store Management</span>
+            
+            <!-- Enhanced Title Section -->
+            <div class="space-y-3">
+                <div>
+                    <h1 class="text-3xl font-black bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent leading-tight">
+                        Create New Store
+                    </h1>
+                    <p class="text-gray-600 mt-2 text-base font-medium">Build your digital storefront</p>
+                </div>
+                
+                <!-- Enhanced Status Badges -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200/50 shadow-sm">
+                            <svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            System Ready
+                        </span>
+                    </div>
+                    <div class="w-px h-4 bg-gray-300"></div>
+                    <span class="text-sm text-gray-500 font-medium">Store Management Portal</span>
                 </div>
             </div>
         </div>
-        <div class="hidden md:flex items-center space-x-2">
-            
-            <div class="bg-white p-2 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 cursor-pointer" (click)="goToDashBoard()"  title="Edit Sub-Account Details">
-                <lucide-angular [img]="DashboardIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-600"></lucide-angular>
+        
+        <!-- Enhanced Action Button -->
+        <div class="hidden md:flex items-center space-x-3">
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <button 
+                    class="relative bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 cursor-pointer transform group-hover:scale-105" 
+                    (click)="goToDashBoard()"  
+                    title="Return to Dashboard"
+                >
+                    <lucide-angular [img]="DashboardIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-700 group-hover:text-indigo-600 transition-colors duration-300"></lucide-angular>
+                </button>
             </div>
         </div>
     </div>
 </div>
- <!-- Modern Content Area -->
-<main class="p-8 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 min-h-screen">
-    <div class="max-w-4xl mx-auto">
-        <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-6 py-6 rounded-2xl mb-6 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+<!-- Ultra Modern Content Area -->
+<main class="relative p-8 bg-gradient-to-br from-gray-50 via-blue-50/20 to-indigo-50/30 min-h-screen overflow-hidden">
+    <!-- Floating Background Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-indigo-400/5 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-80 h-80 bg-gradient-to-br from-purple-400/5 to-pink-400/5 rounded-full blur-3xl animate-float-delayed"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-cyan-400/3 to-blue-400/3 rounded-full blur-3xl animate-pulse"></div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto">
+        <!-- Enhanced Hero Banner -->
+        <div class="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-8 rounded-3xl mb-8 overflow-hidden shadow-2xl">
+            <!-- Glassmorphism Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-transparent backdrop-blur-sm"></div>
+            
+            <!-- Animated Background Pattern -->
+            <div class="absolute inset-0 opacity-20">
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                <div class="absolute top-4 right-4 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+                <div class="absolute bottom-4 left-4 w-24 h-24 bg-white/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-white/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+            </div>
+            
             <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex-shrink-0">
-                        <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-7 w-7 text-white"></lucide-angular>
+                <div class="flex items-center gap-6 mb-6">
+                    <!-- Enhanced Icon with Glow Effect -->
+                    <div class="relative group">
+                        <div class="absolute inset-0 bg-white/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 animate-pulse"></div>
+                        <div class="relative flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-md rounded-3xl border border-white/30 shadow-2xl">
+                            <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-8 w-8 text-white drop-shadow-lg"></lucide-angular>
+                        </div>
                     </div>
-                    <div class="text-left">
-                        <h2 class="text-2xl font-bold text-white leading-tight">Create Store</h2>
-                        <p class="text-indigo-100 text-sm mt-1">Set up your business presence</p>
+                    
+                    <!-- Enhanced Text Content -->
+                    <div class="text-left space-y-2">
+                        <h2 class="text-3xl font-black text-white leading-tight drop-shadow-lg">
+                            Launch Your Store
+                        </h2>
+                        <p class="text-indigo-100 text-lg font-medium drop-shadow-sm">
+                            Transform your business vision into reality
+                        </p>
                     </div>
                 </div>
-                <p class="text-indigo-100 text-sm">Create a store for your business and start selling online</p>
+                
+                <!-- Enhanced Description with Stats -->
+                <div class="space-y-4">
+                    <p class="text-indigo-100 text-base leading-relaxed drop-shadow-sm">
+                        Create a powerful digital storefront that connects with customers and drives growth
+                    </p>
+                    
+                    <!-- Mini Stats -->
+                    <div class="flex items-center space-x-6 pt-2">
+                        <div class="flex items-center space-x-2 text-white/90">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm font-medium">Instant Setup</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-white/90">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-300"></div>
+                            <span class="text-sm font-medium">Mobile Ready</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-white/90">
+                            <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-700"></div>
+                            <span class="text-sm font-medium">Secure & Fast</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- Decorative elements -->
-            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-12 translate-x-12"></div>
-            <div class="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
         </div>
           <!-- Success Message -->
             @if(successMessage){
@@ -86,234 +160,416 @@
                 </div>
             </div>
             }
-         <form class="space-y-8"  [formGroup]="storeCreateForm" (ngSubmit)="onSubmit()" >
-                            <div class="bg-gradient-to-br from-indigo-50/50 to-purple-50/50 p-8 rounded-2xl border border-indigo-100/50">
-                                <div class="flex items-center mb-6">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
-                                    1
-                                    </div>
-                                    <h3 class="text-xl font-bold text-gray-800">Store Details</h3>
-                                </div>
-                               <div class="space-y-8">
-                                    <!-- Store Name Field -->
-                                    <div class="group relative">
-                                        <div class="relative">
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                formControlName="name"
-                                                class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-indigo-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
-                                                placeholder="Enter store name"
-                                                required
-                                            >
-                                            <label 
-                                                for="name" 
-                                                class="absolute left-4 top-2 text-xs font-semibold text-indigo-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600"
-                                            >
-                                                Store Name *
-                                            </label>
-                                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-400 peer-focus:text-indigo-500 transition-color"></lucide-angular>
-                                                
-                                            </div>
-                                           
-                                        </div>
-                                         @if(storeCreateForm.get('name')?.invalid && storeCreateForm.get('name')?.touched) {
-                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
-                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <div>
-                                                    @if(storeCreateForm.get('name')?.errors?.['required']) { <span class="font-medium">Name is required.</span> }
-                                                    @if(storeCreateForm.get('name')?.errors?.['minlength']) { <span class="font-medium">Name must be at least 3 characters long.</span> }
-                                                    @if(storeCreateForm.get('name')?.errors?.['maxlength']) { <span class="font-medium">Name cannot exceed 50 characters.</span> }
-                                                    @if(storeCreateForm.get('name')?.errors?.['server']) { <span class="font-medium">{{storeCreateForm.get('name')?.errors?.['server']}}</span> }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                    <!-- Store Email Field (fixed) -->
-                                    <div class="group relative">
-                                        <div class="relative">
-                                            <input
-                                                type="text"
-                                                name="code"
-                                                formControlName="code"
-                                                class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-pink-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
-                                                placeholder="Enter store code"
-                                                required
-                                            >
-                                            <label 
-                                                for="code" 
-                                                class="absolute left-4 top-2 text-xs font-semibold text-pink-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-600"
-                                            >
-                                                Store Code *
-                                            </label>
-                                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-400 peer-focus:text-pink-500 transition-color"></lucide-angular>
-                                            </div>
-                                        </div>
-                                        @if(storeCreateForm.get('code')?.invalid && storeCreateForm.get('code')?.touched) {
-                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
-                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <div>
-                                                    @if(storeCreateForm.get('code')?.errors?.['required']) { <span class="font-medium">Code is required.</span> }
-                                                    @if(storeCreateForm.get('code')?.errors?.['minlength']) { <span class="font-medium">Code must be at least 2 characters long.</span> }
-                                                    @if(storeCreateForm.get('code')?.errors?.['maxlength']) { <span class="font-medium">Code cannot exceed 10 characters.</span> }
-                                                    @if(storeCreateForm.get('code')?.errors?.['uppercaseOnly']) { <span class="font-medium">Code must contain only uppercase letters.</span> }
-                                                    @if(storeCreateForm.get('code')?.errors?.['server']) { <span class="font-medium">{{storeCreateForm.get('code')?.errors?.['server']}}</span> }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
+        <!-- Progress Indicator -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-4 mb-6">
+              <div class="flex items-center">
+                <div [class]="getStepClass(1)" class="text-white">
+                  @if(isStepCompleted(1)) {
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  } @else {
+                    1
+                  }
+                </div>
+                <span class="ml-3 text-sm font-semibold" [class]="getStepTextClass(1)">Store Details</span>
+              </div>
+              <div class="w-16 h-1 rounded-full transition-all duration-500" 
+                   [style.background]="getProgressWidth(1, 2) > 0 ? 'linear-gradient(to right, #3b82f6, #6366f1)' : '#e5e7eb'">
+              </div>
+              <div class="flex items-center">
+                <div [class]="getStepClass(2)" class="text-white">
+                  @if(isStepCompleted(2)) {
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  } @else {
+                    2
+                  }
+                </div>
+                <span class="ml-3 text-sm font-medium" [class]="getStepTextClass(2)">Contact Info</span>
+              </div>
+            </div>
+            <div class="max-w-md mx-auto">
+              <div class="flex justify-between text-xs text-gray-500 mb-2">
+                <span>Form Progress</span>
+                <span>{{ getOverallProgress() }}% Complete</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
+                <div class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                     [style.width.%]="getOverallProgress()">
+                  <div class="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <form class="space-y-10"  [formGroup]="storeCreateForm" (ngSubmit)="onSubmit()" >
+            <!-- Enhanced Store Details Section -->
+            <div class="relative group">
+                <!-- Glassmorphism Card -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/60 to-white/30 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500"></div>
+                <div class="relative p-8 rounded-3xl">
+                    <!-- Section Header with Enhanced Design -->
+                    <div class="flex items-center mb-8">
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
+                            <div class="relative w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-2xl">
+                                1
                             </div>
-                            <div class="bg-gradient-to-br from-indigo-50/50 to-purple-50/50 p-8 rounded-2xl border border-indigo-100/50">
-                                <div class="flex items-center mb-6">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
-                                    2
-                                    </div>
-                                    <h3 class="text-xl font-bold text-gray-800">Store Contact</h3>
-                                </div>
-                               <div class="space-y-8">
-                                    <!-- Store Name Field -->
-                                    <div class="group relative">
-                                        <div class="relative">
-                                            <input
-                                                type="text"
-                                                name="mobile"
-                                                formControlName="mobile"
-                                                class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-indigo-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
-                                                placeholder="Enter store mobile"
-                                                required
-                                            >
-                                            <label 
-                                                for="storeMobile" 
-                                                class="absolute left-4 top-2 text-xs font-semibold text-indigo-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600"
-                                            >
-                                                Store Mobile *
-                                            </label>
-                                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <lucide-angular [img]="PhoneIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-400 peer-focus:text-indigo-500 transition-color"></lucide-angular>
-                                                
-                                            </div>
-                                        </div>
-                                        @if(storeCreateForm.get('mobile')?.invalid && storeCreateForm.get('mobile')?.touched) {
-                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
-                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <div>
-                                                    @if(storeCreateForm.get('mobile')?.errors?.['required']) { <span class="font-medium">Mobile is required.</span> }
-                                                    @if(storeCreateForm.get('mobile')?.errors?.['minlength']) { <span class="font-medium">Mobile must be at least 10 characters long.</span> }
-                                                    @if(storeCreateForm.get('mobile')?.errors?.['maxlength']) { <span class="font-medium">Mobile cannot exceed 10 characters.</span> }
-                                                    @if(storeCreateForm.get('mobile')?.errors?.['server']) { <span class="font-medium">{{storeCreateForm.get('name')?.errors?.['server']}}</span> }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                    <!-- Store code Field -->
-                                    <div class="group relative">
-                                        <div class="relative">
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                formControlName="email"
-                                                class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-indigo-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
-                                                placeholder="Enter store email"
-                                                required
-                                            >
-                                            <label 
-                                                for="email" 
-                                                class="absolute left-4 top-2 text-xs font-semibold text-indigo-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600"
-                                            >
-                                                Store Email *
-                                            </label>
-                                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                                                <lucide-angular [img]="AtSignIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-400 peer-focus:text-indigo-500 transition-color"></lucide-angular>
-                                            </div>
-                                        </div>
-                                         @if(storeCreateForm.get('email')?.invalid && storeCreateForm.get('email')?.touched) {
-                                            <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
-                                                <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <div>
-                                                    @if(storeCreateForm.get('email')?.errors?.['required']) { <span class="font-medium">Email is required.</span> }
-                                                    @if(storeCreateForm.get('email')?.errors?.['email']) { <span class="font-medium">Email is not valid.</span> }
-                                                    @if(storeCreateForm.get('email')?.errors?.['server']) { <span class="font-medium">{{storeCreateForm.get('email')?.errors?.['server']}}</span> }
-                                                </div>
-                                            </div>
-                                        }
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-2xl font-black bg-gradient-to-r from-gray-900 to-indigo-900 bg-clip-text text-transparent">
+                                Store Details
+                            </h3>
+                            <p class="text-gray-600 text-sm font-medium mt-1">Essential information about your store</p>
+                        </div>
+                    </div>
+                    <!-- Enhanced Form Fields -->
+                    <div class="space-y-8">
+                        <!-- Ultra Modern Store Name Field -->
+                        <div class="group relative">
+                            <div class="relative">
+                                <!-- Enhanced Input with Glassmorphism -->
+                                <input
+                                    type="text"
+                                    name="name"
+                                    formControlName="name"
+                                    class="peer w-full h-16 px-6 pt-7 pb-3 border-2 border-gray-200/50 rounded-2xl focus:border-indigo-500 focus:outline-none transition-all duration-500 bg-white/70 backdrop-blur-md hover:border-indigo-300 hover:bg-white/80 placeholder-transparent shadow-lg focus:shadow-xl group-hover:shadow-lg"
+                                    placeholder="Enter store name"
+                                    required
+                                >
+                                <!-- Enhanced Floating Label -->
+                                <label 
+                                    for="name" 
+                                    class="absolute left-6 top-2 text-xs font-bold text-indigo-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-xs peer-focus:text-indigo-600 peer-focus:font-bold"
+                                >
+                                    Store Name *
+                                </label>
+                                <!-- Enhanced Icon with Animation -->
+                                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-indigo-500/20 rounded-full blur-sm opacity-0 peer-focus:opacity-100 transition-opacity duration-300"></div>
+                                        <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="relative h-6 w-6 text-gray-400 peer-focus:text-indigo-500 transition-all duration-300 group-hover:text-indigo-400"></lucide-angular>
                                     </div>
                                 </div>
+                                <!-- Focus Ring Effect -->
+                                <div class="absolute inset-0 rounded-2xl ring-2 ring-indigo-500/0 peer-focus:ring-indigo-500/20 transition-all duration-300 pointer-events-none"></div>
                             </div>
+                            <!-- Enhanced Error Message -->
+                            @if(storeCreateForm.get('name')?.invalid && storeCreateForm.get('name')?.touched) {
+                                <div class="mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-2xl text-red-700 text-sm flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300 backdrop-blur-sm">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3">
+                                        @if(storeCreateForm.get('name')?.errors?.['required']) { <span class="font-semibold">Store name is required.</span> }
+                                        @if(storeCreateForm.get('name')?.errors?.['minlength']) { <span class="font-semibold">Name must be at least 8 characters long.</span> }
+                                        @if(storeCreateForm.get('name')?.errors?.['maxlength']) { <span class="font-semibold">Name cannot exceed 50 characters.</span> }
+                                        @if(storeCreateForm.get('name')?.errors?.['server']) { <span class="font-semibold">{{storeCreateForm.get('name')?.errors?.['server']}}</span> }
+                                    </div>
+                                </div>
+                            }
+                                    </div>
+                        <!-- Ultra Modern Store Code Field -->
+                        <div class="group relative">
+                            <div class="relative">
+                                <!-- Enhanced Input with Glassmorphism -->
+                                <input
+                                    type="text"
+                                    name="code"
+                                    formControlName="code"
+                                    class="peer w-full h-16 px-6 pt-7 pb-3 border-2 border-gray-200/50 rounded-2xl focus:border-purple-500 focus:outline-none transition-all duration-500 bg-white/70 backdrop-blur-md hover:border-purple-300 hover:bg-white/80 placeholder-transparent shadow-lg focus:shadow-xl group-hover:shadow-lg uppercase tracking-wider"
+                                    placeholder="Enter store code"
+                                    required
+                                >
+                                <!-- Enhanced Floating Label -->
+                                <label 
+                                    for="code" 
+                                    class="absolute left-6 top-2 text-xs font-bold text-purple-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-600 peer-focus:font-bold"
+                                >
+                                    Store Code *
+                                </label>
+                                <!-- Enhanced Icon with Animation -->
+                                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-purple-500/20 rounded-full blur-sm opacity-0 peer-focus:opacity-100 transition-opacity duration-300"></div>
+                                        <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="relative h-6 w-6 text-gray-400 peer-focus:text-purple-500 transition-all duration-300 group-hover:text-purple-400"></lucide-angular>
+                                    </div>
+                                </div>
+                                <!-- Focus Ring Effect -->
+                                <div class="absolute inset-0 rounded-2xl ring-2 ring-purple-500/0 peer-focus:ring-purple-500/20 transition-all duration-300 pointer-events-none"></div>
+                            </div>
+                            <!-- Enhanced Error Message for Code -->
+                            @if(storeCreateForm.get('code')?.invalid && storeCreateForm.get('code')?.touched) {
+                                <div class="mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-2xl text-red-700 text-sm flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300 backdrop-blur-sm">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3">
+                                        @if(storeCreateForm.get('code')?.errors?.['required']) { <span class="font-semibold">Store code is required.</span> }
+                                        @if(storeCreateForm.get('code')?.errors?.['minlength']) { <span class="font-semibold">Code must be at least 2 characters long.</span> }
+                                        @if(storeCreateForm.get('code')?.errors?.['maxlength']) { <span class="font-semibold">Code cannot exceed 10 characters.</span> }
+                                        @if(storeCreateForm.get('code')?.errors?.['uppercaseOnly']) { <span class="font-semibold">Code must contain only uppercase letters.</span> }
+                                        @if(storeCreateForm.get('code')?.errors?.['server']) { <span class="font-semibold">{{storeCreateForm.get('code')?.errors?.['server']}}</span> }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Enhanced Store Contact Section -->
+            <div class="relative group">
+                <!-- Glassmorphism Card -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/60 to-white/30 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl group-hover:shadow-3xl transition-all duration-500"></div>
+                <div class="relative p-8 rounded-3xl">
+                    <!-- Section Header with Enhanced Design -->
+                    <div class="flex items-center mb-8">
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
+                            <div class="relative w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-2xl">
+                                2
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-2xl font-black bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent">
+                                Contact Information
+                            </h3>
+                            <p class="text-gray-600 text-sm font-medium mt-1">How customers can reach you</p>
+                        </div>
+                    </div>
+                    <!-- Enhanced Contact Form Fields -->
+                    <div class="space-y-8">
+                        <!-- Ultra Modern Mobile Field -->
+                        <div class="group relative">
+                            <div class="relative">
+                                <!-- Enhanced Input with Glassmorphism -->
+                                <input
+                                    type="text"
+                                    name="mobile"
+                                    formControlName="mobile"
+                                    class="peer w-full h-16 px-6 pt-7 pb-3 border-2 border-gray-200/50 rounded-2xl focus:border-pink-500 focus:outline-none transition-all duration-500 bg-white/70 backdrop-blur-md hover:border-pink-300 hover:bg-white/80 placeholder-transparent shadow-lg focus:shadow-xl group-hover:shadow-lg"
+                                    placeholder="Enter store mobile"
+                                    required
+                                >
+                                <!-- Enhanced Floating Label -->
+                                <label 
+                                    for="mobile" 
+                                    class="absolute left-6 top-2 text-xs font-bold text-pink-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-xs peer-focus:text-pink-600 peer-focus:font-bold"
+                                >
+                                    Store Mobile *
+                                </label>
+                                <!-- Enhanced Icon with Animation -->
+                                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-pink-500/20 rounded-full blur-sm opacity-0 peer-focus:opacity-100 transition-opacity duration-300"></div>
+                                        <lucide-angular [img]="PhoneIcon" [strokeWidth]="1.5" class="relative h-6 w-6 text-gray-400 peer-focus:text-pink-500 transition-all duration-300 group-hover:text-pink-400"></lucide-angular>
+                                    </div>
+                                </div>
+                                <!-- Focus Ring Effect -->
+                                <div class="absolute inset-0 rounded-2xl ring-2 ring-pink-500/0 peer-focus:ring-pink-500/20 transition-all duration-300 pointer-events-none"></div>
+                            </div>
+                            <!-- Enhanced Error Message for Mobile -->
+                            @if(storeCreateForm.get('mobile')?.invalid && storeCreateForm.get('mobile')?.touched) {
+                                <div class="mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-2xl text-red-700 text-sm flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300 backdrop-blur-sm">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3">
+                                        @if(storeCreateForm.get('mobile')?.errors?.['required']) { <span class="font-semibold">Mobile number is required.</span> }
+                                        @if(storeCreateForm.get('mobile')?.errors?.['minlength']) { <span class="font-semibold">Mobile must be exactly 10 digits.</span> }
+                                        @if(storeCreateForm.get('mobile')?.errors?.['maxlength']) { <span class="font-semibold">Mobile must be exactly 10 digits.</span> }
+                                        @if(storeCreateForm.get('mobile')?.errors?.['server']) { <span class="font-semibold">{{storeCreateForm.get('mobile')?.errors?.['server']}}</span> }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Ultra Modern Email Field -->
+                        <div class="group relative">
+                            <div class="relative">
+                                <!-- Enhanced Input with Glassmorphism -->
+                                <input
+                                    type="email"
+                                    name="email"
+                                    formControlName="email"
+                                    class="peer w-full h-16 px-6 pt-7 pb-3 border-2 border-gray-200/50 rounded-2xl focus:border-cyan-500 focus:outline-none transition-all duration-500 bg-white/70 backdrop-blur-md hover:border-cyan-300 hover:bg-white/80 placeholder-transparent shadow-lg focus:shadow-xl group-hover:shadow-lg"
+                                    placeholder="Enter store email"
+                                    required
+                                >
+                                <!-- Enhanced Floating Label -->
+                                <label 
+                                    for="email" 
+                                    class="absolute left-6 top-2 text-xs font-bold text-cyan-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-5 peer-focus:top-2 peer-focus:text-xs peer-focus:text-cyan-600 peer-focus:font-bold"
+                                >
+                                    Store Email *
+                                </label>
+                                <!-- Enhanced Icon with Animation -->
+                                <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 bg-cyan-500/20 rounded-full blur-sm opacity-0 peer-focus:opacity-100 transition-opacity duration-300"></div>
+                                        <lucide-angular [img]="AtSignIcon" [strokeWidth]="1.5" class="relative h-6 w-6 text-gray-400 peer-focus:text-cyan-500 transition-all duration-300 group-hover:text-cyan-400"></lucide-angular>
+                                    </div>
+                                </div>
+                                <!-- Focus Ring Effect -->
+                                <div class="absolute inset-0 rounded-2xl ring-2 ring-cyan-500/0 peer-focus:ring-cyan-500/20 transition-all duration-300 pointer-events-none"></div>
+                            </div>
+                            <!-- Enhanced Error Message for Email -->
+                            @if(storeCreateForm.get('email')?.invalid && storeCreateForm.get('email')?.touched) {
+                                <div class="mt-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200/50 rounded-2xl text-red-700 text-sm flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300 backdrop-blur-sm">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3">
+                                        @if(storeCreateForm.get('email')?.errors?.['required']) { <span class="font-semibold">Email address is required.</span> }
+                                        @if(storeCreateForm.get('email')?.errors?.['email']) { <span class="font-semibold">Please enter a valid email address.</span> }
+                                        @if(storeCreateForm.get('email')?.errors?.['server']) { <span class="font-semibold">{{storeCreateForm.get('email')?.errors?.['server']}}</span> }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
                            
                             
                            
 
 
-                            <!-- Modern Submit Buttons -->
-                            <div class="flex flex-col items-center pt-8 space-y-4">
-                                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                    
-                                    
-                                    <button 
-                                         [disabled]="isSubmitting || storeCreateForm.invalid"
-                                        type="submit" 
-                                        class="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold text-lg rounded-2xl hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-offset-2 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 shadow-2xl hover:shadow-indigo-500/25 transform hover:scale-105 disabled:transform-none disabled:shadow-none min-w-[180px] flex items-center justify-center"
-                                    >
-                                        <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        <div id="btnContent" class="relative z-10 flex items-center">
-                                            <svg class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                            </svg>
-                                            <span>Create Store</span>
-                                            <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                            </svg>
-                                        </div>
-                                        @if(isSubmitting){
-                                            <div id="loadingContent" class="relative z-10 flex items-center">
-                                                <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                                <span>Creating Store...</span>
-                                            </div>
-                                        }
-                                        
-                                    </button>
-                                </div>
+            <!-- Ultra Modern Submit Section -->
+            <div class="relative mt-12">
+                <!-- Glassmorphism Submit Container -->
+                <div class="relative bg-gradient-to-br from-white/60 to-white/30 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+                    <!-- Animated Background Elements -->
+                    <div class="absolute inset-0 overflow-hidden rounded-3xl">
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-xl animate-pulse"></div>
+                        <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-pink-400/10 to-rose-400/10 rounded-full blur-xl animate-pulse delay-1000"></div>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col items-center space-y-8">
+                        <!-- Enhanced Submit Button -->
+                        <div class="w-full max-w-md">
+                            <button 
+                                [disabled]="isSubmitting || storeCreateForm.invalid"
+                                type="submit" 
+                                class="group relative w-full px-8 py-5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black text-xl rounded-3xl hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-purple-300/50 focus:ring-offset-2 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-500 shadow-2xl hover:shadow-purple-500/30 transform hover:scale-[1.02] disabled:transform-none disabled:shadow-lg flex items-center justify-center overflow-hidden"
+                            >
+                                <!-- Button Glow Effect -->
+                                <div class="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 
-                                <!-- Form Status Info -->
-                                <div class="text-center space-y-3">
-                                    <div class="flex items-center justify-center space-x-6 text-sm">
-                                        <!-- Security Badge -->
-                                        <div class="flex items-center text-gray-500">
-                                            <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                <!-- Shimmer Effect -->
+                                <div class="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent w-0 group-hover:w-full transition-all duration-1000 ease-out"></div>
+                                
+                                <!-- Button Content -->
+                                @if(!isSubmitting) {
+                                    <div class="relative z-10 flex items-center space-x-4">
+                                        <div class="flex items-center justify-center w-8 h-8 bg-white/20 rounded-full">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                             </svg>
-                                            <span class="font-medium">SSL Encrypted</span>
                                         </div>
-                                        
-                                        <!-- Validation Status -->
-                                        <div id="validationStatus" class="flex items-center text-orange-500">
-                                            <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                        <span class="text-xl font-black tracking-wide">Create Store</span>
+                                        <div class="flex items-center justify-center w-8 h-8 bg-white/20 rounded-full transform group-hover:translate-x-1 transition-transform duration-300">
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                                             </svg>
-                                            <span class="font-medium">Complete Required Fields</span>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Additional Info -->
-                                    <p class="text-xs text-gray-400 max-w-md mx-auto">
-                                        All store information is securely encrypted and protected. You can update these details anytime from your dashboard.
-                                    </p>
+                                }
+                                
+                                <!-- Loading State -->
+                                @if(isSubmitting) {
+                                    <div class="relative z-10 flex items-center space-x-4">
+                                        <div class="flex items-center justify-center w-8 h-8">
+                                            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-xl font-black tracking-wide">Creating Store...</span>
+                                        <div class="w-8 h-8 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                }
+                            </button>
+                        </div>
+                                
+                        <!-- Enhanced Form Status Info -->
+                        <div class="text-center space-y-6">
+                            <!-- Status Badges -->
+                            <div class="flex items-center justify-center space-x-8 text-sm">
+                                <!-- Security Badge -->
+                                <div class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-200/50 shadow-sm">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                    <span class="font-semibold text-green-700">SSL Secured</span>
+                                </div>
+                                
+                                <!-- Validation Status -->
+                                <div class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full border border-blue-200/50 shadow-sm">
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-300"></div>
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span class="font-semibold text-blue-700">Instant Validation</span>
+                                </div>
+                                
+                                <!-- Cloud Save Badge -->
+                                <div class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full border border-purple-200/50 shadow-sm">
+                                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-700"></div>
+                                    <svg class="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                                    </svg>
+                                    <span class="font-semibold text-purple-700">Cloud Sync</span>
                                 </div>
                             </div>
-                        </form>
+                            
+                            <!-- Enhanced Additional Info -->
+                            <div class="space-y-3">
+                                <p class="text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                                    Your store information is protected with enterprise-grade encryption and can be updated anytime from your dashboard.
+                                </p>
+                                <div class="flex items-center justify-center space-x-4 text-xs text-gray-500">
+                                    <span class="flex items-center space-x-1">
+                                        <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                        <span>Real-time validation</span>
+                                    </span>
+                                    <span class="flex items-center space-x-1">
+                                        <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                        <span>Auto-save enabled</span>
+                                    </span>
+                                    <span class="flex items-center space-x-1">
+                                        <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                        <span>GDPR compliant</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </main>

@@ -1,0 +1,180 @@
+/* Ultra Modern Form Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(8px) rotate(-1deg);
+  }
+  66% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-12deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+  }
+}
+
+@keyframes slide-in-from-top-2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Animation Classes */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-in {
+  animation: slide-in-from-top-2 0.3s ease-out;
+}
+
+/* Enhanced Focus States */
+.peer:focus ~ .peer-focus\:ring-indigo-500\/20 {
+  --tw-ring-color: rgb(99 102 241 / 0.2);
+}
+
+.peer:focus ~ .peer-focus\:ring-purple-500\/20 {
+  --tw-ring-color: rgb(147 51 234 / 0.2);
+}
+
+.peer:focus ~ .peer-focus\:ring-pink-500\/20 {
+  --tw-ring-color: rgb(236 72 153 / 0.2);
+}
+
+.peer:focus ~ .peer-focus\:ring-cyan-500\/20 {
+  --tw-ring-color: rgb(6 182 212 / 0.2);
+}
+
+/* Glassmorphism Enhancement */
+.backdrop-blur-xl {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Enhanced Hover Effects */
+.group:hover .group-hover\:shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom Gradient Text */
+.bg-clip-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Enhanced Button Animations */
+.transform {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover\:scale-\[1\.02\]:hover {
+  transform: scale(1.02);
+}
+
+/* Loading Animation Enhancement */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+/* Form Field Focus Enhancement */
+.peer:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Progress Indicator Enhancement */
+.progress-step {
+  transition: all 0.3s ease-in-out;
+}
+
+.progress-step.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Mobile Responsive Enhancements */
+@media (max-width: 640px) {
+  .animate-float,
+  .animate-float-delayed {
+    animation-duration: 4s;
+  }
+  
+  .backdrop-blur-xl {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Dark Mode Support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .bg-white\/70 {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .border-gray-200\/50 {
+    border-color: rgba(75, 85, 99, 0.5);
+  }
+}
