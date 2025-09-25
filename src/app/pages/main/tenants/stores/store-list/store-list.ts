@@ -200,7 +200,7 @@ export class StoreList implements OnInit {
     }
 
   onEditUser(store : Store):void{
-
+    this.router.navigate([`/stores/${store._id}/edit`])
   }
 
   onDeleteUser(store : Store):void{

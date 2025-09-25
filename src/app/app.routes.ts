@@ -25,6 +25,7 @@ import { UserEdit } from './pages/main/users/user-edit/user-edit';
 import { TestStateComponent } from './test-state.component';
 import { StoreList } from './pages/main/tenants/stores/store-list/store-list';
 import { StoreCreate } from './pages/main/tenants/stores/store-create/store-create';
+import { StoreEdit } from './pages/main/tenants/stores/store-edit/store-edit';
 export const routes: Routes = [
 
     {
@@ -122,6 +123,12 @@ export const routes: Routes = [
             {
                 path:'stores/create',
                 component:StoreCreate,
+                canActivate:[SubdomainGuard],
+                data:{title:'Store Create'}
+            },
+             {
+                path:'stores/:storeId/edit',
+                component:StoreEdit,
                 canActivate:[SubdomainGuard],
                 data:{title:'Store Create'}
             },

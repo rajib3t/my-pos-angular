@@ -35,7 +35,7 @@ export class StoreCreate implements OnInit{
     private storeService: StoreService
   ){
     this.storeCreateForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(8)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       code: ['', [
         Validators.required, 
         this.formService.uppercaseValidator(),
