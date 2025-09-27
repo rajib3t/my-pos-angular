@@ -92,4 +92,42 @@ export class StoreService {
       });
     });
   }
+
+  delete(storeId: string): Observable<{ message: string }> {
+    return new Observable<{ message: string }>((observer) => {
+      const url = `tenants/stores/${storeId}`;
+      this.apiService.protectedDelete<{ message: string }>(url).subscribe({
+        next: (response) => {
+          observer.next({ message: response.data.message });
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  getStaffs(storeId : string , page: number = 1, limit: number = 10, filter?: { [key: string]: any }) : Observable<any> {
+    return new Observable<any> ((observer)=>{
+      let queryParams = `page=${page}&limit=${limit}&timezone=-330`;
+      if (filter) {
+        Object.keys(filter).forEach(key => {
+          if (filter[key] !== undefined && filter[key] !== null && filter[key] !== '') {
+            queryParams += `&${key}=${encodeURIComponent(filter[key])}`;
+          }
+        });
+      }
+       const url = `tenants/stores/${storeId}/staffs?${queryParams}`;
+      this.apiService.protectedGet<any>(url).subscribe({
+        next: (response) => {
+          observer.next(response.data.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    })
+  } 
 }

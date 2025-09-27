@@ -26,6 +26,8 @@ import { TestStateComponent } from './test-state.component';
 import { StoreList } from './pages/main/tenants/stores/store-list/store-list';
 import { StoreCreate } from './pages/main/tenants/stores/store-create/store-create';
 import { StoreEdit } from './pages/main/tenants/stores/store-edit/store-edit';
+import { StoreStaff } from './pages/main/tenants/stores/store-staff/store-staff';
+import { StoreStaffAdd } from './pages/main/tenants/stores/store-staff-add/store-staff-add';
 export const routes: Routes = [
 
     {
@@ -126,11 +128,23 @@ export const routes: Routes = [
                 canActivate:[SubdomainGuard],
                 data:{title:'Store Create'}
             },
-             {
+            {
                 path:'stores/:storeId/edit',
                 component:StoreEdit,
                 canActivate:[SubdomainGuard],
-                data:{title:'Store Create'}
+                data:{title:'Store Update'}
+            },
+            {
+                path:'stores/:storeId/staffs',
+                component:StoreStaff,
+                canActivate:[SubdomainGuard],
+                data:{title:'Store Staffs'}
+            },
+            {
+                path:'stores/:storeId/staffs-add',
+                component:StoreStaffAdd,
+                canActivate:[SubdomainGuard],
+                data:{title:'Store Staff Add'}
             },
             {
                 path: 'settings',

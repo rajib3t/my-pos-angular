@@ -150,7 +150,11 @@ export class Login implements OnInit {
             this.apiService.setRefreshToken(response.data.data.refreshToken?.token);
             this.userService.setAuthUser(response.data.data.user);
             if(this.uiService.isSubDomain()){
-              this.storeService.getAllStores(1, 1).subscribe({
+              // Skip fetching/setting store if already present
+              if (appState.store && appState.store._id) {
+                this.router.navigate(['dashboard']);
+              } else {
+                this.storeService.getAllStores(1, 1).subscribe({
                     next: (res) => {
                       console.log('App: Store API response:', res);
                       if (res?.items?.length > 0) {
@@ -166,7 +170,9 @@ export class Login implements OnInit {
                             createdBy: store.createdBy || ''
                           };
                           console.log('App: Setting store in app state:', storeData);
-                          appState.setStore(storeData);
+                          if (!appState.store || !appState.store._id) {
+                            appState.setStore(storeData);
+                          }
                         } else {
                           console.warn('App: Store found but missing _id:', store);
                         }
@@ -180,8 +186,8 @@ export class Login implements OnInit {
                       appState.setLoading(false);
                       // Don't clear store on error, keep existing data if any
                     }
-                  });
-                
+                    });
+              }
             }
 
             // Redirect to dashboard or another page

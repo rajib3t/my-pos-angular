@@ -84,6 +84,11 @@ export class App implements OnInit, OnDestroy {
 
 
   public checkAndSetStore() {
+    // If a store is already present in state, do not fetch or set again
+    if (appState.store && appState.store._id) {
+      console.log('App: Store already set in state, skipping fetch.');
+      return;
+    }
     console.log('App: Fetching store data...');
     appState.setLoading(true);
     
@@ -103,7 +108,10 @@ export class App implements OnInit, OnDestroy {
               createdBy: store.createdBy || ''
             };
            
-            appState.setStore(storeData);
+            // Only set if not already present
+            if (!appState.store || !appState.store._id) {
+              appState.setStore(storeData);
+            }
           } else {
             console.warn('App: Store found but missing _id:', store);
           }

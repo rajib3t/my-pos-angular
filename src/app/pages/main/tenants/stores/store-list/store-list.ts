@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component , OnInit} from '@angular/core';
-import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, } from 'lucide-angular';
+import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon,User as UserIcon } from 'lucide-angular';
 import { Router, RouterModule } from '@angular/router';
-import {FormGroup, ReactiveFormsModule, FormBuilder} from '@angular/forms'
+import {FormGroup, ReactiveFormsModule, FormBuilder, FormsModule} from '@angular/forms'
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 import { StoreService } from '@/app/services/store.service';
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
 import { PaginatedResponse } from '@/app/services/api-response.model';
 import { Store } from '@/app/services/store.service';
 import { UiService } from '@/app/services/ui.service';
+import { appState } from '@/app/state/app.state';
 @Component({
   selector: 'app-store-list',
   imports: [
@@ -16,7 +17,8 @@ import { UiService } from '@/app/services/ui.service';
     LucideAngularModule,
     RouterModule,
     ReactiveFormsModule,
-     PaginationComponent,
+    FormsModule,
+    PaginationComponent,
   ],
   templateUrl: './store-list.html',
   styleUrl: './store-list.css'
@@ -24,7 +26,7 @@ import { UiService } from '@/app/services/ui.service';
 export class StoreList implements OnInit {
   readonly StoreIcon = StoreIcon
   readonly DashboardIcon = DashboardIcon
-
+  readonly UserIcon = UserIcon;
 
   showSearchFilters: boolean = false;
   searchForm!: FormGroup;
@@ -40,6 +42,11 @@ export class StoreList implements OnInit {
       limit: 10,
       pages: 0
     };
+  // Delete popup properties
+  showDeletePopup: boolean = false;
+  storeToDelete: Store | null = null;
+  confirmationName: string = '';
+  isDeleting: boolean = false;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -204,6 +211,81 @@ export class StoreList implements OnInit {
   }
 
   onDeleteUser(store : Store):void{
+    this.storeToDelete = store;
+    this.confirmationName = '';
+    this.showDeletePopup = true;
+    this.isDeleting = false;
+  }
+
+  confirmDeleteStore(): void {
+    if (!this.storeToDelete || this.confirmationName.trim() !== (this.storeToDelete.name || '') || this.isDeleting) {
+      return;
+    }
+
+    this.isDeleting = true;
+    const storeId = this.storeToDelete._id;
+    const storeName = this.storeToDelete.name;
+
+    if (!storeId) {
+      this.uiService.error('Unable to delete store. Invalid store ID.', 'Error');
+      this.isDeleting = false;
+      return;
+    }
+
+    this.storeService.delete(storeId).subscribe({
+      next: () => {
+        // Remove locally
+        this.stores = this.stores.filter(s => s._id !== storeId);
+
+        // If the deleted store is currently set in app state,
+        // set the next available store if present, otherwise clear it
+        if (appState.store && appState.store._id === storeId) {
+          if (this.stores.length > 0) {
+            const nextStore = this.stores[0];
+            appState.setStore({
+              _id: nextStore._id || '',
+              name: nextStore.name || '',
+              code: nextStore.code || '',
+              status: (nextStore.status as 'active' | 'inactive') || 'active',
+              createdBy: nextStore.createdBy || ''
+            });
+          } else {
+            appState.setStore(null);
+          }
+        }
+        
+        // Update pagination if needed
+        if (this.stores.length === 0 && this.paginationConfig.page > 1) {
+          this.paginationConfig.page--;
+          this.loadStores();
+        } else {
+          this.paginationConfig.total--;
+          this.paginationConfig.pages = Math.ceil(this.paginationConfig.total / this.paginationConfig.limit);
+        }
+
+        
+
+        this.closeDeletePopup();
+        this.isDeleting = false;
+        this.showDeletePopup = false;
+        this.uiService.success(`Store "${storeName}" has been successfully deleted.`, 'Success');
+      },
+      error: () => {
+        this.uiService.error(`Failed to delete store "${storeName}". Please try again.`, 'Error');
+        this.isDeleting = false;
+      }
+    });
+  }
+
+  closeDeletePopup(): void {
+    if (this.isDeleting) return;
+    this.showDeletePopup = false;
+    this.storeToDelete = null;
+    this.confirmationName = '';
+  }
+
+  onStaffView(store: Store) : void{
+    this.router.navigate([`stores/${store._id}/staffs`])
 
   }
 }
