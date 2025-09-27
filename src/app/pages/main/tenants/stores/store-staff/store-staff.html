@@ -181,9 +181,39 @@
                                         </td>
                                      </tr>
                                  }
+
+                                 <!-- Empty state -->
+                                 @if (stores && stores.length === 0) {
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-12 text-center">
+                                            <div class="flex flex-col items-center">
+                                                <svg   fill="currentColor" version="1.1" id="airlines_1_" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128" xml:space="preserve" class="w-12 h-12 text-gray-400 mb-4"><g id="row_2_1_"><path id="airhostess_1_" d="M49.1 66.4c6.9 7.1 22 7.5 29.1 0 9.5-9.9 28.3 6.2 16.8-32.5-2.9-9.8-10-14-10-14s-2.7-1.9-8.2-2.2c-4.1-.3-11 .2-11 .2s1.3 2.3.9 5.1c-.3 2.6-.4 5.4.2 7 1.3 3.2 16 8 16 8v14c-.9 21.2-36.6 22.9-38 0 0 0-1.7-8.1 2-14 3-4.6 10.7-6.8 16-10 5.8-3.5 2-10 2-10s-8.5-.2-11.4-.2C47.1 17.9 43 20 43 20s-6.5 7.3-10 18c-10.1 30.5 8.6 20.7 16.1 28.4zM85 18 81 2s-8.2-2-18-2C51.2 0 47 2 47 2l-4 16s2.1-2 20.2-2C81.4 16 85 18 85 18zm-4.6 46.7S97.8 85 92.3 89C87.1 92.8 64 77.3 64 77.3s-23.9 16-28.3 11.8c-4.2-4 11.9-23.8 11.9-23.8S9 82.6 9 92v36h110V92c0-9.9-38.6-27.3-38.6-27.3zM64 122c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-14c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-14c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm45 12H85v-6h24v6z" /></g></svg>
+                                                <h3 class="text-lg font-medium text-gray-900 mb-2">{{ getNoResultsMessage() }}</h3>
+                                                <p class="text-gray-500 mb-4">Get started by adding staff members to this store.</p>
+                                                <button (click)="addStoreStaff(storeId!)" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                                                    <lucide-angular [img]="Users" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
+                                                    Add Staff Members
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                 }
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- Pagination -->
+                    @if(stores && stores.length > 0) {
+                        <div class="bg-white border border-gray-200">
+                            <app-pagination 
+                                [config]="paginationConfig"
+                                [showSizeSelector]="true"
+                                [sizeOptions]="[10, 25, 50, 100]"
+                                [maxVisiblePages]="10"
+                                (pageChange)="onPageChange($event)">
+                            </app-pagination>
+                        </div>
+                    }
                 }
         </div>
 </main>

@@ -12,7 +12,7 @@ import { UiService } from '@/app/services/ui.service';
     CommonModule,
     LucideAngularModule,
     RouterModule,
-    RouterModule
+    PaginationComponent
   ],
   templateUrl: './store-staff.html',
   styleUrl: './store-staff.css'
@@ -89,7 +89,7 @@ export class StoreStaff  implements OnInit{
               total: result.total,
               page: result.page,
               limit: result.limit,
-              pages: result.page
+              pages: Math.ceil(result.total / result.limit)
             };
             this.loading = false;
           },
@@ -104,6 +104,7 @@ export class StoreStaff  implements OnInit{
 
     onPageChange(event: PaginationChange): void {
       this.paginationConfig.page = event.page;
+      this.paginationConfig.limit = event.limit;
       this.loadStores(this.storeId as string)
     }
 
@@ -296,5 +297,9 @@ export class StoreStaff  implements OnInit{
       }
     }
 
+    // Generate a user-friendly message for empty results
+    getNoResultsMessage(): string {
+      return 'No staff members found for this store.';
+    }
 
 }
