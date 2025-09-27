@@ -1,9 +1,51 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { Observable } from "rxjs";
+import { Observable, forkJoin } from "rxjs";
 import { PaginatedResponse } from './api-response.model';
 import { map } from 'rxjs/operators';
+import { User } from './user.service';
 
+
+
+
+interface StaffMember {
+  _id: string;
+  store: string;
+  user: User;
+  createdAt: string;
+  invitedBy: string;
+  joinedAt: string;
+  permissions: string[]; // Array of permission strings
+  role: "staff" | "manager" | string; // Can be extended with other roles
+  status: "pending" | "active" | "inactive" | string; // Can be extended with other statuses
+  updatedAt: string;
+}
+
+// Optional: More specific interfaces if you want stricter typing
+export interface StaffMemberStrict {
+  _id: string;
+  store: string;
+  user: User;
+  createdAt: string; // Could be Date if you parse it
+  invitedBy: string;
+  joinedAt: string; // Could be Date if you parse it
+  permissions: Permission[]; // If you have a Permission interface
+  role: StaffRole;
+  status: StaffStatus;
+  updatedAt: string; // Could be Date if you parse it
+}
+
+// Supporting enums/types for stricter typing
+type StaffRole = "staff" | "manager" | "admin";
+type StaffStatus = "pending" | "active" | "inactive" | "suspended";
+
+// If you have a permissions system
+interface Permission {
+  id: string;
+  name: string;
+  resource: string;
+  action: string;
+}
 export interface Store {
   _id?: string;
   name: string;
@@ -108,8 +150,8 @@ export class StoreService {
     });
   }
 
-  getStaffs(storeId : string , page: number = 1, limit: number = 10, filter?: { [key: string]: any }) : Observable<any> {
-    return new Observable<any> ((observer)=>{
+  getStaffs(storeId : string , page: number = 1, limit: number = 10, filter?: { [key: string]: any }) : Observable<PaginatedResponse<StaffMemberStrict>> {
+    return new Observable<PaginatedResponse<StaffMemberStrict>>  ((observer)=>{
       let queryParams = `page=${page}&limit=${limit}&timezone=-330`;
       if (filter) {
         Object.keys(filter).forEach(key => {
@@ -153,5 +195,46 @@ export class StoreService {
           }
         });
     }) 
+  }
+
+  addStaff(storeId: string, userId: string, role?: string, status?: boolean, permissions?: string[]): Observable<any> {
+    return new Observable<any>((observer) => {
+      const data = {
+        userId,
+        ...(role && { role }),
+        ...(status !== undefined && { status }),
+        ...(permissions && { permissions })
+      };
+      
+      const url = `tenants/stores/${storeId}/staffs`;
+      this.apiService.protectedPost<any>(url, data).subscribe({
+        next: (response) => {
+          observer.next(response.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  addMultipleStaff(storeId: string, userIds: string[], role?: string, status?: boolean, permissions?: string[]): Observable<any> {
+    return new Observable<any>((observer) => {
+      const requests = userIds.map(userId => 
+        this.addStaff(storeId, userId, role, status, permissions)
+      );
+      
+      // Use forkJoin to handle multiple parallel requests
+      forkJoin(requests).subscribe({
+        next: (responses) => {
+          observer.next(responses);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
   }
 }

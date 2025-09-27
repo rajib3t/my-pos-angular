@@ -72,7 +72,25 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-
+                                 @for(store of stores; track $index) {
+                                     <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                             <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <div class="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-white">
+                                                    {{ getUserInitials(store.name) }}
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-semibold text-gray-900">{{ store.name }}</div>
+                                                    <div class="text-sm text-gray-500">ID: {{ store._id }}</div>
+                                                </div>
+                                                </div>
+                                        </td>
+                                     </tr>
+                                 }
                             </tbody>
                         </table>
                     </div>

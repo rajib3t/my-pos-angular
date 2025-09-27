@@ -22,6 +22,7 @@ interface StoreUser {
   isAlreadyStaff?: boolean;
 }
 
+
 @Component({
   selector: 'app-store-staff-add',
   imports: [
@@ -220,18 +221,67 @@ export class StoreStaffAdd implements OnInit {
       return;
     }
 
+    if (!this.storeId) {
+      this.uiService.error('Store ID not found', 'Error');
+      return;
+    }
+
     this.adding = true;
     const userIds = this.selectedUsers.map(u => u._id);
 
-    // Simulate API call - you'll need to implement the actual endpoint
-    // For now, we'll simulate success after a delay
-    setTimeout(() => {
-      this.uiService.success(`Successfully added ${this.selectedUsers.length} staff member(s) to the store`, 'Success');
-      this.goBack();
-    }, 1000);
+    // Use the new addMultipleStaff method to add all selected users
+    this.storeService.addMultipleStaff(this.storeId, userIds).subscribe({
+      next: (responses) => {
+        const successCount = responses.filter((r: any) => r && r.data).length;
+        const failureCount = responses.length - successCount;
+        
+        if (failureCount === 0) {
+          this.uiService.success(`Successfully added ${successCount} staff member(s) to the store`, 'Success');
+        } else if (successCount > 0) {
+          this.uiService.warning(`Added ${successCount} staff member(s). ${failureCount} failed to add.`, 'Partial Success');
+        } else {
+          this.uiService.error('Failed to add any staff members', 'Error');
+        }
+        
+        this.adding = false;
+        if (successCount > 0) {
+          this.goBack();
+        }
+      },
+      error: (error) => {
+        this.adding = false;
+        this.handleAddStaffError(error);
+      }
+    });
+  }
 
-    // TODO: Implement actual API call when endpoint is available
-    // Example: POST /tenants/stores/{storeId}/staff with { userIds: string[] }
+  private handleAddStaffError(error: any): void {
+    console.error('Error adding staff:', error);
+    
+    // Handle different types of errors based on your backend response
+    if (error.status === 400) {
+      // Validation error
+      const details = error.error?.details || [];
+      if (details.length > 0) {
+        this.uiService.error(`Validation failed: ${details.join(', ')}`, 'Validation Error');
+      } else {
+        this.uiService.error(error.error?.message || 'Invalid request data', 'Validation Error');
+      }
+    } else if (error.status === 409) {
+      // Conflict error (user already exists as staff)
+      const details = error.error?.details || [];
+      if (details.length > 0) {
+        this.uiService.warning(`Some users are already staff members: ${details.join(', ')}`, 'Conflict');
+      } else {
+        this.uiService.warning(error.error?.message || 'Some users are already staff members', 'Conflict');
+      }
+    } else if (error.status === 500) {
+      // Server error
+      this.uiService.error('Server error occurred. Please try again later.', 'Server Error');
+    } else {
+      // Generic error
+      this.uiService.error(error.error?.message || 'Failed to add staff members', 'Error');
+    }
   }
 
   toggleSearchFilters(): void {

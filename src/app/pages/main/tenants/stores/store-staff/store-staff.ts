@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon } from 'lucide-angular';
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
-import { StoreService, Store } from '@/app/services/store.service';
+import { StoreService, Store, StaffMemberStrict } from '@/app/services/store.service';
 import { UiService } from '@/app/services/ui.service';
 
 @Component({
@@ -26,10 +26,10 @@ export class StoreStaff  implements OnInit{
  storeId: string | null = null;
 
 
-   filter: { [key: string]: any } = {};
+  filter: { [key: string]: any } = {};
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
-  stores : any = []
+  stores : StaffMemberStrict[] | null = null
   paginationConfig: PaginationConfig = {
     total: 0,
     page: 1,
@@ -75,7 +75,7 @@ export class StoreStaff  implements OnInit{
         this.storeService.getStaffs(storeId , this.paginationConfig.page, this.paginationConfig.limit, queryFilter).subscribe({
           next: (result: any) => {
             this.stores = result.items;
-            console.log(this.stores);
+            
             
             this.paginationConfig = {
               total: result.total,
