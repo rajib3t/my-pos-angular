@@ -1,33 +1,420 @@
-<!-- Page Header -->
-<div class="bg-gradient-to-br from-slate-50 to-white shadow-lg border-b border-gray-100 px-8 py-6">
+<!-- Modern Page Header -->
+<div class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 shadow-xl border-b border-blue-100 px-8 py-8">
     <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
-                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="w-6 h-6 text-white"></lucide-angular>
-                
+        <div class="flex items-center space-x-6">
+            <div class="relative">
+                <div class="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 p-4 rounded-2xl shadow-xl">
+                    <lucide-angular [img]="UsersIcon" [strokeWidth]="1.5" class="h-8 w-8 text-white"></lucide-angular>
+                </div>
+                <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
             </div>
             <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                     Add Store Staff
                 </h1>
-                <p class="text-gray-600 mt-1 text-sm font-medium">Manage stores</p>
-                <div class="flex items-center mt-2 space-x-3">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        Active Stores
+                <p class="text-gray-600 mt-2 text-base font-medium">
+                    @if(store) {
+                        Add team members to <span class="font-semibold text-indigo-600">{{ store.name }}</span>
+                    } @else {
+                        Select users to add as store staff members
+                    }
+                </p>
+                <div class="flex items-center mt-3 space-x-4">
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                        Staff Management
                     </span>
-                    <span class="text-gray-400">•</span>
-                    <span class="text-xs text-gray-500 font-medium">Store Management</span>
+                    <span class="text-gray-400 text-lg">•</span>
+                    <span class="text-sm text-gray-600 font-medium">Store Operations</span>
                 </div>
             </div>
         </div>
-        <div class="hidden md:flex items-center space-x-2">
-            
-            <div class="bg-white p-2 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 cursor-pointer" (click)="goToDashBoard()"  title="Edit Sub-Account Details">
-                <lucide-angular [img]="DashboardIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-600"></lucide-angular>
-            </div>
+        <div class="hidden md:flex items-center space-x-3">
+            <button 
+                (click)="goBack()" 
+                class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
+                title="Back to Store List"
+            >
+                <lucide-angular [img]="ArrowLeftIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
+            </button>
+            <button 
+                (click)="goToDashBoard()" 
+                class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
+                title="Dashboard"
+            >
+                <lucide-angular [img]="DashboardIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
+            </button>
         </div>
     </div>
 </div>
+
+<!-- Main Content Area -->
+<main class="p-8 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Selection Summary Card -->
+        @if(selectedUsers.length > 0) {
+            <div class="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <lucide-angular [img]="CheckIcon" [strokeWidth]="2" class="h-6 w-6 text-green-600"></lucide-angular>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-green-800">{{ selectedUsers.length }} User(s) Selected</h3>
+                            <p class="text-green-600 text-sm">Ready to add as store staff members</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button 
+                            (click)="clearAllSelections()"
+                            class="px-4 py-2 bg-white border border-green-300 text-green-700 rounded-lg hover:bg-green-50 transition-colors duration-200 text-sm font-medium">
+                            Clear All
+                        </button>
+                        <button 
+                            (click)="addSelectedStaff()"
+                            [disabled]="adding"
+                            class="px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 text-sm font-medium flex items-center">
+                            @if(adding) {
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Adding...
+                            } @else {
+                                <lucide-angular [img]="PlusIcon" [strokeWidth]="2" class="h-4 w-4 mr-2"></lucide-angular>
+                                Add Staff
+                            }
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Selected Users Preview -->
+                <div class="mt-4 flex flex-wrap gap-2">
+                    @for(user of selectedUsers; track user._id) {
+                        <div class="inline-flex items-center px-3 py-1.5 bg-white border border-green-200 rounded-full text-sm">
+                            <div class="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">
+                                {{ getUserInitials(user.name) }}
+                            </div>
+                            <span class="text-green-800 font-medium">{{ user.name }}</span>
+                            <button 
+                                (click)="removeSelectedUser(user)"
+                                class="ml-2 text-green-600 hover:text-red-600 transition-colors">
+                                <lucide-angular [img]="XIcon" [strokeWidth]="2" class="h-3 w-3"></lucide-angular>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Users List Card -->
+        <div class="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl overflow-hidden border border-white/50">
+            <!-- Card Header -->
+            <div class="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 px-8 py-6 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white flex items-center">
+                                <lucide-angular [img]="UsersIcon" [strokeWidth]="1.5" class="h-8 w-8 text-white mr-4"></lucide-angular>
+                                Available Users
+                            </h3>
+                            <p class="text-blue-100 text-base mt-2 font-medium">Select users to add as store staff</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button 
+                                (click)="selectAllVisibleUsers()"
+                                class="px-4 py-2 bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-lg hover:bg-white/30 transition-all duration-200 text-sm font-medium">
+                                Select All Visible
+                            </button>
+                            <button 
+                                (click)="toggleSearchFilters()"
+                                class="px-4 py-2 bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-lg hover:bg-white/30 transition-all duration-200 text-sm font-medium flex items-center">
+                                <lucide-angular [img]="SearchIcon" [strokeWidth]="1.5" class="h-4 w-4 mr-2"></lucide-angular>
+                                {{ showSearchFilters ? 'Hide Filters' : 'Show Filters' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Decorative elements -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            </div>
+
+            <!-- Search Filters -->
+            @if(showSearchFilters) {
+                <div class="px-8 py-6 bg-gradient-to-r from-gray-50 to-blue-50 border-b border-gray-200">
+                    <form [formGroup]="searchForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Name Filter -->
+                            <div class="group relative">
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        formControlName="name"
+                                        class="peer w-full h-12 px-4 pt-5 pb-2 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
+                                        placeholder="Search by name"
+                                    >
+                                    <label 
+                                        for="name" 
+                                        class="absolute left-4 top-1.5 text-xs font-semibold text-blue-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-600"
+                                    >
+                                        Name
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Email Filter -->
+                            <div class="group relative">
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="email"
+                                        formControlName="email"
+                                        class="peer w-full h-12 px-4 pt-5 pb-2 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
+                                        placeholder="Search by email"
+                                    >
+                                    <label 
+                                        for="email" 
+                                        class="absolute left-4 top-1.5 text-xs font-semibold text-blue-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-600"
+                                    >
+                                        Email
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Role Filter -->
+                            <div class="group relative">
+                                <div class="relative">
+                                    <select
+                                        id="role"
+                                        formControlName="role"
+                                        class="peer w-full h-12 px-4 pt-5 pb-2 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 appearance-none"
+                                    >
+                                        <option value="">All Roles</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="staff">Staff</option>
+                                    </select>
+                                    <label 
+                                        for="role" 
+                                        class="absolute left-4 top-1.5 text-xs font-semibold text-blue-600"
+                                    >
+                                        Role
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Status Filter -->
+                            <div class="group relative">
+                                <div class="relative">
+                                    <select
+                                        id="status"
+                                        formControlName="status"
+                                        class="peer w-full h-12 px-4 pt-5 pb-2 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 appearance-none"
+                                    >
+                                        <option value="">All Status</option>
+                                        <option value="true">Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                    <label 
+                                        for="status" 
+                                        class="absolute left-4 top-1.5 text-xs font-semibold text-blue-600"
+                                    >
+                                        Status
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search Actions -->
+                        <div class="flex items-center justify-between pt-4">
+                            <div class="text-sm text-gray-600">
+                                Search will automatically trigger as you type
+                            </div>
+                            <button 
+                                type="button"
+                                (click)="clearSearch()"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                                <lucide-angular [img]="XIcon" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
+                                Clear Filters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+
+            <!-- Loading State -->
+            @if(loading) {
+                <div class="flex items-center justify-center py-16">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                        <p class="mt-4 text-gray-600 font-medium">Loading users...</p>
+                    </div>
+                </div>
+            }
+
+            <!-- Users Table -->
+            @if(!loading) {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gradient-to-r from-gray-50 to-blue-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-2">
+                                        <input 
+                                            type="checkbox" 
+                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            [checked]="isAllAvailableUsersSelected()"
+                                            (change)="toggleAllUsers()"
+                                        >
+                                        <span>User</span>
+                                    </div>
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Role
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Mobile
+                                </th>
+                                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @for(user of users; track user._id) {
+                                <tr class="hover:bg-blue-50/50 transition-colors duration-200" 
+                                    [class.bg-green-50]="user.isSelected"
+                                    [class.bg-gray-50]="user.isAlreadyStaff"
+                                    [class.opacity-60]="user.isAlreadyStaff">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            @if(!user.isAlreadyStaff) {
+                                                <input 
+                                                    type="checkbox" 
+                                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-4"
+                                                    [checked]="user.isSelected"
+                                                    (change)="toggleUserSelection(user)"
+                                                >
+                                            } @else {
+                                                <div class="w-4 h-4 mr-4 bg-gray-300 rounded flex items-center justify-center">
+                                                    <lucide-angular [img]="CheckIcon" [strokeWidth]="2" class="h-3 w-3 text-gray-500"></lucide-angular>
+                                                </div>
+                                            }
+                                            <div class="flex-shrink-0 h-12 w-12">
+                                                <div class="h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                                    <span class="text-sm font-bold text-white">
+                                                        {{ getUserInitials(user.name) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-semibold text-gray-900 flex items-center">
+                                                    {{ user.name }}
+                                                    @if(user.isAlreadyStaff) {
+                                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                                            Already Staff
+                                                        </span>
+                                                    }
+                                                </div>
+                                                <div class="text-sm text-gray-500">ID: {{ user._id }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ user.email }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                              [class]="user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
+                                                       user.role === 'manager' ? 'bg-blue-100 text-blue-800' : 
+                                                       'bg-gray-100 text-gray-800'">
+                                            {{ user.role | titlecase }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                              [class]="getStatusBadgeClass(user.status)">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                @if(user.status) {
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                } @else {
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                                }
+                                            </svg>
+                                            {{ getStatusText(user.status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ user.mobile || 'N/A' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        @if(!user.isAlreadyStaff) {
+                                            <button 
+                                                (click)="toggleUserSelection(user)"
+                                                class="inline-flex items-center px-3 py-1.5 border text-xs font-medium rounded-lg transition-all duration-200"
+                                                [class]="user.isSelected ? 
+                                                    'border-red-300 text-red-700 bg-red-50 hover:bg-red-100' : 
+                                                    'border-blue-300 text-blue-700 bg-blue-50 hover:bg-blue-100'">
+                                                @if(user.isSelected) {
+                                                    <lucide-angular [img]="XIcon" [strokeWidth]="1.5" class="w-3 h-3 mr-1"></lucide-angular>
+                                                    Remove
+                                                } @else {
+                                                    <lucide-angular [img]="PlusIcon" [strokeWidth]="1.5" class="w-3 h-3 mr-1"></lucide-angular>
+                                                    Select
+                                                }
+                                            </button>
+                                        } @else {
+                                            <span class="text-xs text-gray-500 font-medium">Already Added</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+
+                            <!-- Empty State -->
+                            @if(users.length === 0) {
+                                <tr>
+                                    <td colspan="6" class="px-6 py-16 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <lucide-angular [img]="UsersIcon" [strokeWidth]="1" class="h-16 w-16 text-gray-400 mb-4"></lucide-angular>
+                                            <h3 class="text-lg font-medium text-gray-900 mb-2">No Users Found</h3>
+                                            <p class="text-gray-500 mb-4">No users match your current search criteria.</p>
+                                            <button 
+                                                (click)="clearSearch()"
+                                                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                                <lucide-angular [img]="XIcon" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
+                                                Clear Filters
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if(users.length > 0) {
+                    <div class="bg-white border-t border-gray-200">
+                        <app-pagination 
+                            [config]="paginationConfig"
+                            [showSizeSelector]="true"
+                            [sizeOptions]="[10, 25, 50, 100]"
+                            [maxVisiblePages]="10"
+                            (pageChange)="onPaginationChange($event)">
+                        </app-pagination>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</main>
