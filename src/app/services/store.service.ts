@@ -6,45 +6,76 @@ import { map } from 'rxjs/operators';
 import { User } from './user.service';
 
 
+// Enhanced StoreUser interface
+export interface StoreUser extends User {
+  _id: string;
+}
 
-
-interface StaffMember {
+// Base staff member interface
+export interface StaffMember {
   _id: string;
   store: string;
-  user: User;
+  user: StoreUser;
   createdAt: string;
   invitedBy: string;
   joinedAt: string;
-  permissions: string[]; // Array of permission strings
-  role: "staff" | "manager" | string; // Can be extended with other roles
-  status: "pending" | "active" | "inactive" | string; // Can be extended with other statuses
+  permissions: string[];
+  role: StaffRole;
+  status: StaffStatus;
   updatedAt: string;
 }
 
-// Optional: More specific interfaces if you want stricter typing
+// Strict typing for staff members (recommended for components)
 export interface StaffMemberStrict {
   _id: string;
   store: string;
-  user: User;
-  createdAt: string; // Could be Date if you parse it
+  user: StoreUser;
+  createdAt: Date | string;
   invitedBy: string;
-  joinedAt: string; // Could be Date if you parse it
-  permissions: Permission[]; // If you have a Permission interface
+  joinedAt: Date | string;
+  permissions: Permission[];
   role: StaffRole;
   status: StaffStatus;
-  updatedAt: string; // Could be Date if you parse it
+  updatedAt: Date | string;
 }
 
-// Supporting enums/types for stricter typing
-type StaffRole = "staff" | "manager" | "admin";
-type StaffStatus = "pending" | "active" | "inactive" | "suspended";
+// Staff role enum for better type safety
+export enum StaffRole {
+  STAFF = 'staff',
+  MANAGER = 'manager',
+  ADMIN = 'admin',
+  OWNER = 'owner'
+}
 
-// If you have a permissions system
-interface Permission {
+// Staff status enum for better type safety
+export enum StaffStatus {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended'
+}
+
+// Permission interface for granular access control
+export interface Permission {
   id: string;
   name: string;
   resource: string;
   action: string;
+  description?: string;
+}
+
+// Staff update request interface
+export interface StaffUpdateRequest {
+  role?: StaffRole;
+  status?: StaffStatus;
+  permissions?: string[];
+}
+
+// Bulk operations interface
+export interface BulkStaffOperation {
+  userIds: string[];
+  action: 'add' | 'remove' | 'update';
+  data?: StaffUpdateRequest;
 }
 export interface Store {
   _id?: string;
@@ -236,5 +267,66 @@ export class StoreService {
         }
       });
     });
+  }
+
+  removeStaff(storeId: string, userId: string): Observable<any> {
+    return new Observable<any>((observer) => {
+      const data = { userId };
+      const url = `tenants/stores/${storeId}/staffs`;
+      
+      this.apiService.protectedDelete<any>(url, data).subscribe({
+        next: (response) => {
+          observer.next(response.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  removeMultipleStaff(storeId: string, userIds: string[]): Observable<any> {
+    return new Observable<any>((observer) => {
+      const requests = userIds.map(userId => 
+        this.removeStaff(storeId, userId)
+      );
+      
+      // Use forkJoin to handle multiple parallel requests
+      forkJoin(requests).subscribe({
+        next: (responses) => {
+          observer.next(responses);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  updateStaff(storeId: string, userId: string, updateData: StaffUpdateRequest): Observable<any> {
+    return new Observable<any>((observer) => {
+      const data = { userId, ...updateData };
+      const url = `tenants/stores/${storeId}/staffs`;
+      
+      this.apiService.protectedPut<any>(url, data).subscribe({
+        next: (response) => {
+          observer.next(response.data);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  updateStaffStatus(storeId: string, userId: string, status: StaffStatus): Observable<any> {
+    return this.updateStaff(storeId, userId, { status });
+  }
+
+  updateStaffRole(storeId: string, userId: string, role: StaffRole): Observable<any> {
+    return this.updateStaff(storeId, userId, { role });
   }
 }

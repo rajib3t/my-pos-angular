@@ -31,14 +31,46 @@
              <div class="bg-white p-2 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 cursor-pointer" (click)="goToStores()"  title="Store List">
                 <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-600"></lucide-angular>
             </div>
-             <div class="bg-white p-2 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 cursor-pointer" (click)="addStoreStaff(storeId!)"  title="Store List">
-                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-5 w-5 text-gray-600"></lucide-angular>
+             <div class="bg-white p-2 rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-all duration-200 cursor-pointer" (click)="addStoreStaff(storeId!)"  title="Add Staff">
+                <lucide-angular [img]="Users" [strokeWidth]="1.5" class="h-5 w-5 text-gray-600"></lucide-angular>
             </div>
         </div>
     </div>
 </div>
 <!-- Content Area -->
 <main class="p-6">
+    <!-- Bulk Actions Bar -->
+    @if(hasSelectedStaff) {
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <lucide-angular [img]="CheckSquare" [strokeWidth]="1.5" class="h-5 w-5 text-blue-600"></lucide-angular>
+                    <span class="text-sm font-medium text-blue-900">
+                        {{ selectedStaff.size }} staff member(s) selected
+                    </span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button 
+                        (click)="removeSelectedStaff()"
+                        [disabled]="bulkActionLoading"
+                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:opacity-50">
+                        @if(bulkActionLoading) {
+                            <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-red-600 mr-1"></div>
+                        } @else {
+                            <lucide-angular [img]="Trash2" [strokeWidth]="1.5" class="h-3 w-3 mr-1"></lucide-angular>
+                        }
+                        Remove Selected
+                    </button>
+                    <button 
+                        (click)="selectedStaff.clear()"
+                        class="text-xs text-gray-500 hover:text-gray-700">
+                        Clear Selection
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
      <!-- Main content card -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
              <!-- Loading state -->
@@ -55,7 +87,14 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Name
+                                        <div class="flex items-center space-x-2">
+                                            <input 
+                                                type="checkbox" 
+                                                [checked]="isAllSelected"
+                                                (change)="toggleSelectAll()"
+                                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                            <span>Name</span>
+                                        </div>
                                     </th>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Email
@@ -65,6 +104,9 @@
                                     </th>
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Role
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        Status
                                     </th>
                                     <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Actions
@@ -76,18 +118,66 @@
                                      <tr class="hover:bg-gray-50 transition-colors duration-150">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                              <div class="flex items-center">
+                                                <input 
+                                                    type="checkbox" 
+                                                    [checked]="isStaffSelected(store.user._id)"
+                                                    (change)="toggleStaffSelection(store.user._id)"
+                                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3">
                                                 <div class="flex-shrink-0 h-10 w-10">
                                                     <div class="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
                                                     <span class="text-sm font-medium text-white">
-                                                    {{ getUserInitials(store.name) }}
+                                                    {{ getUserInitials(store.user.name) }}
                                                     </span>
                                                     </div>
                                                 </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-semibold text-gray-900">{{ store.name }}</div>
-                                                    <div class="text-sm text-gray-500">ID: {{ store._id }}</div>
+                                                    <div class="text-sm font-semibold text-gray-900">{{ store.user.name }}</div>
+                                                    <div class="text-sm text-gray-500">ID: {{ store.user._id }}</div>
                                                 </div>
                                                 </div>
+                                        </td>
+                                         <!-- Email -->
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ store.user.email }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ store.user.mobile }}</div>
+                                        </td>
+                                        <!-- Role -->
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <select 
+                                                [value]="store.role"
+                                                (change)="updateStaffRole(store, $any($event.target).value)"
+                                                class="text-xs font-medium rounded-full px-2.5 py-0.5 border-0 focus:ring-2 focus:ring-blue-500"
+                                                [ngClass]="getRoleBadgeClass(store.role)">
+                                                <option [value]="StaffRole.STAFF">Staff</option>
+                                                <option [value]="StaffRole.MANAGER">Manager</option>
+                                                <option [value]="StaffRole.ADMIN">Admin</option>
+                                                <option [value]="StaffRole.OWNER">Owner</option>
+                                            </select>
+                                        </td>
+                                        <!-- Status -->
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <select 
+                                                [value]="store.status"
+                                                (change)="updateStaffStatus(store, $any($event.target).value)"
+                                                class="text-xs font-medium rounded-full px-2.5 py-0.5 border-0 focus:ring-2 focus:ring-blue-500"
+                                                [ngClass]="getStatusBadgeClass(store.status)">
+                                                <option [value]="StaffStatus.ACTIVE">Active</option>
+                                                <option [value]="StaffStatus.PENDING">Pending</option>
+                                                <option [value]="StaffStatus.INACTIVE">Inactive</option>
+                                                <option [value]="StaffStatus.SUSPENDED">Suspended</option>
+                                            </select>
+                                        </td>
+                                        <!-- Actions -->
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button 
+                                                (click)="removeStaff(store)"
+                                                class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                                                title="Remove staff member">
+                                                <lucide-angular [img]="Trash2" [strokeWidth]="1.5" class="h-3 w-3 mr-1"></lucide-angular>
+                                                Remove
+                                            </button>
                                         </td>
                                      </tr>
                                  }

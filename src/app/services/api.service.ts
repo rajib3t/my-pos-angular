@@ -46,7 +46,12 @@ export class ApiService {
         request$ = this.http.patch<T>(url, body, requestOptions);
         break;
       case 'delete':
-        request$ = this.http.delete<T>(url, requestOptions);
+        if (body) {
+          // For DELETE requests with body, we need to add the body to requestOptions
+          request$ = this.http.delete<T>(url, { ...requestOptions, body });
+        } else {
+          request$ = this.http.delete<T>(url, requestOptions);
+        }
         break;
       default:
         return throwError(() => new Error(`Unsupported request method: ${method}`));
@@ -173,8 +178,8 @@ export class ApiService {
     return this.makeRequest<T>('PATCH', endpoint, data, true, options);
   }
 
-  public protectedDelete<T>(endpoint: string, options?: any): Observable<ApiResponse<T>> {
-    return this.makeRequest<T>('DELETE', endpoint, undefined, true, options);
+  public protectedDelete<T>(endpoint: string, data?: any, options?: any): Observable<ApiResponse<T>> {
+    return this.makeRequest<T>('DELETE', endpoint, data, true, options);
   }
 
   /**

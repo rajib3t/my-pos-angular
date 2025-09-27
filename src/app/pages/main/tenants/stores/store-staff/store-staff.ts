@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon } from 'lucide-angular';
+import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, Trash2, Edit3, Users, CheckSquare } from 'lucide-angular';
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
-import { StoreService, Store, StaffMemberStrict } from '@/app/services/store.service';
+import { StoreService, Store, StaffMemberStrict, StaffRole, StaffStatus } from '@/app/services/store.service';
 import { UiService } from '@/app/services/ui.service';
 
 @Component({
@@ -20,12 +20,12 @@ import { UiService } from '@/app/services/ui.service';
 export class StoreStaff  implements OnInit{
   readonly StoreIcon = StoreIcon;
   readonly DashboardIcon = DashboardIcon;
+  readonly Trash2 = Trash2;
+  readonly Edit3 = Edit3;
+  readonly Users = Users;
+  readonly CheckSquare = CheckSquare;
 
-
-
- storeId: string | null = null;
-
-
+  storeId: string | null = null;
   filter: { [key: string]: any } = {};
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -37,7 +37,15 @@ export class StoreStaff  implements OnInit{
     pages: 0
   };
 
-  loading : boolean = false
+  loading : boolean = false;
+  
+  // Bulk operations
+  selectedStaff: Set<string> = new Set();
+  bulkActionLoading: boolean = false;
+  
+  // Enums for template
+  readonly StaffRole = StaffRole;
+  readonly StaffStatus = StaffStatus;
   constructor(
     private router: Router,
     private storeService: StoreService,
@@ -104,6 +112,188 @@ export class StoreStaff  implements OnInit{
     addStoreStaff(storeId: string) : void{
       this.router.navigate(['/stores', storeId, 'staffs-add'])
 
+    }
+
+    getUserInitials(name: string): string {
+      if (!name) return '';
+      
+      const names = name.trim().split(' ');
+      if (names.length === 1) {
+        // Single word - return first two characters
+        return names[0].substring(0, 2).toUpperCase();
+      } else {
+        // Multiple words - return first letter of each word
+        return names.map(name => name.charAt(0).toUpperCase()).join('');
+      }
+    }
+
+    removeStaff(staff: StaffMemberStrict): void {
+      if (!this.storeId) {
+        this.uiService.error('Store ID not found', 'Error');
+        return;
+      }
+
+      // Show confirmation dialog
+      const confirmed = confirm(`Are you sure you want to remove ${staff.user.name} from this store?`);
+      if (!confirmed) {
+        return;
+      }
+
+      this.storeService.removeStaff(this.storeId, staff.user._id).subscribe({
+        next: (response) => {
+          this.uiService.success(`${staff.user.name} has been removed from the store successfully`, 'Staff Removed');
+          // Reload the staff list
+          this.loadStores(this.storeId as string);
+        },
+        error: (error) => {
+          console.error('Remove staff error:', error);
+          
+          // Handle different error types based on status code
+          if (error.status === 400) {
+            this.uiService.error(error.error?.message || 'Invalid request. Please check the data and try again.', 'Validation Error');
+          } else if (error.status === 404) {
+            this.uiService.error('Staff member not found in this store.', 'Not Found');
+          } else if (error.status === 500) {
+            this.uiService.error('Server error occurred. Please try again later.', 'Server Error');
+          } else {
+            this.uiService.error('Failed to remove staff member. Please try again.', 'Error');
+          }
+        }
+      });
+    }
+
+    // Bulk selection methods
+    toggleStaffSelection(staffId: string): void {
+      if (this.selectedStaff.has(staffId)) {
+        this.selectedStaff.delete(staffId);
+      } else {
+        this.selectedStaff.add(staffId);
+      }
+    }
+
+    toggleSelectAll(): void {
+      if (!this.stores) return;
+      
+      if (this.selectedStaff.size === this.stores.length) {
+        this.selectedStaff.clear();
+      } else {
+        this.selectedStaff.clear();
+        this.stores.forEach(staff => this.selectedStaff.add(staff.user._id));
+      }
+    }
+
+    isStaffSelected(staffId: string): boolean {
+      return this.selectedStaff.has(staffId);
+    }
+
+    get isAllSelected(): boolean {
+      return this.stores ? this.selectedStaff.size === this.stores.length : false;
+    }
+
+    get hasSelectedStaff(): boolean {
+      return this.selectedStaff.size > 0;
+    }
+
+    // Bulk remove staff
+    removeSelectedStaff(): void {
+      if (!this.storeId || this.selectedStaff.size === 0) {
+        this.uiService.error('No staff members selected', 'Error');
+        return;
+      }
+
+      const selectedCount = this.selectedStaff.size;
+      const confirmed = confirm(`Are you sure you want to remove ${selectedCount} staff member(s) from this store?`);
+      if (!confirmed) {
+        return;
+      }
+
+      this.bulkActionLoading = true;
+      const userIds = Array.from(this.selectedStaff);
+
+      this.storeService.removeMultipleStaff(this.storeId, userIds).subscribe({
+        next: (responses) => {
+          const successCount = responses.filter((r: any) => r).length;
+          this.uiService.success(`${successCount} staff member(s) removed successfully`, 'Bulk Remove Complete');
+          this.selectedStaff.clear();
+          this.loadStores(this.storeId as string);
+          this.bulkActionLoading = false;
+        },
+        error: (error) => {
+          console.error('Bulk remove error:', error);
+          this.uiService.error('Failed to remove some staff members. Please try again.', 'Bulk Remove Error');
+          this.bulkActionLoading = false;
+        }
+      });
+    }
+
+    // Update staff status
+    updateStaffStatus(staff: StaffMemberStrict, newStatus: StaffStatus): void {
+      if (!this.storeId) {
+        this.uiService.error('Store ID not found', 'Error');
+        return;
+      }
+
+      this.storeService.updateStaffStatus(this.storeId, staff.user._id, newStatus).subscribe({
+        next: (response) => {
+          this.uiService.success(`${staff.user.name}'s status updated to ${newStatus}`, 'Status Updated');
+          this.loadStores(this.storeId as string);
+        },
+        error: (error) => {
+          console.error('Update status error:', error);
+          this.uiService.error('Failed to update staff status. Please try again.', 'Update Error');
+        }
+      });
+    }
+
+    // Update staff role
+    updateStaffRole(staff: StaffMemberStrict, newRole: StaffRole): void {
+      if (!this.storeId) {
+        this.uiService.error('Store ID not found', 'Error');
+        return;
+      }
+
+      this.storeService.updateStaffRole(this.storeId, staff.user._id, newRole).subscribe({
+        next: (response) => {
+          this.uiService.success(`${staff.user.name}'s role updated to ${newRole}`, 'Role Updated');
+          this.loadStores(this.storeId as string);
+        },
+        error: (error) => {
+          console.error('Update role error:', error);
+          this.uiService.error('Failed to update staff role. Please try again.', 'Update Error');
+        }
+      });
+    }
+
+    // Get status badge class
+    getStatusBadgeClass(status: StaffStatus): string {
+      switch (status) {
+        case StaffStatus.ACTIVE:
+          return 'bg-green-100 text-green-800';
+        case StaffStatus.PENDING:
+          return 'bg-yellow-100 text-yellow-800';
+        case StaffStatus.INACTIVE:
+          return 'bg-gray-100 text-gray-800';
+        case StaffStatus.SUSPENDED:
+          return 'bg-red-100 text-red-800';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
+    }
+
+    // Get role badge class
+    getRoleBadgeClass(role: StaffRole): string {
+      switch (role) {
+        case StaffRole.OWNER:
+          return 'bg-amber-100 text-amber-800';
+        case StaffRole.ADMIN:
+          return 'bg-purple-100 text-purple-800';
+        case StaffRole.MANAGER:
+          return 'bg-blue-100 text-blue-800';
+        case StaffRole.STAFF:
+          return 'bg-pink-100 text-pink-800';
+        default:
+          return 'bg-gray-100 text-gray-800';
+      }
     }
 
 
