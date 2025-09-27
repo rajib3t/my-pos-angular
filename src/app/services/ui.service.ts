@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { appState } from '../state/app.state';
 
 export interface Notification {
   id: string;
@@ -58,6 +59,35 @@ export class UiService {
   isSubDomain() : boolean {
     const hostParts = this.getDomain().split('.');
     return hostParts.length > 2;
+  }
+
+  /**
+   * Get the current store ID from app state
+   * Returns the store ID if available, otherwise returns a default store ID or empty string
+   */
+  getStoreId(): string {
+    // First try to get from app state
+    const storeFromState = appState.store;
+    if (storeFromState && storeFromState._id) {
+      return storeFromState._id;
+    }
+
+    // Fallback: try to get from localStorage directly (in case app state is not yet initialized)
+    try {
+      const persistedState = localStorage.getItem('appState');
+      if (persistedState) {
+        const parsed = JSON.parse(persistedState);
+        if (parsed.store && parsed.store._id) {
+          return parsed.store._id;
+        }
+      }
+    } catch (error) {
+      console.warn('UiService: Error reading store ID from localStorage:', error);
+    }
+
+    // If no store ID is available, return empty string
+    // The backend should handle requests without store ID appropriately
+    return '';
   }
 
   // Notification methods

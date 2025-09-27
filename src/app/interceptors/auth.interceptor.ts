@@ -54,6 +54,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
 
     if (uiService.isSubDomain()) {
       headers = headers.set('X-tenant-subdomain', uiService.getSubDomain());
+      headers = headers.set('X-Store-Id', uiService.getStoreId() || "");
     }
     const modifiedReq = req.clone({ headers });
     return next(modifiedReq);
@@ -70,6 +71,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
 
     if (uiService.isSubDomain()) {
       headers = headers.set('X-tenant-subdomain', uiService.getSubDomain());
+      headers = headers.set('X-Store-Id', uiService.getStoreId() || "");
     }
   // Determine if this is a protected request
   const isProtected = req.headers.has('X-Is-Protected') || 
