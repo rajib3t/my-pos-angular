@@ -5,6 +5,7 @@ import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, Trash2
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
 import { StoreService, Store, StaffMemberStrict, StaffRole, StaffStatus } from '@/app/services/store.service';
 import { UiService } from '@/app/services/ui.service';
+import {FormGroup, ReactiveFormsModule, FormBuilder, FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-store-staff',
@@ -12,7 +13,9 @@ import { UiService } from '@/app/services/ui.service';
     CommonModule,
     LucideAngularModule,
     RouterModule,
-    PaginationComponent
+    PaginationComponent,
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './store-staff.html',
   styleUrl: './store-staff.css'
@@ -38,6 +41,8 @@ export class StoreStaff  implements OnInit{
   };
 
   loading : boolean = false;
+  showSearchFilters: boolean = false;
+  searchForm!: FormGroup;
   
   // Bulk operations
   selectedStaff: Set<string> = new Set();
@@ -50,13 +55,17 @@ export class StoreStaff  implements OnInit{
     private router: Router,
     private storeService: StoreService,
     private uiService: UiService,
-    private activatedRoute: ActivatedRoute
-  ){}
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ){
+    this.initializeSearchForm();
+  }
 
   ngOnInit(): void {
      this.storeId = this.activatedRoute.snapshot.paramMap.get('storeId');
 
-     this.loadStores(this.storeId as string)
+     this.loadStores(this.storeId as string);
+     this.setupSearchSubscription();
   }
 
 
@@ -67,6 +76,44 @@ export class StoreStaff  implements OnInit{
 
   goToStores(): void{
     this.router.navigate(['/stores'])
+  }
+
+  private initializeSearchForm(): void {
+    this.searchForm = this.fb.group({
+      name: [''],
+      email: [''],
+      mobile: [''],
+      role: [''],
+      status: ['']
+    });
+  }
+
+  private setupSearchSubscription(): void {
+    this.searchForm.valueChanges.subscribe(values => {
+      // Update filter object
+      this.filter = { ...values };
+      // Remove empty values
+      Object.keys(this.filter).forEach(key => {
+        if (!this.filter[key]) {
+          delete this.filter[key];
+        }
+      });
+      
+      // Reset to first page and reload
+      this.paginationConfig.page = 1;
+      this.loadStores(this.storeId as string);
+    });
+  }
+
+  toggleSearchFilters(): void {
+    this.showSearchFilters = !this.showSearchFilters;
+  }
+
+  clearSearch(): void {
+    this.searchForm.reset();
+    this.filter = {};
+    this.paginationConfig.page = 1;
+    this.loadStores(this.storeId as string);
   }
 
 
@@ -265,21 +312,15 @@ export class StoreStaff  implements OnInit{
       });
     }
 
+  
     // Get status badge class
-    getStatusBadgeClass(status: StaffStatus): string {
-      switch (status) {
-        case StaffStatus.ACTIVE:
-          return 'bg-green-100 text-green-800';
-        case StaffStatus.PENDING:
-          return 'bg-yellow-100 text-yellow-800';
-        case StaffStatus.INACTIVE:
-          return 'bg-gray-100 text-gray-800';
-        case StaffStatus.SUSPENDED:
-          return 'bg-red-100 text-red-800';
-        default:
-          return 'bg-gray-100 text-gray-800';
-      }
-    }
+    getStatusBadgeClass(status: boolean): string {
+    return status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  }
+
+  getStatusText(status: boolean): string {
+    return status ? 'Active' : 'Inactive';
+  }
 
     // Get role badge class
     getRoleBadgeClass(role: StaffRole): string {
@@ -297,9 +338,53 @@ export class StoreStaff  implements OnInit{
       }
     }
 
+    // Whether any filters are currently active
+    hasActiveFilters(): boolean {
+      return Object.keys(this.filter).length > 0;
+    }
+
     // Generate a user-friendly message for empty results
     getNoResultsMessage(): string {
-      return 'No staff members found for this store.';
+      if (!this.hasActiveFilters()) {
+        return 'No staff members found for this store.';
+      }
+
+      const parts: string[] = [];
+      const mapLabel = (key: string): string => {
+        switch (key) {
+          case 'name': return 'Name';
+          case 'email': return 'Email';
+          case 'mobile': return 'Mobile';
+          case 'role': return 'Role';
+          case 'status': return 'Status';
+          default: return key;
+        }
+      };
+
+      Object.keys(this.filter).forEach(key => {
+        if (key === 'role') {
+          const val = this.filter[key];
+          const label = val === StaffRole.STAFF ? 'Staff' : 
+                       val === StaffRole.MANAGER ? 'Manager' : 
+                       val === StaffRole.ADMIN ? 'Admin' : 
+                       val === StaffRole.OWNER ? 'Owner' : '';
+          if (label) parts.push(`${mapLabel(key)}: ${label}`);
+        } else if (key === 'status') {
+          const val = this.filter[key];
+          const label = val === StaffStatus.ACTIVE ? 'Active' : 
+                       val === StaffStatus.PENDING ? 'Pending' : 
+                       val === StaffStatus.INACTIVE ? 'Inactive' : 
+                       val === StaffStatus.SUSPENDED ? 'Suspended' : '';
+          if (label) parts.push(`${mapLabel(key)}: ${label}`);
+        } else if (this.filter[key]) {
+          parts.push(`${mapLabel(key)}: "${this.filter[key]}"`);
+        }
+      });
+
+      const filtersDesc = parts.join(', ');
+      return filtersDesc
+        ? `No staff members found for filters — ${filtersDesc}.`
+        : 'No staff members found for this store.';
     }
 
 }

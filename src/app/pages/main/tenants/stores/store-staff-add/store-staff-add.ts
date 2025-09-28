@@ -87,7 +87,7 @@ export class StoreStaffAdd implements OnInit {
       this.setupSearchSubscription();
     } else {
       this.uiService.error('Store ID not found', 'Error');
-      this.goBack();
+      this.goToStaffs();
     }
   }
 
@@ -245,7 +245,7 @@ export class StoreStaffAdd implements OnInit {
         
         this.adding = false;
         if (successCount > 0) {
-          this.goBack();
+          this.goToStaffs()
         }
       },
       error: (error) => {
@@ -347,11 +347,19 @@ export class StoreStaffAdd implements OnInit {
     }
   }
 
-  goBack(): void {
-    this.router.navigate(['/main/tenant/stores']);
+  goToStaffs(): void {
+    this.router.navigate(['/stores', this.storeId, 'staffs']);
   }
 
   goToDashBoard(): void {
-    this.router.navigate(['/main/tenant/stores']);
+    this.router.navigate(['dashboard']);
+  }
+
+  goToAddUser():void{
+    this.router.navigate(['/users/create'])
+  }
+
+  goToStores():void{
+    this.router.navigate(['/stores'])
   }
 }

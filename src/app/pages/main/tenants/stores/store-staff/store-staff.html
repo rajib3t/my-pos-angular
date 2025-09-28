@@ -73,11 +73,144 @@
 
      <!-- Main content card -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <!-- Card header -->
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Store Staff
+                        </h2>
+                        <p class="text-gray-600 text-sm mt-1">Manage staff members for this store</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <!-- Search toggle button -->
+                        <button 
+                          (click)="toggleSearchFilters()"
+                          class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">
+                          <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                          </svg>
+                          {{ showSearchFilters ? 'Hide Filters' : 'Show Filters' }}
+                        </button>
+                        <!-- Quick search bar -->
+                        <div class="relative" [formGroup]="searchForm">
+                          <input 
+                            type="text" 
+                            formControlName="name"
+                            placeholder="Quick search by name..."
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                          >
+                          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                          </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- Advanced Search Form -->
+            @if(showSearchFilters){
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                  <form [formGroup]="searchForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+                      <!-- Name Filter -->
+                      <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input 
+                          type="text" 
+                          id="name"
+                          formControlName="name"
+                          placeholder="Search by staff name"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        >
+                      </div>
+      
+                      <!-- Email Filter -->
+                      <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input 
+                          type="text" 
+                          id="email"
+                          formControlName="email"
+                          placeholder="Search by email"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        >
+                      </div>
+                      <!-- Mobile Filter -->
+                      <div>
+                        <label for="mobile" class="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
+                        <input 
+                          type="text" 
+                          id="mobile"
+                          formControlName="mobile"
+                          placeholder="Search by mobile"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        >
+                      </div>
+                       
+                      <!-- Role Filter -->
+                      <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <select 
+                          id="role"
+                          formControlName="role"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        >
+                          <option value="">All Roles</option>
+                          <option [value]="StaffRole.STAFF">Staff</option>
+                          <option [value]="StaffRole.MANAGER">Manager</option>
+                          <option [value]="StaffRole.ADMIN">Admin</option>
+                          <option [value]="StaffRole.OWNER">Owner</option>
+                        </select>
+                      </div>
+      
+                      <!-- Status Filter -->
+                      <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select 
+                          id="status"
+                          formControlName="status"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        >
+                          <option value="">All Status</option>
+                          <option [value]="StaffStatus.ACTIVE">Active</option>
+                          <option [value]="StaffStatus.PENDING">Pending</option>
+                          <option [value]="StaffStatus.INACTIVE">Inactive</option>
+                          <option [value]="StaffStatus.SUSPENDED">Suspended</option>
+                        </select>
+                      </div>
+                    </div>
+      
+                    <!-- Search Actions -->
+                    <div class="flex items-center justify-between pt-3">
+                      <div class="text-sm text-gray-600">
+                        Search will automatically trigger as you type
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <button 
+                          type="button"
+                          (click)="clearSearch()"
+                          class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                          <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                          </svg>
+                          Clear All
+                        </button>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                          </svg>
+                          Auto Search
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+            }
              <!-- Loading state -->
             @if(loading){
                 <div class="flex items-center justify-center py-12">
                     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span class="ml-3 text-gray-600">Loading stores...</span>
+                    <span class="ml-3 text-gray-600">Loading staff members...</span>
                 </div>
             }
               <!-- Table -->
@@ -105,9 +238,7 @@
                                     <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Role
                                     </th>
-                                    <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Status
-                                    </th>
+                                
                                     <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Actions
                                     </th>
@@ -143,32 +274,18 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">{{ store.user.mobile }}</div>
                                         </td>
-                                        <!-- Role -->
+                                       
+                                         <!-- Status -->
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <select 
-                                                [value]="store.role"
-                                                (change)="updateStaffRole(store, $any($event.target).value)"
-                                                class="text-xs font-medium rounded-full px-2.5 py-0.5 border-0 focus:ring-2 focus:ring-blue-500"
-                                                [ngClass]="getRoleBadgeClass(store.role)">
-                                                <option [value]="StaffRole.STAFF">Staff</option>
-                                                <option [value]="StaffRole.MANAGER">Manager</option>
-                                                <option [value]="StaffRole.ADMIN">Admin</option>
-                                                <option [value]="StaffRole.OWNER">Owner</option>
-                                            </select>
+                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                              [class]="store.user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
+                                                       store.user.role === 'manager' ? 'bg-blue-100 text-blue-800' : 
+                                                       store.user.role === 'staff' ? 'bg-red-100 text-red-600' : 
+                                                       'bg-gray-100 text-gray-800'">
+                                            {{ store.user.role | titlecase }}
+                                        </span>
                                         </td>
-                                        <!-- Status -->
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <select 
-                                                [value]="store.status"
-                                                (change)="updateStaffStatus(store, $any($event.target).value)"
-                                                class="text-xs font-medium rounded-full px-2.5 py-0.5 border-0 focus:ring-2 focus:ring-blue-500"
-                                                [ngClass]="getStatusBadgeClass(store.status)">
-                                                <option [value]="StaffStatus.ACTIVE">Active</option>
-                                                <option [value]="StaffStatus.PENDING">Pending</option>
-                                                <option [value]="StaffStatus.INACTIVE">Inactive</option>
-                                                <option [value]="StaffStatus.SUSPENDED">Suspended</option>
-                                            </select>
-                                        </td>
+                                      
                                         <!-- Actions -->
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <button 

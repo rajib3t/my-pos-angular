@@ -30,20 +30,28 @@
             </div>
         </div>
         <div class="hidden md:flex items-center space-x-3">
-            <button 
-                (click)="goBack()" 
-                class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
-                title="Back to Store List"
-            >
-                <lucide-angular [img]="ArrowLeftIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
-            </button>
-            <button 
+             <button 
                 (click)="goToDashBoard()" 
                 class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
                 title="Dashboard"
             >
                 <lucide-angular [img]="DashboardIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
             </button>
+             <button 
+                (click)="goToDashBoard()" 
+                class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
+                title="Store List"
+            >
+                <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
+            </button>
+            <button 
+                (click)="goToStaffs()" 
+                class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
+                title="Go to store staff"
+            >
+                <lucide-angular [img]="UsersIcon" [strokeWidth]="1.5" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors"></lucide-angular>
+            </button>
+           
         </div>
     </div>
 </div>
@@ -389,10 +397,10 @@
                                             <h3 class="text-lg font-medium text-gray-900 mb-2">No Users Found</h3>
                                             <p class="text-gray-500 mb-4">No users match your current search criteria.</p>
                                             <button 
-                                                (click)="clearSearch()"
+                                                (click)="goToAddUser()"
                                                 class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                                                <lucide-angular [img]="XIcon" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
-                                                Clear Filters
+                                                <lucide-angular [img]="PlusIcon" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
+                                                Add User
                                             </button>
                                         </div>
                                     </td>
@@ -404,7 +412,7 @@
 
                 <!-- Pagination -->
                 @if(users.length > 0) {
-                    <div class="bg-white border-t border-gray-200">
+                    <div class="bg-white border border-gray-200">
                         <app-pagination 
                             [config]="paginationConfig"
                             [showSizeSelector]="true"
