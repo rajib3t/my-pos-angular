@@ -8,18 +8,20 @@ import { TenantSidebar } from '../tenant-sidebar/tenant-sidebar';
 import { LoadingComponent } from '../../components/loading/loading.component';
 import { NotificationComponent } from '../../components/notification/notification.component';
 import { FirstStoreCreate } from '../../components/popup/first-store-create/first-store-create';
+import { TenantHeader } from "../tenant-header/tenant-header";
 @Component({
   selector: 'app-main',
   standalone: true,
   imports: [
-    Header, 
-    Sidebar, 
-    RouterOutlet, 
-    TenantSidebar, 
-    LoadingComponent, 
+    Header,
+    Sidebar,
+    RouterOutlet,
+    TenantSidebar,
+    LoadingComponent,
     NotificationComponent,
-    FirstStoreCreate
-  ],
+    FirstStoreCreate,
+    TenantHeader
+],
   templateUrl: './main.html',
   styleUrl: './main.css'
 })

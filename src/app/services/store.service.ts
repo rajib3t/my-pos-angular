@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { Observable, forkJoin } from "rxjs";
+import { Observable, forkJoin, Subject, BehaviorSubject } from "rxjs";
 import { PaginatedResponse } from './api-response.model';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { User } from './user.service';
 
 
@@ -90,9 +90,26 @@ export interface Store {
   providedIn: 'root'
 })
 export class StoreService {
+  // Store change notification subjects
+  private storeListChangedSubject = new Subject<void>();
+  private storeCreatedSubject = new Subject<Store>();
+  private storeUpdatedSubject = new Subject<Store>();
+  private storeDeletedSubject = new Subject<string>();
+
+  // Public observables for components to subscribe to
+  public storeListChanged$ = this.storeListChangedSubject.asObservable();
+  public storeCreated$ = this.storeCreatedSubject.asObservable();
+  public storeUpdated$ = this.storeUpdatedSubject.asObservable();
+  public storeDeleted$ = this.storeDeletedSubject.asObservable();
+
   constructor(
     private apiService: ApiService
   ) { }
+
+  // Method to manually trigger store list refresh
+  public refreshStoreList(): void {
+    this.storeListChangedSubject.next();
+  }
 
 
 
@@ -127,8 +144,13 @@ export class StoreService {
     return new Observable<Partial<Store>>((observer) => {
       this.apiService.protectedPost<{ data: Partial<Store> }>(`tenants/stores`,data).subscribe({
         next: (response) => {
-          observer.next(response.data.data);
+          const createdStore = response.data.data;
+          observer.next(createdStore);
           observer.complete();
+          
+          // Notify that a new store was created
+          this.storeCreatedSubject.next(createdStore as Store);
+          this.storeListChangedSubject.next();
         },
         error: (error) => {
           observer.error(error);
@@ -156,8 +178,13 @@ export class StoreService {
     return new Observable<Store>((observer) => {
       this.apiService.protectedPut<{ data: Store }>(`tenants/stores/${storeId}`, data).subscribe({
         next: (response) => {
-          observer.next(response.data.data);
+          const updatedStore = response.data.data;
+          observer.next(updatedStore);
           observer.complete();
+          
+          // Notify that a store was updated
+          this.storeUpdatedSubject.next(updatedStore);
+          this.storeListChangedSubject.next();
         },
         error: (error) => {
           observer.error(error);
@@ -173,6 +200,10 @@ export class StoreService {
         next: (response) => {
           observer.next({ message: response.data.message });
           observer.complete();
+          
+          // Notify that a store was deleted
+          this.storeDeletedSubject.next(storeId);
+          this.storeListChangedSubject.next();
         },
         error: (error) => {
           observer.error(error);

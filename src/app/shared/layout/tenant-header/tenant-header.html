@@ -1,4 +1,4 @@
-  <nav class="modern-header bg-slate-800/95 backdrop-blur-xl shadow-2xl border-b border-slate-700/50">
+<nav class="modern-header bg-slate-800/95 backdrop-blur-xl shadow-2xl border-b border-slate-700/50">
     <div class="max-w-full mx-auto px-6 sm:px-8 lg:px-12">
       <div class="flex justify-between items-center h-20">
         <!-- Mobile menu button -->
@@ -21,6 +21,122 @@
             <div class="ml-2">
               <h1 class="text-2xl font-extrabold bg-gradient-to-r from-slate-200 to-slate-100 bg-clip-text text-transparent leading-tight">MyPOS System</h1>
               <p class="text-sm text-slate-200 leading-tight hidden sm:block font-medium">Point of Sale Management</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Store Selection Dropdown -->
+        <div class="relative ml-8 hidden lg:block">
+          <div class="flex items-center space-x-3">
+            <div class="text-slate-300 text-sm font-medium">Store:</div>
+            <div class="relative">
+              <button #storeDropdownButton (click)="toggleStoreDropdown()" 
+                      class="store-dropdown-button flex items-center space-x-3 px-4 py-2.5 bg-slate-700/60 hover:bg-slate-700/80 rounded-xl border border-slate-600/40 focus:outline-none focus:ring-2 focus:ring-blue-500/20 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl min-w-[200px]">
+                <div class="flex items-center space-x-2 flex-1">
+                  <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span class="text-slate-100 font-medium truncate">
+                    {{selectedStore?.name || 'Select Store'}}
+                  </span>
+                </div>
+                <svg class="h-4 w-4 text-slate-300 transition-transform duration-300" 
+                     [class.rotate-180]="isStoreDropdownOpen"
+                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+
+              <!-- Store Dropdown Menu -->
+              <div #storeDropdownMenu *ngIf="isStoreDropdownOpen" 
+                   class="store-dropdown-menu absolute left-0 mt-2 w-80 bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/20 py-3 z-50 animate-dropdown overflow-hidden max-h-96 overflow-y-auto"
+                   [class.dropdown-enter]="isStoreDropdownOpen">
+                
+                <!-- Loading State -->
+                <div *ngIf="loadingStores" class="px-4 py-6 text-center">
+                  <div class="inline-flex items-center space-x-2 text-slate-300">
+                    <svg class="animate-spin h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span>Loading stores...</span>
+                  </div>
+                </div>
+
+                <!-- Error State -->
+                <div *ngIf="storeError && !loadingStores" class="px-4 py-6 text-center">
+                  <div class="text-red-400 text-sm">
+                    <p>Failed to load stores</p>
+                    <button (click)="loadStores()" class="mt-2 text-blue-400 hover:text-blue-300 underline">
+                      Try again
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Store List -->
+                <div *ngIf="!loadingStores && !storeError && stores.length > 0" class="space-y-1">
+                  <div class="px-4 py-2 border-b border-slate-700/60">
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Available Stores</p>
+                  </div>
+                  
+                  <button *ngFor="let store of stores" 
+                          (click)="selectStore(store)"
+                          class="group w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-slate-700/60 transition-all duration-200 transform hover:translate-x-1"
+                          [class.bg-blue-600/20]="selectedStore?._id === store._id"
+                          [class.border-l-2]="selectedStore?._id === store._id"
+                          [class.border-blue-400]="selectedStore?._id === store._id">
+                    <div class="flex items-center space-x-3">
+                      <div class="flex items-center justify-center w-8 h-8 rounded-lg"
+                           [class.bg-blue-100]="selectedStore?._id === store._id"
+                           [class.bg-slate-600]="selectedStore?._id !== store._id">
+                        <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" 
+                                       class="h-4 w-4"
+                                       [class.text-blue-600]="selectedStore?._id === store._id"
+                                       [class.text-slate-300]="selectedStore?._id !== store._id"></lucide-angular>
+                      </div>
+                      <div class="text-left">
+                        <p class="font-medium"
+                           [class.text-blue-400]="selectedStore?._id === store._id"
+                           [class.text-slate-200]="selectedStore?._id !== store._id">
+                          {{store.name}}
+                        </p>
+                        <p class="text-xs text-slate-400">{{store.code}}</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                            [class.bg-green-100]="store.status === 'active'"
+                            [class.text-green-800]="store.status === 'active'"
+                            [class.bg-red-100]="store.status === 'inactive'"
+                            [class.text-red-800]="store.status === 'inactive'">
+                        {{store.status}}
+                      </span>
+                      <div *ngIf="selectedStore?._id === store._id" class="text-blue-400">
+                        <lucide-angular [img]="CheckIcon" [strokeWidth]="2" class="h-4 w-4"></lucide-angular>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                <!-- Empty State -->
+                <div *ngIf="!loadingStores && !storeError && stores.length === 0" class="px-4 py-6 text-center">
+                  <div class="text-slate-400">
+                    <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="h-8 w-8 mx-auto mb-2 opacity-50"></lucide-angular>
+                    <p class="text-sm">No stores available</p>
+                  </div>
+                </div>
+
+                <!-- Default Store Actions -->
+                <div *ngIf="!loadingStores && !storeError && stores.length > 0 && selectedStore" 
+                     class="border-t border-slate-700/60 mt-2 pt-3">
+                  <div class="px-4">
+                    <button (click)="setAsDefaultStore(selectedStore)" 
+                            class="w-full flex items-center justify-center space-x-2 px-3 py-2 text-xs font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-50/10 rounded-lg transition-all duration-200"
+                            [disabled]="selectedStore._id === defaultStore?._id">
+                      <lucide-angular [img]="StarIcon" [strokeWidth]="1.5" class="h-3 w-3"></lucide-angular>
+                      <span *ngIf="selectedStore._id !== defaultStore?._id">Set as Default</span>
+                      <span *ngIf="selectedStore._id === defaultStore?._id">Default Store</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -128,7 +244,16 @@
                   <lucide-angular [img]="ChevronRightIcon" [strokeWidth]="1.5" class="h-4 w-4 ml-auto text-slate-300 group-hover:text-purple-500 transition-colors duration-200"></lucide-angular>
                 </a>
 
-               
+             
+                  <a [routerLink]="['/settings']" routerLinkActive="router-link-active" (click)="closeUserMenu()" 
+                     class="group flex items-center px-6 py-3 text-sm font-medium text-slate-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-500 transition-all duration-200 transform hover:translate-x-1">
+                     <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-green-100 text-green-600 mr-3 group-hover:bg-green-200 group-hover:scale-110 transition-all duration-200">
+                       <lucide-angular [img]="SettingsIcon" [strokeWidth]="1.5" class="h-4 w-4"></lucide-angular>
+                     </div>
+                    <span>Store Settings</span>
+                    <lucide-angular [img]="ChevronRightIcon" [strokeWidth]="1.5" class="h-4 w-4 ml-auto text-slate-300 group-hover:text-green-500 transition-colors duration-200"></lucide-angular>
+                  </a>
+                
               </div>
 
               <!-- Logout Section -->

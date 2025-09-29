@@ -1,14 +1,10 @@
 import { signal, computed } from '@angular/core';
+import { User } from '../services/user.service';
 
 export interface AppState {
   loading: boolean;
   error: string | null;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-  } | null;
+  user: User | null;
   store: {
     _id: string;
     name: string;

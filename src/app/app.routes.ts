@@ -150,7 +150,7 @@ export const routes: Routes = [
                 path: 'settings',
                 component: TenantSetting,
                 canActivate: [SubdomainGuard],
-                data: { title: 'Tenant Settings' }
+                data: { title: 'Store Settings' }
             },
             {
                 path: 'material-categories',

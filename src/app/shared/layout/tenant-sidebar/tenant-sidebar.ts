@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy , effect} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
@@ -6,14 +6,15 @@ import { Root } from 'postcss';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { LucideAngularModule, Album, Network , ChevronDown, Plus, List, ShoppingBasket, LayoutGrid, Users, Store as StoreIcon} from 'lucide-angular';
 import { filter } from 'rxjs/operators';
-
+import { appState } from '@/app/state/app.state';
+import { User } from '@/app/services/user.service';
 @Component({
   selector: 'app-tenant-sidebar',
     imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './tenant-sidebar.html',
   styleUrl: './tenant-sidebar.css'
 })
-export class TenantSidebar {
+export class TenantSidebar implements OnDestroy, OnInit{
     readonly StoreIcon = StoreIcon
     readonly UsersIcon = Users;
   readonly DashboardIcon = Album;
@@ -33,9 +34,24 @@ export class TenantSidebar {
     "users": false,
     "stores":false
   };
+  authUser : Partial<User> | null = null
   currentRoute = '';
 
-    constructor(private uiService: UiService, private router: Router) { }
+    constructor(private uiService: UiService, private router: Router) {
+        // Set up an effect to watch for user changes from app state
+    const userEffect = effect(() => {
+      const user = appState.user;
+      if (user ) {
+        // If app state has user but component doesn't, sync it
+        this.authUser = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        };
+      }
+    });
+     }
 
     ngOnInit() {
         // Subscribe to mobile menu state

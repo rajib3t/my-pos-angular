@@ -1,7 +1,11 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
   <!-- Fixed Top Navigation Bar -->
   <div class="fixed top-0 left-0 right-0 z-40">
-    <app-header></app-header>
+    @if(isTenantMode){
+      <app-tenant-header></app-tenant-header>
+    }@else{
+      <app-header></app-header>
+    }
   </div>
 
   <div class="flex pt-16 pb-12"> <!-- pt-16 for header, pb-12 for footer -->

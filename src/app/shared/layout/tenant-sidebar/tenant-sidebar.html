@@ -98,7 +98,8 @@
       </a>
     </nav>
 
-        <!-- Materials Section -->
+    @if(authUser?.role === 'owner'){
+             <!-- Store Section -->
     <nav class="px-6 space-y-2 mt-8">
       <h3 class="text-xs font-semibold text-white/60 uppercase tracking-wider mb-4 flex items-center">
         <lucide-angular [img]="StoreIcon" [strokeWidth]="1.5" class="w-4 h-4 mr-2"></lucide-angular>
@@ -152,6 +153,8 @@
         
       </div>
     </nav>
+    }
+ 
 
     <!-- Materials Section -->
     <nav class="px-6 space-y-2 mt-8">

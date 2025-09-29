@@ -29,6 +29,7 @@ export class StoreStaff  implements OnInit{
   readonly CheckSquare = CheckSquare;
 
   storeId: string | null = null;
+   store:Partial< Store> | null = null;
   filter: { [key: string]: any } = {};
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -66,6 +67,7 @@ export class StoreStaff  implements OnInit{
 
      this.loadStores(this.storeId as string);
      this.setupSearchSubscription();
+     this.loadStoreDetails()
   }
 
 
@@ -387,4 +389,18 @@ export class StoreStaff  implements OnInit{
         : 'No staff members found for this store.';
     }
 
+
+
+    loadStoreDetails(): void {
+      if (!this.storeId) return;
+      
+      this.storeService.getById(this.storeId).subscribe({
+        next: (store: Store) => {
+          this.store = store;
+        },
+        error: (error: any) => {
+          this.uiService.error('Failed to load store details', 'Error');
+        }
+      });
+    }
 }
