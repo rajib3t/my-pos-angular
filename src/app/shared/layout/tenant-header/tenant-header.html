@@ -244,15 +244,17 @@
                   <lucide-angular [img]="ChevronRightIcon" [strokeWidth]="1.5" class="h-4 w-4 ml-auto text-slate-300 group-hover:text-purple-500 transition-colors duration-200"></lucide-angular>
                 </a>
 
-             
+                @if(roleService.hasAnyRole([ 'manager', 'owner'])){
                   <a [routerLink]="['/settings']" routerLinkActive="router-link-active" (click)="closeUserMenu()" 
-                     class="group flex items-center px-6 py-3 text-sm font-medium text-slate-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-500 transition-all duration-200 transform hover:translate-x-1">
-                     <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-green-100 text-green-600 mr-3 group-hover:bg-green-200 group-hover:scale-110 transition-all duration-200">
-                       <lucide-angular [img]="SettingsIcon" [strokeWidth]="1.5" class="h-4 w-4"></lucide-angular>
-                     </div>
-                    <span>Store Settings</span>
-                    <lucide-angular [img]="ChevronRightIcon" [strokeWidth]="1.5" class="h-4 w-4 ml-auto text-slate-300 group-hover:text-green-500 transition-colors duration-200"></lucide-angular>
-                  </a>
+                  class="group flex items-center px-6 py-3 text-sm font-medium text-slate-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-500 transition-all duration-200 transform hover:translate-x-1">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-green-100 text-green-600 mr-3 group-hover:bg-green-200 group-hover:scale-110 transition-all duration-200">
+                    <lucide-angular [img]="SettingsIcon" [strokeWidth]="1.5" class="h-4 w-4"></lucide-angular>
+                  </div>
+                 <span>Store Settings</span>
+                 <lucide-angular [img]="ChevronRightIcon" [strokeWidth]="1.5" class="h-4 w-4 ml-auto text-slate-300 group-hover:text-green-500 transition-colors duration-200"></lucide-angular>
+               </a>
+                }
+                 
                 
               </div>
 

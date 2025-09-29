@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy , effect} from '@angular/core';
+import { Component, OnInit, OnDestroy , effect, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UiService } from '../../../services/ui.service';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import { LucideAngularModule, Album, Network , ChevronDown, Plus, List, Shopping
 import { filter } from 'rxjs/operators';
 import { appState } from '@/app/state/app.state';
 import { User } from '@/app/services/user.service';
+import { RoleService } from '@/app/services/role.service';
 @Component({
   selector: 'app-tenant-sidebar',
     imports: [CommonModule, RouterModule, LucideAngularModule],
@@ -36,7 +37,7 @@ export class TenantSidebar implements OnDestroy, OnInit{
   };
   authUser : Partial<User> | null = null
   currentRoute = '';
-
+  roleService = inject(RoleService); 
     constructor(private uiService: UiService, private router: Router) {
         // Set up an effect to watch for user changes from app state
     const userEffect = effect(() => {

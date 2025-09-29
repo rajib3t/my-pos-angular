@@ -5,6 +5,8 @@ import { AuthGuard } from './auth.gourd';
 import { LoginGuard } from './login.guard';
 import { SubdomainGuard } from './subdomain.guard';
 import { NoSubdomainGuard } from './no-subdomain.guard';
+import { OwnerGuard } from './owner.guard';
+import { ManagerGuard } from './manager.guard';
 import { Dashboard } from './pages/main/dashboard/dashboard';
 import { Profile } from './pages/main/profile/profile';
 import { Password } from './pages/main/profile/password/password';
@@ -28,6 +30,7 @@ import { StoreCreate } from './pages/main/tenants/stores/store-create/store-crea
 import { StoreEdit } from './pages/main/tenants/stores/store-edit/store-edit';
 import { StoreStaff } from './pages/main/tenants/stores/store-staff/store-staff';
 import { StoreStaffAdd } from './pages/main/tenants/stores/store-staff-add/store-staff-add';
+import { RoleAccessExampleComponent } from './examples/role-access-example.component';
 export const routes: Routes = [
 
     {
@@ -79,15 +82,20 @@ export const routes: Routes = [
                 data: { title: 'Test State' }
             },
             {
+                path: 'role-example',
+                component: RoleAccessExampleComponent,
+                data: { title: 'Role Access Example' }
+            },
+            {
                 path: 'tenants',
                 component: TenantList,
-                canActivate: [NoSubdomainGuard], // Only accessible on main domain
+                canActivate: [NoSubdomainGuard], // Only accessible on main domain by owners
                 data: { title: 'Tenants' }
             },
             {
                 path: 'tenants/create',
                 component: CreateTenant,
-                canActivate: [NoSubdomainGuard], // Only accessible on main domain
+                canActivate: [NoSubdomainGuard], // Only accessible on main domain by owners
                 data: { title: 'Create Sub Account' }
             },
             {
@@ -119,37 +127,37 @@ export const routes: Routes = [
             {
                 path:'stores',
                 component:StoreList,
-                canActivate:[SubdomainGuard],
+                canActivate:[SubdomainGuard, OwnerGuard], // Managers and owners can access
                 data:{title:'Store List'}
             },
             {
                 path:'stores/create',
                 component:StoreCreate,
-                canActivate:[SubdomainGuard],
+                canActivate:[SubdomainGuard, OwnerGuard],
                 data:{title:'Store Create'}
             },
             {
                 path:'stores/:storeId/edit',
                 component:StoreEdit,
-                canActivate:[SubdomainGuard],
+                canActivate:[SubdomainGuard, OwnerGuard],
                 data:{title:'Store Update'}
             },
             {
                 path:'stores/:storeId/staffs',
                 component:StoreStaff,
-                canActivate:[SubdomainGuard],
+                canActivate:[SubdomainGuard, OwnerGuard],
                 data:{title:'Store Staffs'}
             },
             {
                 path:'stores/:storeId/staffs-add',
                 component:StoreStaffAdd,
-                canActivate:[SubdomainGuard],
+                canActivate:[SubdomainGuard, OwnerGuard],
                 data:{title:'Store Staff Add'}
             },
             {
                 path: 'settings',
                 component: TenantSetting,
-                canActivate: [SubdomainGuard],
+                canActivate: [SubdomainGuard, ManagerGuard],
                 data: { title: 'Store Settings' }
             },
             {

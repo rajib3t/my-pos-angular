@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { LucideAngularModule, Menu, User as UserIcon, LogOut, KeyRound, Settings, Bell, Plus, BarChart3, ChevronRight, Store as StoreIcon, Check, Star } from 'lucide-angular';
 import { appState } from '@/app/state/app.state';
 import { StoreService, Store } from '../../../services/store.service';
+import { RoleService } from '@/app/services/role.service';
 
 @Component({
   selector: 'app-tenant-header',
@@ -51,12 +52,14 @@ export class TenantHeader implements OnInit, OnDestroy {
   @ViewChild('userMenuDropdown', { static: false }) userMenuDropdown!: ElementRef;
   isMobileMenuOpen = false;
   isUserMenuOpen = false;
+  roleService = inject(RoleService);
   constructor(
     private uiService: UiService, 
     private userService: UserService, 
     private apiService: ApiService, 
     private router: Router,
-    private storeService: StoreService
+    private storeService: StoreService,
+   
   ) {
     // Set up an effect to watch for store changes
     const storeEffect = effect(() => {
