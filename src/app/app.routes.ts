@@ -7,6 +7,7 @@ import { SubdomainGuard } from './subdomain.guard';
 import { NoSubdomainGuard } from './no-subdomain.guard';
 import { OwnerGuard } from './owner.guard';
 import { ManagerGuard } from './manager.guard';
+import { ConditionalOwnerGuard } from './conditional-owner.guard';
 import { Dashboard } from './pages/main/dashboard/dashboard';
 import { Profile } from './pages/main/profile/profile';
 import { Password } from './pages/main/profile/password/password';
@@ -64,16 +65,19 @@ export const routes: Routes = [
             {
                 path:'users',
                 component: UserList,
+                canActivate: [ConditionalOwnerGuard],
                 data: { title: 'User List' }
             },
             {
                 path: 'users/create',
                 component: UserCreate,
+                canActivate: [ConditionalOwnerGuard],
                 data: { title: 'Create User' }
             },
             {
                 path: 'users/:id/edit',
                 component: UserEdit,
+                canActivate: [ConditionalOwnerGuard],
                 data: { title: 'Edit User' }
             },
             {
