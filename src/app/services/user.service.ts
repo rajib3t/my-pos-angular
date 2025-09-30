@@ -72,26 +72,17 @@ export class UserService {
   /**
    * Normalize various user payload shapes (login/profile) into a consistent User
    */
-  private normalizeUser(raw: any): User {
+  private normalizeUser(raw: any): ProfileData {
     if (!raw) {
       return {
         id: '',
         email: '',
         name: ''
-      } as User;
+      } as ProfileData;
     }
-    const user: User = {
-      id: raw.id || raw._id || raw.userId || '',
-      email: raw.email || '',
-      name: raw.name || raw.fullName || raw.username || '',
-      role: raw.role || raw.userRole || undefined,
-      isActive: typeof raw.isActive === 'boolean' ? raw.isActive : (typeof raw.status === 'boolean' ? raw.status : undefined),
-      createdAt: raw.createdAt || undefined,
-      updatedAt: raw.updatedAt || undefined,
-      mobile: raw.mobile || raw.phone || undefined
-    };
-    return user;
-  }
+    
+      return raw;
+    }
   /**
    * Reset a user's password (admin action)
    * @param userId The id of the user to reset

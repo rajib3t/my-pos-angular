@@ -9,6 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 import { timer } from 'rxjs';
 import { Album, LucideAngularModule, KeyIcon } from 'lucide-angular';
 import { UiService } from '@/app/services/ui.service';
+import { appState } from '@/app/state/app.state';
 @Component({
   selector: 'app-profile',
   standalone: true,                 // required when using `imports` on a component
@@ -64,6 +65,9 @@ export class Profile implements OnInit {
     ).subscribe({
       next: (user) => {
         this.user = user;
+        console.log(user);
+        
+
         if (user) {
           // Prepare original values for form tracker
           const originalValues = {
@@ -144,18 +148,36 @@ export class Profile implements OnInit {
         
         // Update form tracker with new original values
         if (updatedProfile) {
+          // Support both nested address object and flat fields from API responses
+          const addressStreet = (updatedProfile as any)?.address?.street ?? (updatedProfile as any)?.address ?? '';
+          const addressCity = (updatedProfile as any)?.address?.city ?? (updatedProfile as any)?.city ?? '';
+          const addressState = (updatedProfile as any)?.address?.state ?? (updatedProfile as any)?.state ?? '';
+          const addressZip = (updatedProfile as any)?.address?.zip ?? (updatedProfile as any)?.postalCode ?? (updatedProfile as any)?.zip ?? '';
+
           const newOriginalValues = {
             email: updatedProfile.email || '',
             name: updatedProfile.name || '',
-            mobile: updatedProfile.mobile || '',
-            address: updatedProfile.address?.street || '',
-            city: updatedProfile.address?.city || '',
-            state: updatedProfile.address?.state || '',
-            postalCode: updatedProfile.address?.zip || '',
+            mobile: (updatedProfile as any).mobile || '',
+            address: addressStreet,
+            city: addressCity,
+            state: addressState,
+            postalCode: addressZip,
           };
           
           this.profileForm.patchValue(newOriginalValues);
           this.formTracker.updateOriginalValues(newOriginalValues);
+
+          // Merge and update global app user state while keeping unchanged data
+          const currentUser = appState.user || {} as any;
+          const mergedUser = {
+            ...currentUser,
+            // Only overwrite known top-level fields if present in response
+            ...(updatedProfile.email !== undefined ? { email: updatedProfile.email } : {}),
+            ...(updatedProfile.name !== undefined ? { name: updatedProfile.name } : {}),
+            ...((updatedProfile as any).mobile !== undefined ? { mobile: (updatedProfile as any).mobile } : {}),
+          } as any;
+          // Persist to both appState and authUser storage/stream
+          this.userService.setAuthUser(mergedUser);
         }
         
         this.successMessage = updatedProfile ? 'Profile updated successfully.' : 'No changes were made.';
