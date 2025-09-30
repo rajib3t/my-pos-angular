@@ -78,87 +78,143 @@
         </div>
          <!-- Advanced Search Form -->
         @if(showSearchFilters){
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-              <form [formGroup]="searchForm" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                  <!-- Name Filter -->
-                  <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input 
-                      type="text" 
-                      id="name"
-                      formControlName="name"
-                      placeholder="Search by store name"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                  </div>
-  
-                  <!-- Email Filter -->
-                  <div>
-                    <label for="code" class="block text-sm font-medium text-gray-700 mb-1">Code</label>
-                    <input 
-                      type="text" 
-                      id="code"
-                      formControlName="code"
-                      placeholder="Search by code"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                  </div>
-                  <!-- Mobile Filter -->
-                  <div>
-                    <label for="mobile" class="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
-                    <input 
-                      type="text" 
-                      id="mobile"
-                      formControlName="mobile"
-                      placeholder="Search by mobile"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                  </div>
-                   
-
-                 
-                  
-
-                  <!-- Status Filter -->
-                  <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select 
-                      id="status"
-                      formControlName="status"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    >
-                      <option value="">All Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
-                  </div>
-                </div>
-  
-                <!-- Search Actions -->
-                <div class="flex items-center justify-between pt-3">
-                  <div class="text-sm text-gray-600">
-                    Search will automatically trigger as you type
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <button 
-                      type="button"
-                      (click)="clearSearch()"
-                      class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                      <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <div class="px-6 py-6 bg-gradient-to-br from-blue-50/40 via-white to-indigo-50/40 border-y border-blue-100/60">
+              <div class="max-w-none">
+                <div class="bg-white/80 backdrop-blur-sm border border-white/60 shadow-xl rounded-2xl overflow-hidden">
+                  <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600">
+                    <h3 class="text-sm font-semibold text-white flex items-center">
+                      <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M4 8h16M6 12h12M8 16h8"/>
                       </svg>
-                      Clear All
-                    </button>
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                      </svg>
-                      Auto Search
-                    </span>
+                      Advanced Filters
+                    </h3>
                   </div>
+                  <form [formGroup]="searchForm" class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <!-- Name Filter -->
+                      <div class="group relative">
+                        <div class="relative">
+                          <input
+                            type="text"
+                            id="name"
+                            formControlName="name"
+                            class="peer w-full h-12 px-4 pt-5 pb-2 pl-10 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 hover:border-gray-300 placeholder-transparent text-sm"
+                            placeholder="Search by store name"
+                          >
+                          <label
+                            for="name"
+                            class="absolute left-10 top-1.5 text-[11px] font-semibold text-blue-600 transition-all duration-300 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-blue-600"
+                          >
+                            Name
+                          </label>
+                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400 peer-focus:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Code Filter -->
+                      <div class="group relative">
+                        <div class="relative">
+                          <input
+                            type="text"
+                            id="code"
+                            formControlName="code"
+                            class="peer w-full h-12 px-4 pt-5 pb-2 pl-10 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 hover:border-gray-300 placeholder-transparent text-sm"
+                            placeholder="Search by code"
+                          >
+                          <label
+                            for="code"
+                            class="absolute left-10 top-1.5 text-[11px] font-semibold text-blue-600 transition-all duration-300 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-blue-600"
+                          >
+                            Code
+                          </label>
+                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400 peer-focus:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6H6m6 0h6"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Mobile Filter -->
+                      <div class="group relative">
+                        <div class="relative">
+                          <input
+                            type="text"
+                            id="mobile"
+                            formControlName="mobile"
+                            class="peer w-full h-12 px-4 pt-5 pb-2 pl-10 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 hover:border-gray-300 placeholder-transparent text-sm"
+                            placeholder="Search by mobile"
+                          >
+                          <label
+                            for="mobile"
+                            class="absolute left-10 top-1.5 text-[11px] font-semibold text-blue-600 transition-all duration-300 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-blue-600"
+                          >
+                            Mobile
+                          </label>
+                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400 peer-focus:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Status Filter -->
+                      <div class="group relative">
+                        <div class="relative">
+                          <select
+                            id="status"
+                            formControlName="status"
+                            class="peer w-full h-12 px-4 pt-5 pb-2 pl-10 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-all duration-300 bg-white/80 hover:border-gray-300 text-sm"
+                          >
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                          </select>
+                          <label
+                            for="status"
+                            class="absolute left-10 top-1.5 text-[11px] font-semibold text-blue-600"
+                          >
+                            Status
+                          </label>
+                          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400 peer-focus:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8l6.5 6 6.5-6"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Search Actions -->
+                    <div class="flex items-center justify-between pt-2">
+                      <div class="text-xs text-gray-600 flex items-center">
+                        <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                        Auto-search as you type
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          (click)="clearSearch()"
+                          class="group relative inline-flex items-center px-3 py-2 border-2 border-gray-200 text-xs font-semibold rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm"
+                        >
+                          <svg class="w-3.5 h-3.5 mr-2 text-gray-500 group-hover:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                          </svg>
+                          Clear All
+                        </button>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                          </svg>
+                          Auto Search
+                        </span>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
         }
         <!-- Loading state -->

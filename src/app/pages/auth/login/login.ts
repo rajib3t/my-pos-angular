@@ -44,6 +44,7 @@ export class Login implements OnInit {
   isValidatingSubdomain = false;
   subdomainError = '';
   private destroyRef = inject(DestroyRef);
+  showPassword = false;
   
   constructor(
      private fb: FormBuilder,
@@ -57,7 +58,8 @@ export class Login implements OnInit {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]]
+      password: ['', [Validators.required, Validators.minLength(4)]],
+      rememberMe: [false]
     });
   }
 
@@ -65,6 +67,12 @@ export class Login implements OnInit {
     // You can optionally set a custom title here
     this.titleService.setTitle('Sign In');
     
+    // Hydrate remembered email
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (rememberedEmail) {
+      this.loginForm.patchValue({ email: rememberedEmail, rememberMe: true });
+    }
+
     // Validate subdomain on component initialization
     this.validateSubdomainOnInit();
   }
@@ -93,6 +101,10 @@ export class Login implements OnInit {
           }
         });
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
@@ -149,6 +161,17 @@ export class Login implements OnInit {
             this.apiService.setAuthToken(response.data.data.accessToken);
             this.apiService.setRefreshToken(response.data.data.refreshToken?.token);
             this.userService.setAuthUser(response.data.data.user);
+            // Persist remembered email
+            const rememberMe = this.loginForm.get('rememberMe')?.value === true;
+            try {
+              if (rememberMe) {
+                localStorage.setItem('rememberedEmail', this.loginForm.get('email')?.value || '');
+              } else {
+                localStorage.removeItem('rememberedEmail');
+              }
+            } catch (_) {
+              // ignore storage errors (private mode, quota, etc.)
+            }
             if(this.uiService.isSubDomain()){
               // Skip fetching/setting store if already present
               if (appState.store && appState.store._id) {
