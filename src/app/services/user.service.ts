@@ -70,6 +70,29 @@ export class UserService {
   private profileData = new BehaviorSubject<User | null>(null);
   constructor(private apiService: ApiService) { }
   /**
+   * Normalize various user payload shapes (login/profile) into a consistent User
+   */
+  private normalizeUser(raw: any): User {
+    if (!raw) {
+      return {
+        id: '',
+        email: '',
+        name: ''
+      } as User;
+    }
+    const user: User = {
+      id: raw.id || raw._id || raw.userId || '',
+      email: raw.email || '',
+      name: raw.name || raw.fullName || raw.username || '',
+      role: raw.role || raw.userRole || undefined,
+      isActive: typeof raw.isActive === 'boolean' ? raw.isActive : (typeof raw.status === 'boolean' ? raw.status : undefined),
+      createdAt: raw.createdAt || undefined,
+      updatedAt: raw.updatedAt || undefined,
+      mobile: raw.mobile || raw.phone || undefined
+    };
+    return user;
+  }
+  /**
    * Reset a user's password (admin action)
    * @param userId The id of the user to reset
    * @returns Observable<{ message: string }>
@@ -120,10 +143,11 @@ export class UserService {
   }
 
   setAuthUser(user: User): User {
-    this.storeUser(user);
-    appState.setUser(user as any)
-    this.authUserData.next(user);
-    return user;
+    const normalized = this.normalizeUser(user as any);
+    this.storeUser(normalized);
+    appState.setUser(normalized as any)
+    this.authUserData.next(normalized);
+    return normalized;
   }
 
 
@@ -141,9 +165,10 @@ export class UserService {
       next: (response) => {
         
         const userData = response.data.data;
-        this.profileData.next(userData);
-        // Also update the auth user data with fresh profile data
-        this.setAuthUser(userData);
+        const normalized = this.normalizeUser(userData);
+        this.profileData.next(normalized);
+        // Update the auth user data with normalized profile data
+       // this.setAuthUser(normalized as User);
       },
       error: (error) => {
         console.error('Error fetching profile data:', error);
@@ -180,7 +205,7 @@ export class UserService {
           const updatedUser = response.data.data;
           // Update both profile and auth user data
           this.profileData.next(updatedUser);
-          this.setAuthUser(updatedUser);
+         // this.setAuthUser(updatedUser);
           observer.next(updatedUser);
           observer.complete();
         },

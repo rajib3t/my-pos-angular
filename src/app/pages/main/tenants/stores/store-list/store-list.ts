@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component , OnInit} from '@angular/core';
+import { Component , OnInit, DestroyRef, inject} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon,User as UserIcon } from 'lucide-angular';
 import { Router, RouterModule } from '@angular/router';
@@ -48,6 +48,7 @@ export class StoreList implements OnInit {
   storeToDelete: Store | null = null;
   confirmationName: string = '';
   isDeleting: boolean = false;
+  private destroyRef = inject(DestroyRef);
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -75,7 +76,7 @@ export class StoreList implements OnInit {
     });
   }
   private setupSearchSubscription(): void {
-      this.searchForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(values => {
+      this.searchForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(values => {
         // Update filter object
         this.filter = { ...values };
         // Remove empty values
