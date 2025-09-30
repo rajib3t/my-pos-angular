@@ -1,10 +1,10 @@
-import { Component, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 import { ApiService } from './services/api.service';
-import { UserService } from './services/user.service';
+import { User, UserService } from './services/user.service';
 import { TitleService } from './services/title.service';
 import { StoreService } from './services/store.service';
 import { appState } from "../app/state/app.state";
@@ -19,7 +19,7 @@ import { UiService } from './services/ui.service';
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('my-pos');
   private userSubscription?: Subscription;
-
+  userState : Partial<User> | null = null
   constructor(
     private apiService: ApiService,
     private userService: UserService,
@@ -29,6 +29,7 @@ export class App implements OnInit, OnDestroy {
   ) {
     // Make this component available for debugging
     (window as any).appComponent = this;
+    
   }
 
   ngOnInit() {
@@ -50,25 +51,7 @@ export class App implements OnInit, OnDestroy {
           this.userService.fetchProfileData();
           
           // Subscribe to user changes and sync with app state
-          this.userSubscription = this.userService.getAuthUser.subscribe(user => {
-           
-            if (user) {
-              appState.setUser({
-                id: user.id || '',
-                name: user.name || '',
-                email: user.email || '',
-                role: user.role || ''
-              });
-              
-              if(this.uiService.isSubDomain()){
-                 this.checkAndSetStore();
-              }
-              // Fetch store data after user is set
-             
-            } else {
-              appState.setUser(null);
-            }
-          });
+        
         } else {
           // Clear app state if not authenticated
           appState.reset();

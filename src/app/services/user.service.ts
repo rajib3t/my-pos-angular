@@ -110,7 +110,7 @@ export class UserService {
       if (user) {
 
         localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
-        appState.setUser(user)
+        appState.setUser(user as any)
       } else {
         localStorage.removeItem(this.USER_STORAGE_KEY);
       }
@@ -121,7 +121,7 @@ export class UserService {
 
   setAuthUser(user: User): User {
     this.storeUser(user);
-    appState.setUser(user)
+    appState.setUser(user as any)
     this.authUserData.next(user);
     return user;
   }

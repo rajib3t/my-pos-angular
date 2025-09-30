@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/auth/login/login';
 import { MainLayout } from './shared/layout/main/main';
-import { AuthGuard } from './auth.gourd';
+import { AuthGuard } from './auth.guard';
 import { LoginGuard } from './login.guard';
 import { SubdomainGuard } from './subdomain.guard';
 import { NoSubdomainGuard } from './no-subdomain.guard';

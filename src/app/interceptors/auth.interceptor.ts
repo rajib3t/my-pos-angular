@@ -18,21 +18,21 @@ const getErrorMessage = (error: any): string => {
     return 'Network error. Please check your connection.';
   } else if (error.status >= 500) {
     return 'Server error. Please try again later.';
-  } else if (error.status === 404) {
+} else if (error.status === 404) {
     return 'Resource not found.';
   } else if (error.status === 403) {
     return 'Access denied.';
-  } else if (error.status === 400 || error.status === 406 || error.status === 422 ) {
+  } else if (error.status === 400 || error.status === 406) {
     // For client errors, preserve the server message
     return error.error?.message || 'Bad request.';
-
-  }else if(error.status === 409) {
+  } else if (error.status === 409) {
     return  error.error?.message || 'Conflict error. Resource already exists.';
   } else if (error.status === 429) {
     return 'Too many requests. Please try again later.';
   } else if (error.status === 422) {
-    return 'Validation error. Please check your input.';
-  }else{
+    // Handled separately below for field errors; keep a generic fallback
+    return error.error?.message || 'Validation error. Please check your input.';
+  } else {
      return error.error?.message || 'An error occurred. Please try again.';
   }
 };
