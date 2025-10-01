@@ -41,7 +41,7 @@ export class FirstStoreCreate implements OnInit {
     private router: Router,
   ) {
     this.firstStoreCreateForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(8)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       code: ['', [
         Validators.required, 
         this.formService.uppercaseValidator(),

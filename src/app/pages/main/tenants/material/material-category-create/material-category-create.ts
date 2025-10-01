@@ -47,6 +47,12 @@ export class MaterialCategoryCreate implements OnInit {
     this.setupFormChangeDetection();
     this.setupNameChangeListener();
     
+    // Initial load: if store is already set in app state, load tenant settings
+    const currentStore = appState.store;
+    if (currentStore?._id && !this.storeID()) {
+      this.storeID.set(currentStore._id);
+      this.loadTenantSettings(currentStore._id);
+    }
   }
 
    private setupStoreEffect(): void {
