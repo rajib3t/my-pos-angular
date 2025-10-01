@@ -17,12 +17,13 @@ export interface FormChangeTracker {
   resetChanges: () => void;
   destroy: () => void;
 }
-
+export type QueryFilter = Record<string, string | number | boolean | undefined | null>;
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
-  
+     // Default timezone offset (can be made configurable)
+  private readonly DEFAULT_TIMEZONE_OFFSET = -330; // IST
   /**
    * Creates a change detection tracker for any form
    * @param config Configuration object containing form, original values, and optional callbacks
@@ -180,5 +181,32 @@ getUserInitials(name: string): string {
               .map(word => word.charAt(0).toUpperCase())
               .join('');
       }
+  }
+
+
+  /**
+   * Build URL query parameters from pagination and filter options
+   * 
+   */
+   buildQueryParams(
+    page: number,
+    limit: number,
+    filter?: QueryFilter
+  ): string {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      timezone: this.DEFAULT_TIMEZONE_OFFSET.toString()
+    });
+
+    if (filter) {
+      Object.entries(filter).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          params.append(key, value.toString());
+        }
+      });
+    }
+
+    return params.toString();
   }
 }

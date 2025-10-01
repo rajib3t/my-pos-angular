@@ -1,5 +1,5 @@
 import { User, UserService, UserList } from '@/app/services/user.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, Users as UsersIcon, Search as SearchIcon, Plus as PlusIcon, Check as CheckIcon, X as XIcon, ArrowLeft as ArrowLeftIcon } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
@@ -45,7 +45,7 @@ export class StoreStaffAdd implements OnInit {
   readonly ArrowLeftIcon = ArrowLeftIcon;
 
   storeId: string | null = null;
-  store: Store | null = null;
+  store = signal<Partial<Store> | null>(null);
   users: StoreUser[] = [];
   selectedUsers: StoreUser[] = [];
   existingStaffIds: string[] = [];
@@ -118,7 +118,7 @@ export class StoreStaffAdd implements OnInit {
     
     this.storeService.getById(this.storeId).subscribe({
       next: (store: Store) => {
-        this.store = store;
+        this.store.set(store);
       },
       error: (error: any) => {
         this.uiService.error('Failed to load store details', 'Error');

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, Store as StoreIcon, Album as DashboardIcon, Trash2, Edit3, Users, CheckSquare } from 'lucide-angular';
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
@@ -29,7 +29,7 @@ export class StoreStaff  implements OnInit{
   readonly CheckSquare = CheckSquare;
 
   storeId: string | null = null;
-   store:Partial< Store> | null = null;
+   store = signal<Partial<Store> | null>(null);
   filter: { [key: string]: any } = {};
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -396,7 +396,7 @@ export class StoreStaff  implements OnInit{
       
       this.storeService.getById(this.storeId).subscribe({
         next: (store: Store) => {
-          this.store = store;
+          this.store.set(store);
         },
         error: (error: any) => {
           this.uiService.error('Failed to load store details', 'Error');

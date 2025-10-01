@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators , ReactiveFormsModule} from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { timer } from 'rxjs';
 import { TenantService, TenantSettingResponse } from '@/app/services/tenant.service';
 import { UiService } from '@/app/services/ui.service';
+import { appState } from '@/app/state/app.state';
+import { MaterialService } from '@/app/services/material.service';
+
 @Component({
   selector: 'app-material-category-create',
   imports: [CommonModule, ReactiveFormsModule ],
@@ -15,19 +18,25 @@ import { UiService } from '@/app/services/ui.service';
 })
 export class MaterialCategoryCreate implements OnInit {
   categoryForm : FormGroup
-  isSubmitting = '' ;
-  errorMessage = '';
-  successMessage = '';
+  isSubmitting : boolean = false ;
+  errorMessage : string | null = null;
+  successMessage : string | null = null;
   isChangingInfo = false;
   tenantSettings: TenantSettingResponse | null = null;
+  storeID = signal<string | null>(null);
   private originalValues: Record<string, any> = {};
   private destroyRef = inject(DestroyRef);
   constructor(
     private fb: FormBuilder,
     private tenantService: TenantService,
     private uiService: UiService,
-    public router: Router
+    public router: Router,
+    private materialService : MaterialService
   ) {
+
+    this.setupStoreEffect()
+    
+   
     this.categoryForm = this.fb.group({
       name: ["", Validators.required],
       code: ["", Validators.required],
@@ -37,10 +46,77 @@ export class MaterialCategoryCreate implements OnInit {
   ngOnInit() {
     this.setupFormChangeDetection();
     this.setupNameChangeListener();
-    this.loadTenantSettings();
+    
+  }
+
+   private setupStoreEffect(): void {
+    const storeEffect = effect(() => {
+      const store = appState.store;
+      const newStoreID = store?._id || null;
+
+      // Only reload if storeID actually changed
+      if (newStoreID && newStoreID !== this.storeID()) {
+        this.storeID.set(newStoreID);
+        this.loadTenantSettings(newStoreID);
+      }
+    });
+
+    this.destroyRef.onDestroy(() => {
+      storeEffect.destroy();
+    });
   }
 
   onSubmit(): void {
+     if (this.categoryForm.valid) {
+          this.isSubmitting = true;
+          this.errorMessage = null;
+          this.successMessage = null
+          this.materialService.create(this.storeID() as string, this.categoryForm.value).pipe(
+             takeUntilDestroyed(this.destroyRef)
+          ).subscribe({
+            next:(data)=>{
+              this.isSubmitting = false;
+              this.successMessage = 'Materials category create successfully'
+              this.uiService.success(this.successMessage, 'Create', 2000)
+              this.categoryForm.reset();
+              timer(3000).pipe(
+                takeUntilDestroyed(this.destroyRef)
+              ).subscribe(() => {
+                this.successMessage = '';
+              });
+            },
+            error:(error)=>{
+               this.isSubmitting = false;
+              if (error.error.validationErrors) {
+                const nameError = error.error.validationErrors['name'];
+                const codeError = error.error.validationErrors['code'];
+                if (nameError) {
+                    this.categoryForm.controls['name'].setErrors({ server: nameError });
+                    this.uiService.error(nameError, 'Create', 2000)
+                }
+                 if (codeError) {
+                    this.categoryForm.controls['code'].setErrors({ server: codeError });
+                    this.uiService.error(codeError, 'Create', 2000)
+                }
+               
+                timer(5000).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                    this.errorMessage = '';
+                });
+                
+              }else{
+                 timer(5000).pipe(
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                    this.errorMessage = 'Something went wrong, please try again';
+                });
+                this.uiService.error('Something went wrong, please try again', 'Create', 2000)
+              }
+            }
+          })
+
+     }
 
   }
 
@@ -66,13 +142,16 @@ export class MaterialCategoryCreate implements OnInit {
     });
   }
 
-  private loadTenantSettings(): void {
-    const subdomain = this.uiService.getSubDomain();
-    if (subdomain) {
-      this.tenantService.getTenantSetting(subdomain).pipe(
+  private loadTenantSettings(storeID: string): void {
+     
+      
+    
+      this.tenantService.getTenantSetting(storeID).pipe(
         takeUntilDestroyed(this.destroyRef)
       ).subscribe({
         next: (settings: TenantSettingResponse) => {
+            console.log(settings);
+            
           this.tenantSettings = settings;
           // If there's already a name in the form, regenerate the code with the new prefix
           const currentName = this.categoryForm.get('name')?.value;
@@ -85,7 +164,7 @@ export class MaterialCategoryCreate implements OnInit {
           console.error('Error fetching tenant settings:', error);
         }
       });
-    }
+    
   }
 
   private generateSettingCode(name: string): string {

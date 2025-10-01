@@ -208,7 +208,9 @@ export class StoreList implements OnInit {
       this.loadStores();
     }
 
-  onEditUser(store : Store):void{
+  onEditStore(store : Store):void{
+    console.log(store);
+    
     this.router.navigate([`/stores/${store._id}/edit`])
   }
 

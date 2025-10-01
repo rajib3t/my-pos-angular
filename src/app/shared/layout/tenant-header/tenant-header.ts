@@ -195,7 +195,7 @@ export class TenantHeader implements OnInit, OnDestroy {
     this.loadingStores = true;
     this.storeError = null;
     
-    this.storeService.getAllStores(1, 100).subscribe({
+    this.storeService.getAllStores(1, 100, ).subscribe({
       next: (response) => {
         this.stores = response.items || [];
         this.loadingStores = false;

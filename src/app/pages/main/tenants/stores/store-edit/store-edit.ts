@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LucideAngularModule , Album as DashboardIcon, Store as StoreIcon, Phone as PhoneIcon, AtSign as AtSignIcon} from 'lucide-angular';
@@ -32,6 +32,7 @@ export class StoreEdit implements OnInit {
   formTracker!: FormChangeTracker;
   isChangingInfo = false;
   originalValues: Partial<Store>| null = null  
+  storeData = signal<Store | null>(null);
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -53,15 +54,20 @@ export class StoreEdit implements OnInit {
   }
 
   ngOnInit(): void {
+    this.storeId = this.activatedRoute.snapshot.paramMap.get('storeId');
     this.storeEditForm.get('name')?.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => this.onNameChange());
-    this.storeId = this.activatedRoute.snapshot.paramMap.get('storeId');
+    
     if(this.storeId){
       this.storeService.getById(this.storeId).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (store) => {
+        this.storeData.set(store);
+        // Save original values for change tracking
+        this.originalValues = store;
+        // Patch form with store data
         const originalValues = {
           name: store.name || '',
           code: store.code || '',
