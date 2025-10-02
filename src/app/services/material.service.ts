@@ -111,11 +111,13 @@ export class MaterialService implements OnDestroy {
       return throwError(() => new Error('Store ID is required'));
     }
 
+    
+
     const queryParams = this.formService.buildQueryParams(page, limit, filter);
     
     return this.apiService
       .protectedGet<{ data: PaginatedResponse<IMaterialCategory> }>(
-        `tenants/stores/${storeID}/material-category?${queryParams}`
+        `tenants/stores/${storeID}/material-category?populate=true&${queryParams}`
       )
       .pipe(
         map(response => response.data.data),
