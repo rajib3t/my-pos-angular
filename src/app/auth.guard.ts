@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ApiService } from './services/api.service';
@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
         private apiService: ApiService
     ) {}
 
-    canActivate(): boolean | Observable<boolean> {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
        
         
         try {
@@ -32,19 +32,24 @@ export class AuthGuard implements CanActivate {
                        
                         return true;
                     } else {
-                        
+                        // Store the intended URL for redirecting after login
+                        sessionStorage.setItem('redirectUrl', state.url);
                         this.router.navigate(['/login']);
                         return false;
                     }
                 }),
                 catchError(error => {
                     console.error('AuthGuard: Error during authentication initialization:', error);
+                    // Store the intended URL for redirecting after login
+                    sessionStorage.setItem('redirectUrl', state.url);
                     this.router.navigate(['/login']);
                     return of(false);
                 })
             );
         } catch (error) {
             console.error('AuthGuard: Error during authentication check:', error);
+            // Store the intended URL for redirecting after login
+            sessionStorage.setItem('redirectUrl', state.url);
             this.router.navigate(['/login']);
             return false;
         }

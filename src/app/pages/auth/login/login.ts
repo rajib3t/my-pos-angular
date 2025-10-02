@@ -45,6 +45,11 @@ export class Login implements OnInit {
   subdomainError = '';
   private destroyRef = inject(DestroyRef);
   showPassword = false;
+  currentUrl = '';
+  isSubdomain = false;
+  subdomain = '';
+  accountName = '';
+  redirectUrl: string | null = null;
   
   constructor(
      private fb: FormBuilder,
@@ -67,6 +72,12 @@ export class Login implements OnInit {
     // You can optionally set a custom title here
     this.titleService.setTitle('Sign In');
     
+    // Set URL indication
+    this.setUrlIndication();
+    
+    // Get redirect URL if exists
+    this.redirectUrl = sessionStorage.getItem('redirectUrl');
+    
     // Hydrate remembered email
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     if (rememberedEmail) {
@@ -75,6 +86,29 @@ export class Login implements OnInit {
 
     // Validate subdomain on component initialization
     this.validateSubdomainOnInit();
+  }
+
+  private setUrlIndication(): void {
+    this.currentUrl = window.location.hostname;
+    this.isSubdomain = this.uiService.isSubDomain();
+    this.subdomain = this.uiService.getSubDomain();
+    
+    // If subdomain exists, try to get account name
+    if (this.isSubdomain && this.subdomain) {
+      this.uiService.getSubAccount(this.subdomain)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            if (response?.data?.name) {
+              this.accountName = response.data.name;
+            }
+          },
+          error: (error) => {
+            console.error('Failed to fetch account name:', error);
+            // Keep subdomain as fallback
+          }
+        });
+    }
   }
 
   private validateSubdomainOnInit(): void {
@@ -172,49 +206,9 @@ export class Login implements OnInit {
             } catch (_) {
               // ignore storage errors (private mode, quota, etc.)
             }
-            if(this.uiService.isSubDomain()){
-              // Skip fetching/setting store if already present
-              if (appState.store && appState.store._id) {
-                this.router.navigate(['dashboard']);
-              } else {
-                this.storeService.getAllStores(1, 1).subscribe({
-                    next: (res) => {
-                      console.log('App: Store API response:', res);
-                      if (res?.items?.length > 0) {
-                        const store = res.items[0];
-                        console.log('App: First store found:', store);
-                        // Ensure all required fields are present
-                        if (store._id) {
-                          const storeData = {
-                            _id: store._id,
-                            name: store.name || '',
-                            code: store.code || '',
-                            status: (store.status as 'active' | 'inactive') || 'active',
-                            createdBy: store.createdBy || ''
-                          };
-                          console.log('App: Setting store in app state:', storeData);
-                          if (!appState.store || !appState.store._id) {
-                            appState.setStore(storeData);
-                          }
-                        } else {
-                          console.warn('App: Store found but missing _id:', store);
-                        }
-                      } else {
-                        console.warn('App: No stores found in response:', response);
-                      }
-                      appState.setLoading(false);
-                    },
-                    error: (err) => {
-                      console.error('App: Store check failed:', err);
-                      appState.setLoading(false);
-                      // Don't clear store on error, keep existing data if any
-                    }
-                    });
-              }
-            }
-
-            // Redirect to dashboard or another page
-            this.router.navigate(['dashboard']);
+            
+            // Handle redirect after login
+            this.handlePostLoginRedirect();
           } else {
             this.errorMessage = 'Login failed. Please try again.';
           }
@@ -240,5 +234,60 @@ export class Login implements OnInit {
           this.isSubmitting = false;
         }
       });
+  }
+
+  private handlePostLoginRedirect(): void {
+    // Check if there's a redirect URL stored
+    if (this.redirectUrl) {
+      const url = this.redirectUrl;
+      // Clear the stored redirect URL
+      sessionStorage.removeItem('redirectUrl');
+      // Navigate to the intended URL
+      this.router.navigateByUrl(url);
+    } else if(this.uiService.isSubDomain()){
+      // Skip fetching/setting store if already present
+      if (appState.store && appState.store._id) {
+        this.router.navigate(['dashboard']);
+      } else {
+        this.storeService.getAllStores(1, 1).subscribe({
+          next: (res) => {
+            console.log('App: Store API response:', res);
+            if (res?.items?.length > 0) {
+              const store = res.items[0];
+              console.log('App: First store found:', store);
+              // Ensure all required fields are present
+              if (store._id) {
+                const storeData = {
+                  _id: store._id,
+                  name: store.name || '',
+                  code: store.code || '',
+                  status: (store.status as 'active' | 'inactive') || 'active',
+                  createdBy: store.createdBy || ''
+                };
+                console.log('App: Setting store in app state:', storeData);
+                if (!appState.store || !appState.store._id) {
+                  appState.setStore(storeData);
+                }
+              } else {
+                console.warn('App: Store found but missing _id:', store);
+              }
+            } else {
+              console.warn('App: No stores found in response:', res);
+            }
+            appState.setLoading(false);
+            this.router.navigate(['dashboard']);
+          },
+          error: (err) => {
+            console.error('App: Store check failed:', err);
+            appState.setLoading(false);
+            // Don't clear store on error, keep existing data if any
+            this.router.navigate(['dashboard']);
+          }
+        });
+      }
+    } else {
+      // Default redirect to dashboard
+      this.router.navigate(['dashboard']);
+    }
   }
 }
