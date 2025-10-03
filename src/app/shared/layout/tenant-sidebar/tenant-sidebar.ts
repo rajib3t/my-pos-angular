@@ -115,6 +115,8 @@ export class TenantSidebar implements OnDestroy, OnInit{
             this.submenuStates['material-category'] = true;
         } else if (this.currentRoute.includes('/material-categories')) {
             this.submenuStates['material-category'] = true;
+        } else if (this.currentRoute.includes('/material-category-edit')) {
+            this.submenuStates['material-category'] = true;
         } else if (this.currentRoute.includes('/users')) {
             this.submenuStates['users'] = true;
         } else if (this.currentRoute.includes('/stores')) {

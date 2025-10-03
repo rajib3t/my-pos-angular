@@ -32,6 +32,7 @@ import { StoreEdit } from './pages/main/tenants/stores/store-edit/store-edit';
 import { StoreStaff } from './pages/main/tenants/stores/store-staff/store-staff';
 import { StoreStaffAdd } from './pages/main/tenants/stores/store-staff-add/store-staff-add';
 import { RoleAccessExampleComponent } from './examples/role-access-example.component';
+import { MaterialCategoryEdit } from './pages/main/tenants/material/material-category-edit/material-category-edit';
 export const routes: Routes = [
 
     {
@@ -175,6 +176,12 @@ export const routes: Routes = [
                 component: MaterialCategoryCreate,
                 canActivate: [SubdomainGuard],
                 data: { title: 'Create Material Category' }
+            },
+            {
+                path: 'material-category-edit/:categoryId',
+                component: MaterialCategoryEdit,
+                canActivate: [SubdomainGuard],
+                data: { title: 'Edit Material Category' }
             },
 
         ]

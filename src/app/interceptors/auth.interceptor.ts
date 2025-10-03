@@ -8,7 +8,7 @@ import {
 import { throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { catchError, switchMap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { ConfigService } from '../services/config.service';
 import { UiService } from '../services/ui.service';
 const jwtHelper = new JwtHelperService();
 
@@ -43,6 +43,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   // Inject HttpClient directly to avoid circular dependency with ApiService
   const http = inject(HttpClient);
   const uiService = inject(UiService);
+  const configService = inject(ConfigService);
   // Don't modify headers for authentication endpoints
   if (req.url.includes('auth/login') || req.url.includes('auth/refresh')) {
     console.log('AuthInterceptor: Skipping auth endpoints');
@@ -132,7 +133,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
         }
         
         // Make direct HTTP call to refresh endpoint to avoid circular dependency
-        const refreshUrl = `${environment.apiUrl}/auth/refresh`;
+        const refreshUrl = `${configService.apiUrl}/auth/refresh`;
 
         let refreshHeaders: { [key: string]: string } = {
           'Content-Type': 'application/json',

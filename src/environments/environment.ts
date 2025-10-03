@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8087',
-  mainDomain: 'mypos.local',  
+  mainDomain: 'mypos.local',
 };

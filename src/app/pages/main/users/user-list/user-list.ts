@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal , effect} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PaginationChange, PaginationComponent, PaginationConfig } from '@/app/shared/components/pagination/pagination';
@@ -12,6 +12,7 @@ import { User, UserService , UserList as UserListResponse} from '@/app/services/
 import { LayoutList, LucideAngularModule , SquarePen, UserPlus, KeyIcon} from 'lucide-angular';
 import { UserPasswordReset } from '@/app/shared/components/popup/user-password-reset/user-password-reset';
 import { TenantService } from '@/app/services/tenant.service';
+import { appState } from '@/app/state/app.state';
 
 @Component({
   selector: 'app-user-list',
@@ -32,7 +33,7 @@ export class UserList implements OnInit {
   readonly HouseIcon = LayoutList;
   readonly UserAddIcon = UserPlus;
   readonly KeyIcon = KeyIcon;
-  authUser: Partial<User> | null = null;
+  authUser = signal<User | null>(null);
   showSearchFilters: boolean = false;
   loading: boolean = false;
   filter: { [key: string]: any } = {};
@@ -69,8 +70,16 @@ export class UserList implements OnInit {
     private fb: FormBuilder
   ) { 
     this.initializeSearchForm();
+    this.setupStoreEffect();
   }
 
+  private setupStoreEffect(): void {
+    effect(() => {
+      this.authUser.set(appState.user);
+    }, { 
+      allowSignalWrites: true 
+    });
+  }
     // Use global utility functions for date/time formatting
     formatDate = formatDate;
     formatTime = formatTime;
@@ -151,9 +160,6 @@ export class UserList implements OnInit {
   
       this.setupSearchSubscription();
 
-      this.userService.getAuthUser.subscribe(user => {
-        this.authUser = user;
-      });
    }
 
   toggleSearchFilters(): void {
@@ -172,7 +178,7 @@ export class UserList implements OnInit {
   onEditUser(user: UserListResponse['items'][0]): void {
     if(!user || !user._id) return;
 
-    if(this.authUser?.email === user.email){
+    if(this.authUser()?.email === user.email){
       this.router.navigate([`/profile`]);
     }else{
       this.router.navigate([`/users/${user._id}/edit`]);

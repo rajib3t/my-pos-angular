@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { UiService } from '@/app/services/ui.service';
 import { formatTime, formatDate } from '@/app/shared/utils/date-time.utils';
 import { LucideAngularModule, LayoutList, SquarePlus, House } from 'lucide-angular';
-import { environment } from '@/environments/environment';
+import { ConfigService } from '@/app/services/config.service';
 @Component({
   selector: 'app-list',
   imports: [
@@ -25,7 +25,7 @@ import { environment } from '@/environments/environment';
 export class TenantList implements OnInit, OnDestroy {
   readonly HouseIcon = LayoutList;
   readonly TenantAddIcon = SquarePlus;
-  readonly mainDomain = environment.mainDomain || '';
+  readonly mainDomain: string;
   sortField: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -47,6 +47,31 @@ export class TenantList implements OnInit, OnDestroy {
   tenantToDelete: Tenant | null = null;
   confirmationName: string = '';
   isDeleting: boolean = false;
+
+  // Use global utility functions for date/time formatting
+  formatDate = formatDate;
+  formatTime = formatTime;
+
+  constructor(
+    private tenantService: TenantService,
+    private fb: FormBuilder,
+    private router: Router,
+    private uiService: UiService,
+    private configService: ConfigService
+  ) {
+    this.mainDomain = this.configService.mainDomain;
+    this.searchForm = this.fb.group({
+      name: [''],
+      subdomain: [''],
+      createdAtFrom: [''],
+      createdAtTo: ['']
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadTenants();
+    this.setupSearchSubscription();
+  }
  
   loadTenants() {
     this.loading = true;
@@ -58,8 +83,6 @@ export class TenantList implements OnInit, OnDestroy {
     }
     this.tenantService.getAllTenants(this.paginationConfig.page, this.paginationConfig.limit, queryFilter).subscribe({
       next: (result: PaginatedResult) => {
-       
-        
         this.tenants = result.items;
         this.paginationConfig = {
           total: result.total,
@@ -84,30 +107,6 @@ export class TenantList implements OnInit, OnDestroy {
 
   trackByTenant(index: number, tenant: Tenant): string {
     return tenant._id || tenant.id || index.toString();
-  }
-
-  // Use global utility functions for date/time formatting
-  formatDate = formatDate;
-  formatTime = formatTime;
-
-  constructor(
-    private tenantService: TenantService,
-    private fb: FormBuilder,
-    private router: Router,
-    private uiService: UiService
-  ) {
-    this.searchForm = this.fb.group({
-      name: [''],
-      subdomain: [''],
-      createdAtFrom: [''],
-      createdAtTo: ['']
-    });
-
-  }
-
-  ngOnInit(): void {
-    this.loadTenants();
-    this.setupSearchSubscription();
   }
 
   ngOnDestroy(): void {

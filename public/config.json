@@ -1,0 +1,5 @@
+{
+  "apiUrl": "http://localhost:8087",
+  "mainDomain": "mypos.local",
+  "production": false
+}

@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "config": "node scripts/set-env.js",
+    "prestart": "npm run config",
     "start": "ng serve",
+    "prebuild": "npm run config",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
@@ -32,10 +35,12 @@
     "@angular/router": "^20.2.0",
     "@auth0/angular-jwt": "^5.2.0",
     "@tailwindcss/postcss": "^4.1.13",
+    "dotenv": "^17.2.3",
     "lucide-angular": "^0.542.0",
     "postcss": "^8.5.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "yargs": "^18.0.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -51,6 +56,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.6",
     "typescript": "~5.9.2"
   }
 }

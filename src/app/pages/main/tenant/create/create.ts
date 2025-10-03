@@ -6,8 +6,8 @@ import { TenantService } from '../../../../services/tenant.service';
 import { timer } from 'rxjs';
 import { LucideAngularModule, SquarePlus, LayoutList } from 'lucide-angular';
 import { RouterModule , Router} from '@angular/router';
-import { environment } from '@/environments/environment';
 import { UiService } from '@/app/services/ui.service';
+import { ConfigService } from '@/app/services/config.service';
 @Component({
   selector: 'app-create',
   imports: [
@@ -28,14 +28,16 @@ export class CreateTenant implements OnInit {
    isSubmitting = false;
    showPassword = false;
    showConfirmPassword = false;
-   readonly mainDomain = environment.mainDomain;
+   readonly mainDomain: string;
    private destroyRef = inject(DestroyRef);
    constructor(
          private fb: FormBuilder,
          private tenantService: TenantService,
          private router: Router,
-         private uiService : UiService
+         private uiService : UiService,
+         private configService: ConfigService
    ) {
+      this.mainDomain = this.configService.mainDomain;
       this.tenantForm = this.fb.group({
          name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
          subdomain: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9-]+$')]], // Alphanumeric and hyphens only

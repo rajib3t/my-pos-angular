@@ -197,7 +197,7 @@ export class MaterialCategory implements OnInit {
   }
 
   onEditCategory(category: IMaterialCategory): void {
-    this.router.navigate([`/material/category/${category._id}/edit`]);
+    this.router.navigate([`material-category-edit/${category._id}`]);
   }
 
   onDeleteCategory(category: IMaterialCategory): void {

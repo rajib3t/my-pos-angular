@@ -4,7 +4,7 @@ import { Observable, throwError, BehaviorSubject , tap} from 'rxjs';
 import { catchError, map, filter } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { ApiResponse, ParsedCookie, AuthToken } from './api-response.model';
-import { environment } from '../../environments/environment';
+import { ConfigService } from './config.service';
 
 
 @Injectable({
@@ -16,8 +16,12 @@ export class ApiService {
   private refreshToken$ = new BehaviorSubject<string | null>(null);
 
 
-  constructor(private http: HttpClient) {
-    this.baseUrl = environment.apiUrl;
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
+    // Use ConfigService for dynamic API URL
+    this.baseUrl = this.configService.apiUrl;
   }
 
 
