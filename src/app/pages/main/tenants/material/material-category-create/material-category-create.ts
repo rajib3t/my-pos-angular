@@ -173,22 +173,29 @@ export class MaterialCategoryCreate implements OnInit {
     
   }
 
-  private generateSettingCode(name: string): string {
+  private generateSettingCode(name: string) {
     // Remove extra spaces and split by space
-    const words = name.trim().split(/\s+/).filter(word => word.length > 0);
+    const words = name.trim();
+
+    this.materialService.generateCode(this.storeID() as string, words).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (response) => {
+       
+        
+        if (response && response) {
+          this.categoryForm.get('code')?.setValue(response, { emitEvent: false });
+        }
+      },
+      error: (error) => {
+        console.error('Error generating code:', error);
+      }
+    });
+
+  
+
     
-    let categoryCode = '';
-    if (words.length === 1) {
-      // Single word: get first 2 letters
-      categoryCode = words[0].substring(0, 2).toUpperCase();
-    } else {
-      // Multiple words: get first letter of every word
-      categoryCode = words.map(word => word.charAt(0)).join('').toUpperCase();
-    }
-    
-    // Add tenant prefix if available
-    const tenantPrefix = this.tenantSettings?.code || '';
-    return tenantPrefix ? `${tenantPrefix}-${categoryCode}` : categoryCode;
+    // Take the first letter of each word and convert to uppercas
   }
   private normalizeValue(value: any): string {
     return value === null || value === undefined ? '' : String(value).trim();

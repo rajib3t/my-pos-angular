@@ -216,4 +216,21 @@ export class MaterialService implements OnDestroy {
       return throwError(() => error);
     };
   }
-}
+
+
+  generateCode(storeID: string, name: string): Observable<{ code: string }> {
+    if (!storeID?.trim() || !name?.trim()) {
+      return throwError(() => new Error('Store ID and Name are required'));
+    }
+
+    return this.apiService
+      .protectedPost<{ data: { code: string } }>(
+        `tenants/stores/${storeID}/material-category/generate-code`,
+        { name }
+      )
+      .pipe(
+        map(response => response.data.data),
+        catchError(this.handleError('generateCode'))
+      );
+    }
+  }

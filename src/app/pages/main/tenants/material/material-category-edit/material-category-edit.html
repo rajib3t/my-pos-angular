@@ -1,40 +1,282 @@
 <!-- Modern Page Header -->
-<div class="bg-gradient-to-br from-indigo-50 via-white to-cyan-50 shadow-xl border-b border-indigo-100 px-8 py-8">
+<div class="bg-gradient-to-br from-amber-50 via-white to-orange-50 shadow-xl border-b border-amber-100 px-8 py-8">
   <div class="flex items-center justify-between">
     <div class="flex items-center space-x-6">
       <div class="relative">
-        <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 rounded-2xl shadow-xl">
+        <div class="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 p-4 rounded-2xl shadow-xl">
           <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
           </svg>
         </div>
-        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+        <div class="absolute -top-1 -right-1 w-4 h-4 bg-blue-400 rounded-full border-2 border-white animate-pulse"></div>
       </div>
       <div>
-        <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Create Material Category
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+          Edit Material Category
         </h1>
-        <p class="text-gray-600 mt-2 text-base font-medium">Add a new category to organize your materials effectively with advanced configuration options</p>
+        <p class="text-gray-600 mt-2 text-base font-medium">Update and modify your material category details with advanced configuration options</p>
         <div class="flex items-center mt-3 space-x-4">
-          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200">
-            <div class="w-2 h-2 bg-indigo-500 rounded-full mr-2 animate-pulse"></div>
+          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 border border-amber-200">
+            <div class="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></div>
             Material Management
           </span>
           <span class="text-gray-400 text-lg">•</span>
-          <span class="text-sm text-gray-600 font-medium">Category Setup</span>
+          <span class="text-sm text-gray-600 font-medium">Category Update</span>
         </div>
       </div>
     </div>
     <div class="hidden md:flex items-center space-x-3">
       <button 
+        (click)="router.navigate(['/categories'])" 
+        class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
+        title="Back to Categories"
+      >
+        <svg class="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+      </button>
+      <button 
         (click)="router.navigate(['/dashboard'])" 
         class="group bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl hover:bg-white transition-all duration-300 cursor-pointer"
         title="Back to Dashboard"
       >
-        <svg class="h-6 w-6 text-gray-600 group-hover:text-indigo-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="h-6 w-6 text-gray-600 group-hover:text-amber-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
         </svg>
       </button>
     </div>
   </div>
 </div>
+
+<!-- Content Area -->
+<main class="p-8 bg-gradient-to-br from-gray-50 via-amber-50/30 to-orange-50/30 min-h-screen">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl overflow-hidden border border-white/50">
+      <div class="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 px-8 py-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+        <div class="relative z-10">
+          <h3 class="text-2xl font-bold text-white flex items-center">
+            <svg class="h-8 w-8 text-white mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Update Category Configuration
+          </h3>
+          <p class="text-amber-100 text-base mt-2 font-medium">Modify your material category with comprehensive details and organization preferences</p>
+        </div>
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+      </div>
+            
+      <div class="p-10">
+        <!-- Loading State -->
+        @if(isLoading()) {
+          <div class="flex flex-col items-center justify-center py-16 space-y-4">
+            <svg class="animate-spin h-12 w-12 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="text-gray-600 font-medium">Loading category details...</p>
+          </div>
+        }
+
+        <!-- Modern Alert Messages -->
+        @if(errorMessage()) {
+          <div class="mb-8 p-5 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-400 text-red-800 rounded-2xl flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h4 class="font-semibold text-red-800">Error Occurred</h4>
+              <p class="text-red-700 mt-1">{{ errorMessage() }}</p>
+            </div>
+          </div>
+        }
+        @if (successMessage()) {
+          <!-- Modern Success Message -->
+          <div class="mb-8 p-5 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-400 text-green-800 rounded-2xl flex items-start shadow-lg animate-in slide-in-from-top-2 duration-300">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
+            <div class="ml-4">
+              <h4 class="font-semibold text-green-800">Success!</h4>
+              <p class="text-green-700 mt-1">{{ successMessage() }}</p>
+            </div>
+          </div>
+        }
+             
+        <form class="space-y-10" [formGroup]="categoryForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading()">
+          <!-- Section: Category Information -->
+          <div class="bg-gradient-to-br from-amber-50/50 to-orange-50/50 p-8 rounded-2xl border border-amber-100/50">
+            <div class="flex items-center mb-6">
+              <div class="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                1
+              </div>
+              <h3 class="text-xl font-bold text-gray-800">Category Information</h3>
+            </div>
+            
+            <div class="space-y-8">
+              <!-- Category Name with Floating Label -->
+              <div class="group relative">
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    formControlName="name"
+                    value="{{ materialCategory()?.name }}"
+                    class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none transition-all duration-300 bg-white/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent"
+                    placeholder="Enter category name"
+                  >
+                  <label 
+                    for="name" 
+                    class="absolute left-4 top-2 text-xs font-semibold text-amber-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-amber-600"
+                  >
+                    Category Name *
+                  </label>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400 peer-focus:text-amber-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                  </div>
+                </div>
+                @if(categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched) {
+                  <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-start animate-in slide-in-from-top-1 duration-200">
+                    <svg class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                      @if(categoryForm.get('name')?.errors?.['required']) { <span class="font-medium">Category name is required.</span> }
+                      @if(categoryForm.get('name')?.errors?.['server']) { <span class="font-medium">{{categoryForm.get('name')?.errors?.['server']}}</span> }
+                    </div>
+                  </div>
+                }
+                <p class="mt-2 text-sm text-gray-500">Update the descriptive name for your material category</p>
+              </div>
+                
+              <!-- Category Code with Floating Label -->
+              <div class="group relative">
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    formControlName="code"
+                    value="{{ materialCategory()?.code }}"
+                    readonly
+                    class="peer w-full h-14 px-4 pt-6 pb-2 border-2 border-gray-200 rounded-2xl focus:border-amber-500 focus:outline-none transition-all duration-300 bg-gray-50/80 backdrop-blur-sm hover:border-gray-300 placeholder-transparent cursor-not-allowed"
+                    placeholder="Category code"
+                  >
+                  <label 
+                    for="code" 
+                    class="absolute left-4 top-2 text-xs font-semibold text-amber-600 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-amber-600"
+                  >
+                    Category Code
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                      Read-only
+                    </span>
+                  </label>
+                  <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                  </div>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Category code cannot be modified after creation</p>
+              </div>
+
+             
+            </div>
+          </div>
+          
+          <!-- Modern Submit Buttons -->
+          <div class="flex flex-col items-center pt-8 space-y-4">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+              <!-- Update Button -->
+              <button
+                type="submit"
+                [disabled]="isSubmitting() || categoryForm.invalid || !isChangingInfo"
+                class="group relative px-12 py-4 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white font-bold text-lg rounded-2xl hover:from-amber-700 hover:via-orange-700 hover:to-red-700 focus:outline-none focus:ring-4 focus:ring-orange-300 focus:ring-offset-2 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 shadow-2xl hover:shadow-orange-500/25 transform hover:scale-105 disabled:transform-none disabled:shadow-none flex items-center min-w-[280px] justify-center"
+              >
+                <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="relative z-10 flex items-center">
+                  @if (!isSubmitting()) {
+                    <svg class="w-6 h-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Update Category</span>
+                    <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  }
+                  @if (isSubmitting()) {
+                    <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Updating Category...</span>
+                  }
+                </div>
+              </button>
+
+              <!-- Cancel Button -->
+              <button
+                type="button"
+                (click)="onCancel()"
+                [disabled]="isSubmitting"
+                class="group relative px-8 py-4 bg-white text-gray-700 font-bold text-lg rounded-2xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 hover:border-gray-300 transform hover:scale-105 disabled:transform-none flex items-center"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span>Cancel</span>
+              </button>
+            </div>
+            
+            <!-- Form Status Info -->
+            <div class="text-center space-y-3">
+              <div class="flex items-center justify-center space-x-6 text-sm flex-wrap gap-y-2">
+                <!-- Form Status -->
+                <div class="flex items-center" [class]="categoryForm.valid && isChangingInfo() ? 'text-green-600' : categoryForm.valid ? 'text-blue-600' : 'text-orange-500'">
+                  <div class="w-2 h-2 rounded-full mr-2 animate-pulse" [class]="categoryForm.valid && isChangingInfo() ? 'bg-green-400' : categoryForm.valid ? 'bg-blue-400' : 'bg-orange-400'"></div>
+                  <span class="font-medium">
+                    {{categoryForm.valid && isChangingInfo() ? 'Ready to Update' : categoryForm.valid ? 'No Changes' : 'Check Required Fields'}}
+                  </span>
+                </div>
+                
+                <!-- Security Badge -->
+                <div class="flex items-center text-gray-500">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                  <span class="font-medium">SSL Encrypted</span>
+                </div>
+                
+                <!-- Validation Status -->
+                <div class="flex items-center" [class]="categoryForm.valid ? 'text-green-600' : 'text-orange-500'">
+                  <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="categoryForm.valid ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'"/>
+                  </svg>
+                  <span class="font-medium">{{categoryForm.valid ? 'Form Valid' : 'Check Required Fields'}}</span>
+                </div>
+              </div>
+              
+              <!-- Additional Info -->
+              <p class="text-xs text-gray-400 max-w-md mx-auto">
+                Your changes will be saved securely. All data is encrypted and stored in compliance with industry standards.
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
